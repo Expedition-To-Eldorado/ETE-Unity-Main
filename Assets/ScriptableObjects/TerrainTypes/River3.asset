@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e938959ce467b434ca761bdf7f2154ee, type: 3}
+  m_Name: River3
+  m_EditorClassIdentifier: 
+  ID: 10
+  <Name>k__BackingField: River3
+  <Description>k__BackingField: 
+  <Color>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  <Prefab>k__BackingField: {fileID: 5974964275969070193, guid: 49a20f85c137e5845b13159f469324f5, type: 3}
+  <Icon>k__BackingField: {fileID: 0}
