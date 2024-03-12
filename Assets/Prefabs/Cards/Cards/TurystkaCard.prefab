@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6726679878279211367
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6915811389619042420, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfb0aeb6344dab24fa2a39c5c1bed14f, type: 2}
+    - target: {fileID: 7549498076034291514, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_Name
+      value: TurystkaCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 47.13333
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565038132875959099, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186034016081312918, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: Power
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186034016081312918, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: NameOfCard
+      value: Turystka
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186034016081312918, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
+      propertyPath: TypeOfCard
+      value: yellow
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ff2faccd3af8914383169915b6c2e19, type: 3}
