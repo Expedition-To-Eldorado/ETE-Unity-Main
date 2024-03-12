@@ -66,25 +66,35 @@ public class CameraBehaviour : MonoBehaviour
     {
         //check for changed view mode
         bool viewIsChanged = false;
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) && viewType != (int)ViewTypes.Shop)
         {
             if(viewType < (int)ViewTypes.BoardOnly)
             {
                 viewType++;
                 viewIsChanged = true;
             }
+            else
+            {
+                viewType = (int)ViewTypes.CardsOnly;
+                viewIsChanged = true;
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) && viewType != (int)ViewTypes.Shop)
         {
             if (viewType > (int)ViewTypes.CardsOnly)
             {
                 viewType--;
                 viewIsChanged = true;
             }
+            else 
+            {
+                viewType = (int)ViewTypes.BoardOnly;
+                viewIsChanged = true;
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) && viewType != (int)ViewTypes.Shop)
         {
             lastViewType = viewType;
             lastPosition = mainCamera.transform.position;
@@ -92,40 +102,43 @@ public class CameraBehaviour : MonoBehaviour
             viewIsChanged = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) && viewType == (int)ViewTypes.Shop)
         {
             viewType = lastViewType;
             setView(lastPosition);
             //viewIsChanged = true;
         }
 
-
-        //check if player moved the camera with mouse
         Vector3 pos = transform.position;
-        if (Input.mousePosition.y >= Screen.height - mouseBorder)
+        if (viewType != (int)ViewTypes.Shop)
         {
-            pos.z += mouseCameraSpeed * Time.deltaTime;
-            viewIsChanged = true;
-        }
+            //check if player moved the camera with mouse
+            if (Input.mousePosition.y >= Screen.height - mouseBorder)
+            {
+                pos.z += mouseCameraSpeed * Time.deltaTime;
+                viewIsChanged = true;
+            }
 
-        if(Input.mousePosition.y <= mouseBorder)
-        {
-            pos.z -= mouseCameraSpeed * Time.deltaTime;
-            viewIsChanged = true;
-        }
+            if (Input.mousePosition.y <= mouseBorder)
+            {
+                pos.z -= mouseCameraSpeed * Time.deltaTime;
+                viewIsChanged = true;
+            }
 
-        if (Input.mousePosition.x >= Screen.width - mouseBorder)
-        {
-            pos.x += mouseCameraSpeed * Time.deltaTime;
-            viewIsChanged = true;
-        }
+            if (Input.mousePosition.x >= Screen.width - mouseBorder)
+            {
+                pos.x += mouseCameraSpeed * Time.deltaTime;
+                viewIsChanged = true;
+            }
 
-        if (Input.mousePosition.x <= mouseBorder)
-        {
-            pos.x -= mouseCameraSpeed * Time.deltaTime;
-            viewIsChanged = true;
+            if (Input.mousePosition.x <= mouseBorder)
+            {
+                pos.x -= mouseCameraSpeed * Time.deltaTime;
+                viewIsChanged = true;
+            }
+            transform.position = pos;
         }
-        transform.position = pos;
+        
 
         if (viewIsChanged)
         {
