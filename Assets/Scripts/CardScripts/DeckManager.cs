@@ -150,6 +150,11 @@ public class DeckManager : MonoBehaviour
 
     }
 
+    public void addCardToDeck(GameObject card)
+    {
+        usedCards.Add(card);
+    }
+
     public void drawCards(int numOfCards)
     {
         for(int i = 0; i < numOfCards; i++)
@@ -169,6 +174,8 @@ public class DeckManager : MonoBehaviour
         }
     }
 
+
+    //TODO implement shuffling cards when none are available in deck
 
     public void useCard()
     {

@@ -20,4 +20,9 @@ namespace GeneralEnumerations
         Shop,
         NumOfViewTypes
     }
+
+    public enum BoardPiece
+    {
+        A, B, C, D, E, F, G, H, I, J, K, M, N
+    }
 }
