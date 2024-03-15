@@ -10,7 +10,7 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
-    public Action<int, int, int, string> MovePawn;
+    public static Action<int, int, int, string> MovePawn;
 
     private void Awake()
     {
@@ -148,7 +148,7 @@ public class HexGridMeshGenerator : MonoBehaviour
         TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[grid.BoardPiece][z][x]];
         Debug.Log("Position:\tBoardPiece " + grid.BoardPiece + "\tCords (" + x + ", " + z + ")" +
             "\n\t    TerrainType:\t" + terrain.name);
-        MovePawn?.Invoke(z, x, grid.BoardPiece, terrain.name);
+        MovePawn?.Invoke(x, z, grid.BoardPiece, terrain.name);
     }
 
     private void OnRightMouseClick(RaycastHit hit)
