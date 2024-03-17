@@ -14,7 +14,7 @@ public class HexGrid : MonoBehaviour
 
     [SerializeField] private List<HexCell> cells = new List<HexCell>();
     private Task<List<HexCell>> hexGenerationTask;
-    private Vector3 gridOrigin;
+    public Vector3 gridOrigin { get; private set; }
     public event System.Action OnMapInfoGenerated;
     public event System.Action<float> OnCellBatchGenerated;
     public event System.Action OnCellInstancesGenerated;

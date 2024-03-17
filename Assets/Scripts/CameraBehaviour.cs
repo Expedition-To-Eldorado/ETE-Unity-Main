@@ -155,19 +155,19 @@ public class CameraBehaviour : MonoBehaviour
         {
             case (int)ViewTypes.CardsOnly:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: cards only");
+                //Debug.Log("view: cards only");
                 break;
             case (int)ViewTypes.BoardCards:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: board cards");
+                //Debug.Log("view: board cards");
                 break;
             case (int)ViewTypes.BoardOnly:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: board only");
+                //Debug.Log("view: board only");
                 break;
             case (int)ViewTypes.Shop:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: shop");
+                //Debug.Log("view: shop");
                 break;
         }
 
