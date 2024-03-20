@@ -1532,14 +1532,20 @@ MonoBehaviour:
   deckManager: {fileID: 1747200722}
   viewType: 1
   cameraHeight: 50
+  shopCameraHeight: 26
   cameraSpeed: 5
-  mouseCameraSpeed: 10
+  mouseCameraSpeed: 50
+  camPositions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
   camAngles:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  turningRate: 30
+  turningRate: 100
 --- !u!1 &1003489887
 GameObject:
   m_ObjectHideFlags: 0
@@ -5807,6 +5813,7 @@ MonoBehaviour:
   - {fileID: 5508173640785035031, guid: ab0c841943eb43046ad7436064bc2212, type: 3}
   - {fileID: 7559758747263783677, guid: 16470b7c28b497f4eb23e65367ac3171, type: 3}
   cardsInShop: []
+  looseCards: []
 --- !u!1 &2025291279
 GameObject:
   m_ObjectHideFlags: 0
