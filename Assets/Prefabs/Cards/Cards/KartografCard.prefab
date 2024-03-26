@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 0
   NameOfCard: Kartograf
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 4
 --- !u!33 &2297635969248092441
 MeshFilter:
   m_ObjectHideFlags: 0

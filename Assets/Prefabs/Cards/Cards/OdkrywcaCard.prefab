@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 3
   NameOfCard: Odkrywca
   Typ: 
+  isStartingCard: 0
+  isBuyable: 1
+  quantityInShop: 3
+  price: 3
 --- !u!33 &4795535644813417831
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 0
   NameOfCard: "DziennikPodr\xF3\u017Cy"
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 3
 --- !u!33 &6057676789670134765
 MeshFilter:
   m_ObjectHideFlags: 0

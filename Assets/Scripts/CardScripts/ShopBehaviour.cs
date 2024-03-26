@@ -30,8 +30,34 @@ public class ShopBehaviour : MonoBehaviour
         
     }
 
-    public bool BuyCard(int coins)
+    public void ClearCard(GameObject card)
     {
-        return false;
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+        for (int i = 0; i < cards.Count; i++)
+        {
+            if (card.name == cards[i].name)
+            {
+                Destroy(card);
+            }
+        }
+    }
+
+    public bool BuyCard(GameObject card, int coins)
+    {
+        if (!card.GetComponent("CardBehaviour"))
+        {
+            CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+            if (cardBehaviour.isBuyable && coins>= cardBehaviour.price)
+            {
+                cardBehaviour.UpdateQuantity();
+                if (cardBehaviour.quantityInShop == 0)
+                {
+                    ClearCard(card);
+                }
+                return true;
+            }else
+            return false;
+        }else 
+            return false;
     }
 }

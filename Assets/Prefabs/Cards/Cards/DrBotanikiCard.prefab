@@ -51,6 +51,10 @@ MonoBehaviour:
   Power: 0
   NameOfCard: DrBotaniki
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 4
 --- !u!33 &4743405714294202308
 MeshFilter:
   m_ObjectHideFlags: 0

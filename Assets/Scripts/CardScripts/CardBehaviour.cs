@@ -8,7 +8,10 @@ public class CardBehaviour : MonoBehaviour
     [SerializeField] public int Power;
     [SerializeField] public string NameOfCard;
     [SerializeField] public string Typ;
-
+    [SerializeField] public bool isStartingCard;
+    [SerializeField] public bool isBuyable;
+    [SerializeField] public int quantityInShop;
+    [SerializeField] public int price;
 
 
     // Start is called before the first frame update
@@ -21,6 +24,11 @@ public class CardBehaviour : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void UpdateQuantity()
+    {
+        quantityInShop--;
     }
     
 }

@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 2
   NameOfCard: Fotoreporterka
   Typ: 
+  isStartingCard: 0
+  isBuyable: 1
+  quantityInShop: 3
+  price: 2
 --- !u!33 &4045003841529715894
 MeshFilter:
   m_ObjectHideFlags: 0

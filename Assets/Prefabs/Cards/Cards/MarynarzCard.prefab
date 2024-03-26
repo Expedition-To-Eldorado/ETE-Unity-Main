@@ -51,6 +51,9 @@ MonoBehaviour:
   Power: 1
   NameOfCard: Marynarz
   Typ: 
+  isStartingCard: 1
+  isBuyable: 0
+  quantityInShop: 0
 --- !u!33 &4742456972038937542
 MeshFilter:
   m_ObjectHideFlags: 0

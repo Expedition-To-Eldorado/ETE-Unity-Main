@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 0
   NameOfCard: Kompas
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 2
 --- !u!33 &3514350969243983496
 MeshFilter:
   m_ObjectHideFlags: 0

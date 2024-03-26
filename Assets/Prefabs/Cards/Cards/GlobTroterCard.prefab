@@ -157,6 +157,9 @@ MonoBehaviour:
   Power: 1
   NameOfCard: Globtroter
   Typ: 
+  isStartingCard: 1
+  isBuyable: 0
+  quantityInShop: 0
 --- !u!33 &1003238575791977050
 MeshFilter:
   m_ObjectHideFlags: 0

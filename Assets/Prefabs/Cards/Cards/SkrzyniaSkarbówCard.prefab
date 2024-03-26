@@ -51,6 +51,10 @@ MonoBehaviour:
   Power: 4
   NameOfCard: "SkrzyniaSkarb\xF3w"
   Typ: 
+  isStartingCard: 0
+  isBuyable: 1
+  quantityInShop: 3
+  price: 3
 --- !u!33 &2744133498759942585
 MeshFilter:
   m_ObjectHideFlags: 0

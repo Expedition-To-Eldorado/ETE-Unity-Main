@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 0
   NameOfCard: Tubylec
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 5
 --- !u!33 &4371037089354293554
 MeshFilter:
   m_ObjectHideFlags: 0

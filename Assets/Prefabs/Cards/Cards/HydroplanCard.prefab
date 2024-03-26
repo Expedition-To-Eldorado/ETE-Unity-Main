@@ -157,6 +157,10 @@ MonoBehaviour:
   Power: 4
   NameOfCard: Hydroplan
   Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 3
+  price: 4
 --- !u!33 &6080618778897717116
 MeshFilter:
   m_ObjectHideFlags: 0
