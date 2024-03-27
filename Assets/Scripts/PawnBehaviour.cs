@@ -74,13 +74,15 @@ public class PawnBehaviour : MonoBehaviour
         }
         
         //check if the field is not a mountain
+        //useless much?
         if (terrainName == "Mountains")
         {
             Debug.Log("Player can not move to mountains");
             return ErrorMsg.FIELD_IS_MNTN;
         }
 
-        //check if any other player is on the desired field
+        //check if any other player is on the selected field
+        //TODO - update it with Flamasters new field status system
         GameObject Pawns = GameObject.Find("Pawns");
         PawnBehaviour pawnBehaviour;
         foreach (Transform pawn in Pawns.transform)

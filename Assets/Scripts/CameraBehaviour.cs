@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField] DeckManager deckManager;
+    public static Action<ViewTypes> changeView;
     [SerializeField] int viewType = (int)ViewTypes.BoardCards; //default setting
     int lastViewType;
     Vector3 lastPosition;
@@ -149,8 +149,7 @@ public class CameraBehaviour : MonoBehaviour
     //set coordinates that camera should follow
     private void setView(Vector3 camPosition)
     {
-        deckManager.changeView((ViewTypes)viewType);
-        //hardcoded values
+        changeView?.Invoke((ViewTypes)viewType);
         switch (viewType)
         {
             case (int)ViewTypes.CardsOnly:

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
+using static HexGridMeshGenerator;
 
 public class DeckManager : MonoBehaviour
 {
@@ -24,7 +25,16 @@ public class DeckManager : MonoBehaviour
     {
         createStarterDeck();
         drawCards(4);
+    }
 
+    private void OnEnable()
+    {
+        CameraBehaviour.changeView += changeView;
+    }
+
+    private void OnDisable()
+    {
+        CameraBehaviour.changeView -= changeView;
     }
 
     // Update is called once per frame
