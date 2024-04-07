@@ -160,6 +160,7 @@ MonoBehaviour:
   isStartingCard: 1
   isBuyable: 0
   quantityInShop: 0
+  price: 0
 --- !u!33 &1003238575791977050
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -176,7 +177,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8764124051144005569}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

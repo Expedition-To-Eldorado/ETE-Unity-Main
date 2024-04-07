@@ -30,6 +30,21 @@ public class ShopBehaviour : MonoBehaviour
         
     }
 
+    public int FindCardInShop(GameObject card)
+    {
+        int index = -1;
+        for (int i = 0; i < activeShopPositions.Count; i++)
+        {
+            GameObject cardInShop = activeShopPositions[i].transform.GetChild(0).gameObject;
+            if (card.name == cardInShop.name)
+            {
+                index = i;
+                return index;
+            }
+        }
+        return index;
+    }
+
     public void ClearCard(GameObject card)
     {
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
@@ -37,9 +52,25 @@ public class ShopBehaviour : MonoBehaviour
         {
             if (card.name == cards[i].name)
             {
+                int index = FindCardInShop(card);
+                if (index >= 0)activeShopPositions.RemoveAt(index);
                 Destroy(card);
             }
         }
+    }
+
+    public int FindEmptySlotInShop()
+    {
+        int index = -1;
+        for (int i = 0; i < activeShopPositions.Count; i++)
+        {
+            if (activeShopPositions[i].transform.childCount <= 0)
+            {
+                index = i;
+                return index;
+            }
+        }
+        return index;
     }
 
     public bool BuyCard(GameObject card, int coins)
@@ -47,8 +78,18 @@ public class ShopBehaviour : MonoBehaviour
         if (!card.GetComponent("CardBehaviour"))
         {
             CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-            if (cardBehaviour.isBuyable && coins>= cardBehaviour.price)
+            if (coins>= cardBehaviour.price)
             {
+                int index = FindEmptySlotInShop();
+                if (!cardBehaviour.isBuyable && (index!=-1))
+                {
+                    int quantity = cardBehaviour.quantityInShop;
+                    cardsInShop.Add(Instantiate(card, activeShopPositions[index].transform));
+                }
+                else
+                {
+                    return false;
+                }
                 cardBehaviour.UpdateQuantity();
                 if (cardBehaviour.quantityInShop == 0)
                 {
