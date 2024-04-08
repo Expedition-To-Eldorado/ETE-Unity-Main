@@ -39,7 +39,6 @@ public class MouseController : Singleton<MouseController>
         int layer_mask = LayerMask.GetMask("Cells");
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask))
         {
-            Debug.Log("mouseOverr");
             mouseOver = hit.transform;
             // if mouse is over different cell than before
             if (mouseOverRecent != null && mouseOverRecent != mouseOver) 
@@ -69,6 +68,7 @@ public class MouseController : Singleton<MouseController>
             }
             mouseOver = null;
         }
+
         mouseOverRecent = mouseOver;
     }
 
