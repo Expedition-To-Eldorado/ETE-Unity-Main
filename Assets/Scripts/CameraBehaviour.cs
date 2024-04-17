@@ -13,11 +13,12 @@ public class CameraBehaviour : MonoBehaviour
     int lastViewType;
     Vector3 lastPosition;
     [SerializeField] float cameraHeight = 50f;
+    [SerializeField] float shopCameraHeight = 26f;
     [SerializeField] float cameraSpeed = 5f;
     [SerializeField] float mouseCameraSpeed = 10f;
-    Vector3[] camPositions = new Vector3[4];
+    [SerializeField] Vector3[] camPositions = new Vector3[4];
     [SerializeField] Vector3[] camAngles = new Vector3[4];
-    public float turningRate = 30f;
+    public float turningRate = 100f;
     private float mouseBorder = 10f;
 
     //I have no idea what this is but is required to rotate camera
@@ -41,10 +42,11 @@ public class CameraBehaviour : MonoBehaviour
         camPositions[(int)ViewTypes.BoardOnly].z = 0;
         camAngles[(int)ViewTypes.BoardOnly].x = 49.3f;
 
-        camPositions[(int)ViewTypes.Shop].x = -20;
-        camPositions[(int)ViewTypes.Shop].y = cameraHeight;
-        camPositions[(int)ViewTypes.Shop].z = 0;
+        camPositions[(int)ViewTypes.Shop].x = -26.7f;
+        camPositions[(int)ViewTypes.Shop].y = shopCameraHeight;
+        camPositions[(int)ViewTypes.Shop].z = 35.6f;
         camAngles[(int)ViewTypes.Shop].x = 60;
+        camAngles[(int)ViewTypes.Shop].y = -90;
 
         setView(new Vector3(0,0));
     }
