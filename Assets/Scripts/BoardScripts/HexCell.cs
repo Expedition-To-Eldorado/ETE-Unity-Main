@@ -15,9 +15,6 @@ public class HexCell : MonoBehaviour
     [field:NonSerialized] public List<HexCell> Neighbours { get; private set; }
 
     [field:SerializeField] private Transform terrain { get; set; }
-
-    private Transform mouseOver;
-    private RaycastHit raycastHit;
     
     public void SetCoordinates(Vector2 axialCoordinates, HexOrientation orientation)
     {
@@ -67,7 +64,6 @@ public class HexCell : MonoBehaviour
             Grid.transform
             );
         //terrain.gameObject.layer = LayerMask.NameToLayer("Cells");
-        //terrain.gameObject.tag = "Cell";
 
         //TODO: Adjust the size of the prefab to the size of the grid cell
 
