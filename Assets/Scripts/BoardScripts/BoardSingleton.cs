@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using GeneralEnumerations;
 
 public class BoardSingleton : MonoBehaviour
 {
@@ -40,11 +41,6 @@ public class BoardSingleton : MonoBehaviour
             TerrainType terrain = AllTerrains.SingleOrDefault(x => x.ID == i);
             TerrainTypes.Add(terrain);
         }
-    }
-
-    public enum BoardPiece
-    {
-        A, B, C, D, E, F, G, H, I, J, K, M, N
     }
 
     private void SetBoardPieces()

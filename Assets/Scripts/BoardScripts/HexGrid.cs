@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-
+using GeneralEnumerations;
 public class HexGrid : MonoBehaviour
 {
     [field: SerializeField] public HexOrientation Orientation { get; private set; }
     [field: SerializeField] public int Size { get; private set; }
     [field: SerializeField] public int HexSize { get; private set; }
     [field:SerializeField] public int BatchSize { get; private set; }
-    [SerializeField] public BoardSingleton.BoardPiece BoardPieceLetter;
+    [SerializeField] public BoardPiece BoardPieceLetter;
     public int BoardPiece { get; private set; }
 
     [SerializeField] private List<HexCell> cells = new List<HexCell>();
     private Task<List<HexCell>> hexGenerationTask;
-    private Vector3 gridOrigin;
+    public Vector3 gridOrigin { get; private set; }
     public event System.Action OnMapInfoGenerated;
     public event System.Action<float> OnCellBatchGenerated;
     public event System.Action OnCellInstancesGenerated;

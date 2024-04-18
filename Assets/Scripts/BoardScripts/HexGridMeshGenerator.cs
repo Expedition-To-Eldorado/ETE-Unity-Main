@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GeneralEnumerations;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexGridMeshGenerator : MonoBehaviour
@@ -10,6 +11,9 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
+    //public static Action<int, int, HexGrid, string, string, int> MovePawn;
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
+    public static movePawn MovePawn;
 
     private void Awake()
     {
@@ -147,7 +151,10 @@ public class HexGridMeshGenerator : MonoBehaviour
         TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[grid.BoardPiece][z][x]];
         Debug.Log("Position:\tBoardPiece " + grid.BoardPiece + "\tCords (" + x + ", " + z + ")" +
             "\n\t    TerrainType:\t" + terrain.name);
-
+        //Im not sure if this should be called in here. 
+        //This delegate call is for debug only for the time being!!!
+        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1));
+        Debug.Log(errcode.ToString());
     }
 
     private void OnRightMouseClick(RaycastHit hit)

@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField] DeckManager deckManager;
+    public static Action<ViewTypes> changeView;
     [SerializeField] int viewType = (int)ViewTypes.BoardCards; //default setting
     int lastViewType;
     Vector3 lastPosition;
@@ -151,25 +151,24 @@ public class CameraBehaviour : MonoBehaviour
     //set coordinates that camera should follow
     private void setView(Vector3 camPosition)
     {
-        deckManager.changeView((ViewTypes)viewType);
-        //hardcoded values
+        changeView?.Invoke((ViewTypes)viewType);
         switch (viewType)
         {
             case (int)ViewTypes.CardsOnly:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: cards only");
+                //Debug.Log("view: cards only");
                 break;
             case (int)ViewTypes.BoardCards:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: board cards");
+                //Debug.Log("view: board cards");
                 break;
             case (int)ViewTypes.BoardOnly:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: board only");
+                //Debug.Log("view: board only");
                 break;
             case (int)ViewTypes.Shop:
                 SetBlendedEulerAngles(camAngles[viewType]);
-                Debug.Log("view: shop");
+                //Debug.Log("view: shop");
                 break;
         }
 

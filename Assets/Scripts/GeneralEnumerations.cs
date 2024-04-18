@@ -38,4 +38,19 @@ namespace GeneralEnumerations
         Shop,
         NumOfViewTypes
     }
+
+    public enum BoardPiece
+    {
+        A, B, C, D, E, F, G, H, I, J, K, M, N
+    }
+
+    public enum ErrorMsg
+    {
+        OK,
+        DIST_TOO_LONG,
+        FIELD_IS_MNTN,
+        FIELD_OCCUPIED,
+        CARD_NOT_MATCHING,
+        NOT_ACTIVE_PAWN
+    }
 }

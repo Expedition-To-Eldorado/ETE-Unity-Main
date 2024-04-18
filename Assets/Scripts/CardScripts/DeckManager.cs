@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
+using static HexGridMeshGenerator;
 
 public class DeckManager : MonoBehaviour
 {
@@ -24,7 +25,16 @@ public class DeckManager : MonoBehaviour
     {
         createStarterDeck();
         drawCards(4);
+    }
 
+    private void OnEnable()
+    {
+        CameraBehaviour.changeView += changeView;
+    }
+
+    private void OnDisable()
+    {
+        CameraBehaviour.changeView -= changeView;
     }
 
     // Update is called once per frame
@@ -150,6 +160,11 @@ public class DeckManager : MonoBehaviour
 
     }
 
+    public void addCardToDeck(GameObject card)
+    {
+        usedCards.Add(card);
+    }
+
     public void drawCards(int numOfCards)
     {
         for(int i = 0; i < numOfCards; i++)
@@ -169,6 +184,8 @@ public class DeckManager : MonoBehaviour
         }
     }
 
+
+    //TODO implement shuffling cards when none are available in deck
 
     public void useCard()
     {
