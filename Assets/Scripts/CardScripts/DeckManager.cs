@@ -62,7 +62,7 @@ public class DeckManager : MonoBehaviour
             case (int)ViewTypes.BoardOnly:
             case (int)ViewTypes.Shop:
                 viewModifierY = -40;
-                viewModifierZ = 0;
+                viewModifierZ = -100;
                 break;
         }
 

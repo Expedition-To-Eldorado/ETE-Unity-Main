@@ -9,7 +9,25 @@ namespace GeneralEnumerations
     {
         Turystka,
         Globtroter,
-        Marynarz
+        Marynarz,
+        Fotoreporterka,
+        Nadajnik,
+        Odkrywca,
+        Zwiadowca,
+        SkrzyniaSkarbów,
+        Przewodnik,
+        DrBotaniki,
+        Dziennikarka,
+        DziennikPodró¿y,
+        Hydroplan,
+        Kapitan,
+        Kartograf,
+        Kompas,
+        Milionerka,
+        Pionier,
+        Podró¿niczka,
+        Tubylec,
+        WielkaMaczeta
     }
 
     public enum ViewTypes
