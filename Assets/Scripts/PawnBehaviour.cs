@@ -18,17 +18,17 @@ public class PawnBehaviour : MonoBehaviour
         
     }
 
-    private void OnEnable()
-    {
-        HexGridMeshGenerator.MovePawn += movePawn;
-        //HexCell.MovePawn += movePawn;
-    }
-
-    private void OnDisable()
-    {
-        HexGridMeshGenerator.MovePawn -= movePawn;
-        //HexCell.MovePawn -= movePawn;
-    }
+    // private void OnEnable()
+    // {
+    //     HexGridMeshGenerator.MovePawn += movePawn;
+    //     //HexCell.MovePawn += movePawn;
+    // }
+    //
+    // private void OnDisable()
+    // {
+    //     HexGridMeshGenerator.MovePawn -= movePawn;
+    //     //HexCell.MovePawn -= movePawn;
+    // }
 
     void Update()
     {

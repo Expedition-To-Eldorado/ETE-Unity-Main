@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 676486920206972343}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 31.97, y: 0.55, z: -4.32}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 7429.9995, y: 7429.9995, z: 7429.9995}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 3661335105779275025}
   - component: {fileID: 2516318647759208767}
   - component: {fileID: -1992582685064213374}
+  - component: {fileID: 4792613881828907644}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -172,3 +173,38 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 028e65015ecb58e478a01c51114559b9, type: 2}
   - {fileID: 2100000, guid: 5947d56f0275b984d9cccf7e11cff442, type: 2}
   - {fileID: 2100000, guid: 3da1eec06ac82114c9b69cdbf1b1ae6d, type: 2}
+  offset: {x: 1.46, y: -0.42, z: 1}
+  currentBoardPiece: 0
+  xCurrentPos: 0
+  zCurrentPos: 0
+  isActivePawn: 0
+--- !u!114 &4792613881828907644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6925495916047753631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
