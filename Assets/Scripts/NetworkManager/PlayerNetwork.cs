@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -10,8 +11,8 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private List<Material> PawnMaterials;
     private Transform Player;
     private Renderer[] childRenderers;
-    //private NetworkVariable<int> NumberOfPlayers = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone,
-        //NetworkVariableWritePermission.Owner);
+    private NetworkVariable<int> NumberOfPlayers = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
         
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, -0.42f, 1f);
@@ -22,15 +23,24 @@ public class PlayerNetwork : NetworkBehaviour
     
     public override void OnNetworkSpawn()
     {
+        
         // making sure that code is executed only for the owner of the script
-        if (!IsOwner) return;
-        Player = this.transform;
-        //setting color and position of the pawn
-        childRenderers = Player.GetComponentsInChildren<Renderer>();
-        childRenderers[0].sharedMaterial = PawnMaterials[2];
-        transform.position = new Vector3(32f, 0.55f, -4.3f);
+        if (IsOwner)
+        {
+            Player = this.transform;
+            childRenderers = Player.GetComponentsInChildren<Renderer>();
+            Debug.Log(OwnerClientId);
+            childRenderers[0].sharedMaterial = PawnMaterials[(int)OwnerClientId];
+            transform.position = new Vector3(32f + (int)OwnerClientId*10, 0.55f, -4.3f);
+        }
+        
     }
-    
+
+    private void Update()
+    {
+        
+    }
+
     private void OnEnable()
     {
         HexGridMeshGenerator.MovePawn += movePawn;
@@ -51,7 +61,8 @@ public class PlayerNetwork : NetworkBehaviour
         ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, cardType, cardPower);
         if (errCode == ErrorMsg.OK)
         {
-            transform.position = centre + offset;
+            LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
+            //transform.position = centre + offset;
             xCurrentPos = x;
             zCurrentPos = z;
             currentBoardPiece = boardPiece.BoardPieceLetter;
