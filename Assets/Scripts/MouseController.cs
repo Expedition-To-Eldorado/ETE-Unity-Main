@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseController : Singleton<MouseController>
 {
@@ -42,7 +43,9 @@ public class MouseController : Singleton<MouseController>
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("Cells");
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask))
+        if (!EventSystem.current.IsPointerOverGameObject() && 
+            Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) && 
+            !hit.transform.gameObject.CompareTag("Occupied"))
         {
             mouseOver = hit.transform;
             // if mouse is over different cell than before
@@ -71,13 +74,15 @@ public class MouseController : Singleton<MouseController>
         mouseOverRecent = mouseOver;
     }
     
+    // ReSharper disable Unity.PerformanceAnalysis
     void CheckMouseClick(int mouseButton)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        int layer_mask = LayerMask.GetMask("Grid");
+        int layer_mask_grid = LayerMask.GetMask("Grid");
+        int layer_mask_cells = LayerMask.GetMask("Cells");
 
-        if(Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask))
+        if(!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid))
         {
             if(mouseButton == 0)
             {
