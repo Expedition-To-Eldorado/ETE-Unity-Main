@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using GeneralEnumerations;
@@ -8,11 +9,9 @@ using GeneralEnumerations;
 public class PlayerNetwork : NetworkBehaviour
 {
     //Networking fields
+    [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private List<Material> PawnMaterials;
-    private Transform Player;
-    private Renderer[] childRenderers;
-    private NetworkVariable<int> NumberOfPlayers = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server);
+    private List<Vector2> PawnPositions;
         
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
@@ -24,33 +23,32 @@ public class PlayerNetwork : NetworkBehaviour
     private Transform movePosTransform;
     //public bool isActivePawn;
     
+    private void Awake()
+    {
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+    }
+
     public override void OnNetworkSpawn()
     {
         
         // making sure that code is executed only for the owner of the script
         if (IsOwner)
         {
-            Player = this.transform;
+            //Player = this.transform;
             if (OwnerClientId >= 5)
             {
-                //TODO - Implement Limit of the players to join the game
-                //this is not working
-                //Destroy(Player.gameObject);
-                Player.GetComponent<NetworkObject>().Despawn();
+                // Not working :(
+                // Destroy(gameObject);
                 return;
             }
-
-            childRenderers = Player.GetComponentsInChildren<Renderer>();
-            Debug.Log(OwnerClientId);
-            childRenderers[0].sharedMaterial = PawnMaterials[(int)OwnerClientId];
             transform.position = new Vector3(32f + (int)OwnerClientId*10, 0.55f, -4.3f);
         }
-        
+        meshRenderer.material = PawnMaterials[(int)OwnerClientId];
     }
 
     private void Update()
     {
-        
+        //NetworkManager.Singleton.ConnectedClients.Max();
     }
 
     private void OnEnable()
@@ -75,10 +73,12 @@ public class PlayerNetwork : NetworkBehaviour
         if (errCode == ErrorMsg.OK)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
-            movePosTransform.gameObject.tag = "Occupied";
-            if (currentPosTransform && currentPosTransform != movePosTransform)
-                currentPosTransform.gameObject.tag = "Untagged";
-            currentPosTransform = movePosTransform;
+            //SendCordsServerRpc(x, z, new ServerRpcParams());
+            //Debug.Log("XDDDDDDDDDDDDDDDDD" + PawnPositions);
+            //movePosTransform.gameObject.tag = "Occupied";
+            //if (currentPosTransform && currentPosTransform != movePosTransform)
+                //currentPosTransform.gameObject.tag = "Untagged";
+            //currentPosTransform = movePosTransform;
             //transform.position = centre + offset;
             xCurrentPos = x;
             zCurrentPos = z;
@@ -121,12 +121,12 @@ public class PlayerNetwork : NetworkBehaviour
 
         //check if any other player is on the selected field
         //TODO - update it with Flamasters new field status system
-        if (movePosTransform.CompareTag("Occupied"))
-        {
-            Debug.Log("Field is occupied by other player, the caller is: " + this.name);
-            return ErrorMsg.FIELD_OCCUPIED;
-        }
-            
+        // if (movePosTransform.CompareTag("Occupied"))
+        // {
+        //     Debug.Log("Field is occupied by other player, the caller is: " + this.name);
+        //     return ErrorMsg.FIELD_OCCUPIED;
+        // }
+        
         // GameObject Pawns = GameObject.Find("Pawns");
         // PawnBehaviour pawnBehaviour;
         // foreach (Transform pawn in Pawns.transform)
@@ -154,4 +154,5 @@ public class PlayerNetwork : NetworkBehaviour
 
         return ErrorMsg.OK;
     }
+    
 }
