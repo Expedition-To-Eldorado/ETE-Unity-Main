@@ -15,7 +15,7 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableWritePermission.Server);
         
     //PawnMoving
-    [SerializeField] Vector3 offset = new Vector3 (1.46f, 5.55f, 1f);
+    [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
     [SerializeField] BoardPiece currentBoardPiece;
     [SerializeField] int xCurrentPos;
     [SerializeField] int zCurrentPos;
@@ -121,6 +121,12 @@ public class PlayerNetwork : NetworkBehaviour
 
         //check if any other player is on the selected field
         //TODO - update it with Flamasters new field status system
+        if (movePosTransform.CompareTag("Occupied"))
+        {
+            Debug.Log("Field is occupied by other player, the caller is: " + this.name);
+            return ErrorMsg.FIELD_OCCUPIED;
+        }
+            
         // GameObject Pawns = GameObject.Find("Pawns");
         // PawnBehaviour pawnBehaviour;
         // foreach (Transform pawn in Pawns.transform)

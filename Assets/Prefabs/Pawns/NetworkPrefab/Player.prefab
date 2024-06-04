@@ -156,9 +156,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 028e65015ecb58e478a01c51114559b9, type: 2}
   - {fileID: 2100000, guid: 5947d56f0275b984d9cccf7e11cff442, type: 2}
   - {fileID: 2100000, guid: 3da1eec06ac82114c9b69cdbf1b1ae6d, type: 2}
-  PlayerID:
-    m_InternalValue: 0
-  offset: {x: 1.46, y: -0.42, z: 1}
+  offset: {x: 1.46, y: 0.55, z: 1}
   currentBoardPiece: 0
   xCurrentPos: 0
   zCurrentPos: 0
