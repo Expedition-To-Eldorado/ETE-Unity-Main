@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class MouseController : Singleton<MouseController>
 {
-    public Action<RaycastHit> OnLeftMouseClick;
+    public Action<RaycastHit, RaycastHit> OnLeftMouseClick;
     public Action<RaycastHit> OnRightMouseClick;
     public Action<RaycastHit> OnMiddleMouseClick;
     private Transform mouseOverRecent;
@@ -79,14 +79,17 @@ public class MouseController : Singleton<MouseController>
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        RaycastHit hitCell;
         int layer_mask_grid = LayerMask.GetMask("Grid");
         int layer_mask_cells = LayerMask.GetMask("Cells");
 
-        if(!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid))
+        if(!EventSystem.current.IsPointerOverGameObject() 
+           && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid) 
+           && Physics.Raycast(ray, out hitCell, Mathf.Infinity, layer_mask_cells))
         {
             if(mouseButton == 0)
             {
-                OnLeftMouseClick?.Invoke(hit);
+                OnLeftMouseClick?.Invoke(hit, hitCell);
             }
             else if(mouseButton == 1)
             {

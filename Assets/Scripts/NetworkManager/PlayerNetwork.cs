@@ -15,10 +15,13 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkVariableWritePermission.Server);
         
     //PawnMoving
-    [SerializeField] Vector3 offset = new Vector3 (1.46f, -0.42f, 1f);
+    [SerializeField] Vector3 offset = new Vector3 (1.46f, 5.55f, 1f);
     [SerializeField] BoardPiece currentBoardPiece;
     [SerializeField] int xCurrentPos;
     [SerializeField] int zCurrentPos;
+
+    private Transform currentPosTransform;
+    private Transform movePosTransform;
     //public bool isActivePawn;
     
     public override void OnNetworkSpawn()
@@ -28,6 +31,15 @@ public class PlayerNetwork : NetworkBehaviour
         if (IsOwner)
         {
             Player = this.transform;
+            if (OwnerClientId >= 5)
+            {
+                //TODO - Implement Limit of the players to join the game
+                //this is not working
+                //Destroy(Player.gameObject);
+                Player.GetComponent<NetworkObject>().Despawn();
+                return;
+            }
+
             childRenderers = Player.GetComponentsInChildren<Renderer>();
             Debug.Log(OwnerClientId);
             childRenderers[0].sharedMaterial = PawnMaterials[(int)OwnerClientId];
@@ -54,14 +66,19 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
+    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower, RaycastHit hitCell)
     {
+        movePosTransform = hitCell.transform;
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;
         
         ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, cardType, cardPower);
         if (errCode == ErrorMsg.OK)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
+            movePosTransform.gameObject.tag = "Occupied";
+            if (currentPosTransform && currentPosTransform != movePosTransform)
+                currentPosTransform.gameObject.tag = "Untagged";
+            currentPosTransform = movePosTransform;
             //transform.position = centre + offset;
             xCurrentPos = x;
             zCurrentPos = z;

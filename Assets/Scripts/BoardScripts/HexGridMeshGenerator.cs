@@ -12,7 +12,7 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
     //public static Action<int, int, HexGrid, string, string, int> MovePawn;
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower, RaycastHit hitCell);
     public static movePawn MovePawn;
 
     private void Awake()
@@ -137,7 +137,7 @@ public class HexGridMeshGenerator : MonoBehaviour
         return 0;
     }
 
-    private void OnLeftMouseClick(RaycastHit hit)
+    private void OnLeftMouseClick(RaycastHit hit, RaycastHit hitCell)
     {
         //HexCell clickedCell = hit.transform.GetComponent<HexCell>();
         //int x = (int)clickedCell.AxialCoordinates.x;
@@ -157,7 +157,7 @@ public class HexGridMeshGenerator : MonoBehaviour
             "\n\t    TerrainType:\t" + terrain.name);
         //Im not sure if this should be called in here. 
         //This delegate call is for debug only for the time being!!!
-        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1));
+        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1, hitCell));
         Debug.Log(errcode.ToString());
     }
 
