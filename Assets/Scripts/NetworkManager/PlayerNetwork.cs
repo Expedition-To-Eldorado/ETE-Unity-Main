@@ -100,11 +100,11 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         //check if selected card matches the field and its power
-        if (cardType != terrainName)
-        {
-            Debug.Log("Chosen card " + cardType + " does not match the chosen field " + terrainName);
-            return ErrorMsg.CARD_NOT_MATCHING;
-        }
+        // if (cardType != terrainName)
+        // {
+        //     Debug.Log("Chosen card " + cardType + " does not match the chosen field " + terrainName);
+        //     return ErrorMsg.CARD_NOT_MATCHING;
+        // }
         
 
         return ErrorMsg.OK;

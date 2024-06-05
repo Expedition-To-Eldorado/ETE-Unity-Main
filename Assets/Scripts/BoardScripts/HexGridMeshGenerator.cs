@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
+using Unity.Netcode;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexGridMeshGenerator : MonoBehaviour
@@ -61,7 +62,7 @@ public class HexGridMeshGenerator : MonoBehaviour
         {
             for (int x = 0; x <= size * 2; x++)
             {
-                if (x + z >= size && x + z <= size * 3)
+                if (x + z >= size && x + z <= size * 3 && hexGrid.CheckEndPiece(x, z))
                 {
                     Vector3 centrePosition = HexMetrics.Center(hexSize, x, z, orientation);
                     vertices[currentHex * 7] = centrePosition;
@@ -81,7 +82,7 @@ public class HexGridMeshGenerator : MonoBehaviour
         {
             for (int x = 0; x <= size * 2; x++)
             {
-                if (x + z >= size && x + z <= size * 3)
+                if (x + z >= size && x + z <= size * 3 && hexGrid.CheckEndPiece(x, z))
                 {
                     for (int s = 0; s < HexMetrics.Corners(hexSize, orientation).Length; s++)
                     {

@@ -41,7 +41,7 @@ namespace GeneralEnumerations
 
     public enum BoardPiece
     {
-        A, B, C, D, E, F, G, H, I, J, K, M, N
+        StartA, StartB, C, D, E, F, G, H, I, J, K, L, M, N, EndO, EndP
     }
 
     public enum ErrorMsg

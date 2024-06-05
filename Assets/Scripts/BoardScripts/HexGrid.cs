@@ -48,11 +48,12 @@ public class HexGrid : MonoBehaviour
     {
         Debug.Log("Generating Hex Cell Data");
         List<HexCell> hexCells = new List<HexCell>();
+        
         for (int z = 0; z <= Size * 2; z++)
         {
             for (int x = 0; x <= Size * 2; x++)
             {
-                if (x + z >= Size && x + z <= Size * 3)
+                if (x + z >= Size && x + z <= Size * 3 && CheckEndPiece(x, z))
                 {
                     Vector3 centrePosition = HexMetrics.Center(HexSize, x, z, Orientation) + gridOrigin;
                     HexCell cell = new HexCell();
@@ -62,12 +63,19 @@ public class HexGrid : MonoBehaviour
                     //cell.BoardPiece = BoardPieceLetter;
                     TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[BoardPiece][z][x]];
                     cell.SetTerrainType(terrain);
-                    hexCells.Add(cell);
+                    hexCells.Add(cell);    
                 }
-
             }
         }
         return hexCells;
+    }
+
+    public bool CheckEndPiece(int x, int z)
+    {
+        if (BoardPieceLetter != GeneralEnumerations.BoardPiece.EndO &&
+            BoardPieceLetter != GeneralEnumerations.BoardPiece.EndP)
+            return true;
+        return (x != 0 || z != 1);
     }
 
     private IEnumerator InstantiateCells()
@@ -93,7 +101,7 @@ public class HexGrid : MonoBehaviour
         {
             for (int x = 0; x <= Size * 2; x++)
             {
-                if (x + z >= Size && x + z <= Size*3)
+                if (x + z >= Size && x + z <= Size*3 && CheckEndPiece(x, z))
                 {
                     Vector3 centrePosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
                     for (int s = 0; s < HexMetrics.Corners(HexSize, Orientation).Length; s++)
