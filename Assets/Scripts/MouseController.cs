@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class MouseController : Singleton<MouseController>
 {
-    public Action<RaycastHit, RaycastHit> OnLeftMouseClick;
+    public Action<RaycastHit> OnLeftMouseClick;
     public Action<RaycastHit> OnRightMouseClick;
     public Action<RaycastHit> OnMiddleMouseClick;
     private Transform mouseOverRecent;
@@ -42,10 +42,13 @@ public class MouseController : Singleton<MouseController>
         //======== Mouse Over a Cell ========//
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        RaycastHit hitGrid;
+        int layer_mask_grid = LayerMask.GetMask("Grid");
         int layer_mask = LayerMask.GetMask("Cells");
         if (!EventSystem.current.IsPointerOverGameObject() && 
-            Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) && 
-            !hit.transform.gameObject.CompareTag("Occupied"))
+            Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) &&
+            Physics.Raycast(ray, out hitGrid, Mathf.Infinity, layer_mask_grid) &&
+            checkIfNotOccupiedPosition(getCellCords(hitGrid)))
         {
             mouseOver = hit.transform;
             // if mouse is over different cell than before
@@ -61,6 +64,7 @@ public class MouseController : Singleton<MouseController>
                 // scale up actual mouse over cell
                 showMouseOver(ref mouseOver, SCALE_UP, MOVE_UP);
             }
+            
         }
         else
         {
@@ -79,17 +83,14 @@ public class MouseController : Singleton<MouseController>
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        RaycastHit hitCell;
         int layer_mask_grid = LayerMask.GetMask("Grid");
-        int layer_mask_cells = LayerMask.GetMask("Cells");
 
         if(!EventSystem.current.IsPointerOverGameObject() 
-           && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid) 
-           && Physics.Raycast(ray, out hitCell, Mathf.Infinity, layer_mask_cells))
+           && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid))
         {
             if(mouseButton == 0)
             {
-                OnLeftMouseClick?.Invoke(hit, hitCell);
+                OnLeftMouseClick?.Invoke(hit);
             }
             else if(mouseButton == 1)
             {
@@ -102,9 +103,26 @@ public class MouseController : Singleton<MouseController>
         }
     }
     
-    void showMouseOver(ref Transform obj, float scale, float move)
+    private void showMouseOver(ref Transform obj, float scale, float move)
     {
         LeanTween.scale(obj.gameObject, Vector3.one * scale, LT_TIME).setEase(LeanTweenType.easeOutBack);
         LeanTween.moveY(obj.gameObject, move, LT_TIME).setEase(LeanTweenType.easeOutBack);
+    }
+
+    private Vector2 getCellCords(RaycastHit hit)
+    {
+        HexGrid grid = hit.transform.GetComponentInParent<HexGrid>();
+        float localX = hit.point.x - hit.transform.position.x;
+        float localZ = hit.point.z - hit.transform.position.z;
+        int x = (int)HexMetrics.CoordinateToAxial(localX, localZ, grid.HexSize, grid.Orientation).x;
+        int z = (int)HexMetrics.CoordinateToAxial(localX, localZ, grid.HexSize, grid.Orientation).y;
+        //Debug.Log("Hoover cell cords: " + new Vector2(x, z));
+        return new Vector2(x, z);
+    }
+    public bool checkIfNotOccupiedPosition(Vector2 cellCords)
+    {
+        foreach (var pawnPosition in BoardSingleton.instance.PawnPositions)
+            if (pawnPosition == cellCords) return false;
+        return true;
     }
 }

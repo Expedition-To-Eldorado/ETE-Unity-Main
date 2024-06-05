@@ -12,7 +12,7 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
     //public static Action<int, int, HexGrid, string, string, int> MovePawn;
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower, RaycastHit hitCell);
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
     public static movePawn MovePawn;
 
     private void Awake()
@@ -137,19 +137,12 @@ public class HexGridMeshGenerator : MonoBehaviour
         return 0;
     }
 
-    private void OnLeftMouseClick(RaycastHit hit, RaycastHit hitCell)
+    private void OnLeftMouseClick(RaycastHit hit)
     {
-        //HexCell clickedCell = hit.transform.GetComponent<HexCell>();
-        //int x = (int)clickedCell.AxialCoordinates.x;
-        //int z = (int)clickedCell.AxialCoordinates.y;
-        //TerrainType terrain = clickedCell.TerrainType;
-        //Debug.Log("Position:\tBoardPiece " + clickedCell.Grid.BoardPieceLetter + "\tCords (" + x + ", " + z + ")" +
-         //         "\n\t    TerrainType:\t" + terrain.name);
         HexGrid grid = hit.transform.GetComponent<HexGrid>();
         Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
         float localX = hit.point.x - hit.transform.position.x;
         float localZ = hit.point.z - hit.transform.position.z;
-        // Debug.Log("Hex position: " + HexMetrics.CoordinateToAxial(localX, localZ, grid.HexSize, grid.Orientation));
         int x = (int)HexMetrics.CoordinateToAxial(localX, localZ, hexGrid.HexSize, hexGrid.Orientation).x;
         int z = (int)HexMetrics.CoordinateToAxial(localX, localZ, hexGrid.HexSize, hexGrid.Orientation).y;
         TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[grid.BoardPiece][z][x]];
@@ -157,18 +150,12 @@ public class HexGridMeshGenerator : MonoBehaviour
             "\n\t    TerrainType:\t" + terrain.name);
         //Im not sure if this should be called in here. 
         //This delegate call is for debug only for the time being!!!
-        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1, hitCell));
+        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1));
         Debug.Log(errcode.ToString());
     }
 
     /*private void OnRightMouseClick(RaycastHit hit)
     {
-        float localX = hit.point.x - hit.transform.position.x;
-        float localZ = hit.point.z - hit.transform.position.z;
-
-        Vector2 location = HexMetrics.CoordinateToAxial(localX, localZ, hexGrid.HexSize, hexGrid.Orientation);
-        Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)location.x, (int)location.y, hexGrid.Orientation);
-        Debug.Log("Right clicked on Hex: " + location);
-        //Instantiate(explosionTest, center, Quaternion.identity);
+    
     }*/
 }

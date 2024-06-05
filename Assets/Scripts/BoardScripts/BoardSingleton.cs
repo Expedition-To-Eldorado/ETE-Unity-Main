@@ -8,6 +8,7 @@ public class BoardSingleton : MonoBehaviour
 {
     public static BoardSingleton instance { get; private set; }
     private static TerrainType[] AllTerrains;
+    public List<Vector2> PawnPositions;
     public List<TerrainType> TerrainTypes = new List<TerrainType>();
     public List<List<List<int>>> Pieces = new List<List<List<int>>>();
 
@@ -27,20 +28,14 @@ public class BoardSingleton : MonoBehaviour
         {
             instance = this;
         }
-        //SetTerrainTypes();
+        
+        PawnPositions = new List<Vector2>();
+        PawnPositions.Add(new Vector2(3, 0)); // Strart position of player 0
+        PawnPositions.Add(new Vector2(4, 0)); // Strart position of player 1
+        PawnPositions.Add(new Vector2(5, 0)); // Strart position of player 2
+        PawnPositions.Add(new Vector2(6, 0)); // Strart position of player 3
+        
         SetBoardPieces();
-    }
-    private void SetTerrainTypes()
-    {
-        //Creating Array with all ScriptableObjects with type TerrainTypes
-        AllTerrains = (TerrainType[])Resources.FindObjectsOfTypeAll(typeof(TerrainType));
-
-        //Adding all TerrainTypes to TerrainTypes List according to ID value
-        for (int i = 0; i < AllTerrains.Length; i++)
-        {
-            TerrainType terrain = AllTerrains.SingleOrDefault(x => x.ID == i);
-            TerrainTypes.Add(terrain);
-        }
     }
 
     private void SetBoardPieces()
