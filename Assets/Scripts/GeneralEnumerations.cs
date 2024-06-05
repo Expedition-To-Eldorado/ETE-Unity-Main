@@ -14,18 +14,18 @@ namespace GeneralEnumerations
         Nadajnik,
         Odkrywca,
         Zwiadowca,
-        SkrzyniaSkarbów,
+        SkrzyniaSkarbow,
         Przewodnik,
         DrBotaniki,
         Dziennikarka,
-        DziennikPodró¿y,
+        DziennikPodrozy,
         Hydroplan,
         Kapitan,
         Kartograf,
         Kompas,
         Milionerka,
         Pionier,
-        Podró¿niczka,
+        Podrozniczka,
         Tubylec,
         WielkaMaczeta
     }
@@ -53,4 +53,6 @@ namespace GeneralEnumerations
         CARD_NOT_MATCHING,
         NOT_ACTIVE_PAWN
     }
+    
+    
 }

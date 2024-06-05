@@ -2,7 +2,7 @@ using GeneralEnumerations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using UnityEditor.ShaderKeywordFilter;
+//using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class PawnBehaviour : MonoBehaviour
@@ -18,15 +18,17 @@ public class PawnBehaviour : MonoBehaviour
         
     }
 
-    private void OnEnable()
-    {
-        HexGridMeshGenerator.MovePawn += movePawn;
-    }
-
-    private void OnDisable()
-    {
-        HexGridMeshGenerator.MovePawn -= movePawn;
-    }
+    // private void OnEnable()
+    // {
+    //     HexGridMeshGenerator.MovePawn += movePawn;
+    //     //HexCell.MovePawn += movePawn;
+    // }
+    //
+    // private void OnDisable()
+    // {
+    //     HexGridMeshGenerator.MovePawn -= movePawn;
+    //     //HexCell.MovePawn -= movePawn;
+    // }
 
     void Update()
     {

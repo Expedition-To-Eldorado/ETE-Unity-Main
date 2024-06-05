@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using GeneralEnumerations;
+using Unity.VisualScripting;
+
 public class HexGrid : MonoBehaviour
 {
     [field: SerializeField] public HexOrientation Orientation { get; private set; }
@@ -12,7 +14,7 @@ public class HexGrid : MonoBehaviour
     [SerializeField] public BoardPiece BoardPieceLetter;
     public int BoardPiece { get; private set; }
 
-    [SerializeField] private List<HexCell> cells = new List<HexCell>();
+    [SerializeField] public List<HexCell> cells = new List<HexCell>();
     private Task<List<HexCell>> hexGenerationTask;
     public Vector3 gridOrigin { get; private set; }
     public event System.Action OnMapInfoGenerated;
@@ -57,6 +59,7 @@ public class HexGrid : MonoBehaviour
                     cell.SetCoordinates(new Vector2(x, z), Orientation);
                     cell.Grid = this;
                     cell.HexSize = HexSize;
+                    //cell.BoardPiece = BoardPieceLetter;
                     TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[BoardPiece][z][x]];
                     cell.SetTerrainType(terrain);
                     hexCells.Add(cell);
