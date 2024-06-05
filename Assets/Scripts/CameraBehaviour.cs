@@ -18,6 +18,8 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] float mouseCameraSpeed = 10f;
     [SerializeField] Vector3[] camPositions = new Vector3[4];
     [SerializeField] Vector3[] camAngles = new Vector3[4];
+    public float cameraBoundY = 100f;
+    public float cameraBoundX = 100f;
     public float turningRate = 100f;
     private float mouseBorder = 10f;
 
@@ -117,26 +119,38 @@ public class CameraBehaviour : MonoBehaviour
             //check if player moved the camera with mouse
             if (Input.mousePosition.y >= Screen.height - mouseBorder)
             {
-                pos.z += mouseCameraSpeed * Time.deltaTime;
-                viewIsChanged = true;
+                if (mainCamera.transform.position.z < cameraBoundY)
+                {
+                    pos.z += mouseCameraSpeed * Time.deltaTime;
+                    viewIsChanged = true;
+                }
             }
 
             if (Input.mousePosition.y <= mouseBorder)
             {
-                pos.z -= mouseCameraSpeed * Time.deltaTime;
-                viewIsChanged = true;
+                if (mainCamera.transform.position.z > - cameraBoundY)
+                {
+                    pos.z -= mouseCameraSpeed * Time.deltaTime;
+                    viewIsChanged = true;
+                }
             }
 
             if (Input.mousePosition.x >= Screen.width - mouseBorder)
             {
-                pos.x += mouseCameraSpeed * Time.deltaTime;
-                viewIsChanged = true;
+                if (mainCamera.transform.position.x < cameraBoundX)
+                {
+                    pos.x += mouseCameraSpeed * Time.deltaTime;
+                    viewIsChanged = true;
+                }
             }
 
             if (Input.mousePosition.x <= mouseBorder)
             {
-                pos.x -= mouseCameraSpeed * Time.deltaTime;
-                viewIsChanged = true;
+                if (mainCamera.transform.position.x > - cameraBoundX)
+                {
+                    pos.x -= mouseCameraSpeed * Time.deltaTime;
+                    viewIsChanged = true;
+                }
             }
             transform.position = pos;
         }
