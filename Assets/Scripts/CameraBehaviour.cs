@@ -18,8 +18,10 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] float mouseCameraSpeed = 10f;
     [SerializeField] Vector3[] camPositions = new Vector3[4];
     [SerializeField] Vector3[] camAngles = new Vector3[4];
-    public float cameraBoundY = 100f;
-    public float cameraBoundX = 100f;
+    public float downCameraBoundY = 100f;
+    public float upCameraBoundY = 100f;
+    public float leftCameraBoundX = 250f;
+    public float rightCameraBoundX = 250f;
     public float turningRate = 100f;
     private float mouseBorder = 10f;
 
@@ -122,7 +124,7 @@ public class CameraBehaviour : MonoBehaviour
 
                 if (Input.mousePosition.y >= Screen.height - mouseBorder)
                 {
-                    if (mainCamera.transform.position.z < cameraBoundY)
+                    if (mainCamera.transform.position.z < upCameraBoundY)
                     {
                         pos.z += mouseCameraSpeed * Time.deltaTime;
                         viewIsChanged = true;
@@ -131,7 +133,7 @@ public class CameraBehaviour : MonoBehaviour
 
                 if (Input.mousePosition.y <= mouseBorder)
                 {
-                    if (mainCamera.transform.position.z > -cameraBoundY)
+                    if (mainCamera.transform.position.z > downCameraBoundY)
                     {
                         pos.z -= mouseCameraSpeed * Time.deltaTime;
                         viewIsChanged = true;
@@ -140,7 +142,7 @@ public class CameraBehaviour : MonoBehaviour
 
                 if (Input.mousePosition.x >= Screen.width - mouseBorder)
                 {
-                    if (mainCamera.transform.position.x < cameraBoundX)
+                    if (mainCamera.transform.position.x < rightCameraBoundX)
                     {
                         pos.x += mouseCameraSpeed * Time.deltaTime;
                         viewIsChanged = true;
@@ -149,7 +151,7 @@ public class CameraBehaviour : MonoBehaviour
 
                 if (Input.mousePosition.x <= mouseBorder)
                 {
-                    if (mainCamera.transform.position.x > -cameraBoundX)
+                    if (mainCamera.transform.position.x > leftCameraBoundX)
                     {
                         pos.x -= mouseCameraSpeed * Time.deltaTime;
                         viewIsChanged = true;
