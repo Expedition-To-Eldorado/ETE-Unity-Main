@@ -182,15 +182,15 @@ public class BoardSingleton : MonoBehaviour
                         });
         // O boardPiece = 14
         Pieces.Add(new List<List<int>> {
-            new List<int> { -1,  1, 22 },
-            new List<int> { -1 , 1, 22 },
-            new List<int> {  1, 22, -1 }
+            new List<int> { -1, 23, 22 },
+            new List<int> { -1 ,23, 22 },
+            new List<int> { 23, 22, -1 }
         });
         // P boardPiece = 15
         Pieces.Add(new List<List<int>> {
-            new List<int> { -1,  8, 22 },
-            new List<int> { -1 , 8, 22 },
-            new List<int> {  8, 22, -1 }
+            new List<int> { -1, 24, 22 },
+            new List<int> { -1 ,24, 22 },
+            new List<int> { 24, 22, -1 }
         });
     }
 }
