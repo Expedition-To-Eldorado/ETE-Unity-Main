@@ -626,6 +626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd145952e612444586994ec408ddd15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PawnPositions: []
   TerrainTypes:
   - {fileID: 11400000, guid: e473066373e3b0a46b7a03b59609e252, type: 2}
   - {fileID: 11400000, guid: ba2ba3b25da78a24a9225d1acaddc0fb, type: 2}
@@ -2334,7 +2335,7 @@ MonoBehaviour:
   cameraHeight: 50
   shopCameraHeight: 26
   cameraSpeed: 5
-  mouseCameraSpeed: 0
+  mouseCameraSpeed: 30
   camPositions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -2345,6 +2346,10 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  downCameraBoundY: -25
+  upCameraBoundY: 100
+  leftCameraBoundX: 40
+  rightCameraBoundX: 250
   turningRate: 100
 --- !u!1 &1003489887
 GameObject:
