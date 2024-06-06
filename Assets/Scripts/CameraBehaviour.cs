@@ -18,9 +18,9 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] float mouseCameraSpeed = 10f;
     [SerializeField] Vector3[] camPositions = new Vector3[4];
     [SerializeField] Vector3[] camAngles = new Vector3[4];
-    public float downCameraBoundY = 100f;
+    public float downCameraBoundY = 0f;
     public float upCameraBoundY = 100f;
-    public float leftCameraBoundX = 250f;
+    public float leftCameraBoundX = 40f;
     public float rightCameraBoundX = 250f;
     public float turningRate = 100f;
     private float mouseBorder = 10f;
