@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e938959ce467b434ca761bdf7f2154ee, type: 3}
   m_Name: EndJungle1
   m_EditorClassIdentifier: 
-  ID: 0
-  <Name>k__BackingField: 
+  ID: 23
+  <Name>k__BackingField: EndJungle1
   <Description>k__BackingField: 
   <Color>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
-  <Prefab>k__BackingField: {fileID: 0}
+  <Prefab>k__BackingField: {fileID: 103715765444416207, guid: 04654026ce6c10540a6a63a81216aeaa, type: 3}
   <Icon>k__BackingField: {fileID: 0}
