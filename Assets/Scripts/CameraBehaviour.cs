@@ -117,42 +117,46 @@ public class CameraBehaviour : MonoBehaviour
         if (viewType != (int)ViewTypes.Shop)
         {
             //check if player moved the camera with mouse
-            if (Input.mousePosition.y >= Screen.height - mouseBorder)
+            if (Application.isFocused)
             {
-                if (mainCamera.transform.position.z < cameraBoundY)
-                {
-                    pos.z += mouseCameraSpeed * Time.deltaTime;
-                    viewIsChanged = true;
-                }
-            }
 
-            if (Input.mousePosition.y <= mouseBorder)
-            {
-                if (mainCamera.transform.position.z > - cameraBoundY)
+                if (Input.mousePosition.y >= Screen.height - mouseBorder)
                 {
-                    pos.z -= mouseCameraSpeed * Time.deltaTime;
-                    viewIsChanged = true;
+                    if (mainCamera.transform.position.z < cameraBoundY)
+                    {
+                        pos.z += mouseCameraSpeed * Time.deltaTime;
+                        viewIsChanged = true;
+                    }
                 }
-            }
 
-            if (Input.mousePosition.x >= Screen.width - mouseBorder)
-            {
-                if (mainCamera.transform.position.x < cameraBoundX)
+                if (Input.mousePosition.y <= mouseBorder)
                 {
-                    pos.x += mouseCameraSpeed * Time.deltaTime;
-                    viewIsChanged = true;
+                    if (mainCamera.transform.position.z > -cameraBoundY)
+                    {
+                        pos.z -= mouseCameraSpeed * Time.deltaTime;
+                        viewIsChanged = true;
+                    }
                 }
-            }
 
-            if (Input.mousePosition.x <= mouseBorder)
-            {
-                if (mainCamera.transform.position.x > - cameraBoundX)
+                if (Input.mousePosition.x >= Screen.width - mouseBorder)
                 {
-                    pos.x -= mouseCameraSpeed * Time.deltaTime;
-                    viewIsChanged = true;
+                    if (mainCamera.transform.position.x < cameraBoundX)
+                    {
+                        pos.x += mouseCameraSpeed * Time.deltaTime;
+                        viewIsChanged = true;
+                    }
                 }
+
+                if (Input.mousePosition.x <= mouseBorder)
+                {
+                    if (mainCamera.transform.position.x > -cameraBoundX)
+                    {
+                        pos.x -= mouseCameraSpeed * Time.deltaTime;
+                        viewIsChanged = true;
+                    }
+                }
+                transform.position = pos;
             }
-            transform.position = pos;
         }
         
 
