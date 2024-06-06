@@ -3363,7 +3363,7 @@ MonoBehaviour:
   cameraHeight: 50
   shopCameraHeight: 26
   cameraSpeed: 5
-  mouseCameraSpeed: 0
+  mouseCameraSpeed: 30
   camPositions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -3374,8 +3374,10 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  cameraBoundY: 100
-  cameraBoundX: 250
+  downCameraBoundY: -25
+  upCameraBoundY: 100
+  leftCameraBoundX: 40
+  rightCameraBoundX: 250
   turningRate: 100
 --- !u!1 &1003489887
 GameObject:
