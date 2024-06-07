@@ -32,7 +32,7 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.UseCard += UseCard;
         MouseController.instance.SetCursor += SetCursor;
         CameraBehaviour.changeView += changeView;
-        ShopBehaviour.AddCardToDeck += AddCardToDeck;
+        ShopBehaviour.instance.AddCardToDeck += AddCardToDeck;
     }
 
     private void OnDisable()
@@ -40,7 +40,7 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.UseCard -= UseCard;
         MouseController.instance.SetCursor -= SetCursor;
         CameraBehaviour.changeView -= changeView;
-        ShopBehaviour.AddCardToDeck -= AddCardToDeck;
+        ShopBehaviour.instance.AddCardToDeck -= AddCardToDeck;
     }
 
     // Update is called once per frame
@@ -118,44 +118,9 @@ public class DeckManager : MonoBehaviour
 
     private void handlePlayerInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (cursor > 1 && cursor <= cardsOnHand.Count)
-            {
-                cursor--;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            if (cursor >= 1 && cursor < cardsOnHand.Count)
-            {
-                cursor++;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            cursor *= -1;
-        }
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             drawCards(1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (cursor >= 1 && cursor <= cardsOnHand.Count)
-            {
-                Debug.Log(cardsOnHand[cursor - 1].GetComponent<CardBehaviour>().NameOfCard);
-                //useCard(new RaycastHit());
-            }
-
-            if (cursor < 1 || cursor > cardsOnHand.Count)
-            {
-                cursor = 1;
-            }
         }
     }
 
@@ -181,8 +146,7 @@ public class DeckManager : MonoBehaviour
 
     public void AddCardToDeck(GameObject card)
     {
-        Debug.Log("im not here: " + card);
-        card.tag = "Card_Deck";
+        card.tag = "Card_Used";
         usedCards.Add(card);
     }
 
@@ -227,8 +191,9 @@ public class DeckManager : MonoBehaviour
     {
         GameObject card = hit.collider.gameObject;
         int index = findIndexOfCard(card);
-        
 
+
+        cardsOnHand[index].tag = "Card_Used";
         cardsOnHand[index].SetActive(false);
         usedCards.Add(cardsOnHand[index]);
         cardsOnHand.RemoveAt(index);

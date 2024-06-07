@@ -4,7 +4,7 @@ using UnityEngine;
 using GeneralEnumerations;
 using System;
 
-public class ShopBehaviour : MonoBehaviour
+public class ShopBehaviour : Singleton<ShopBehaviour>
 {
     [SerializeField] List<GameObject> activeShopPositions;
     [SerializeField] List<GameObject> looseCardPositions;
@@ -12,7 +12,7 @@ public class ShopBehaviour : MonoBehaviour
     public List<GameObject> cardsInShop;
     public List<GameObject> looseCards;
 
-    public static Action<GameObject> AddCardToDeck;
+    public Action<GameObject> AddCardToDeck;
 
     // Start is called before the first frame update
     void Start()
@@ -103,7 +103,6 @@ public class ShopBehaviour : MonoBehaviour
                 cardsInShop.Add(Instantiate(card, activeShopPositions[index].transform));
             }
             cardBehaviour.UpdateQuantity();
-            Debug.Log("i think im buying a card " + card);
             AddCardToDeck?.Invoke(card);
             if (cardBehaviour.quantityInShop == 0)
             {
