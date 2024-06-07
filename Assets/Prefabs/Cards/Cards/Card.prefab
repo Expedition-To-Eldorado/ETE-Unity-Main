@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2056281121182528161}
   - component: {fileID: 6915811389619042420}
   - component: {fileID: 7822560028684226540}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Card
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,7 +49,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Power: 0
   NameOfCard: 
-  TypeOfCard: 
+  Typ: 
+  isStartingCard: 0
+  isBuyable: 0
+  quantityInShop: 0
+  price: 0
 --- !u!33 &2056281121182528161
 MeshFilter:
   m_ObjectHideFlags: 0

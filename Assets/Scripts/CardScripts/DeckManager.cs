@@ -7,7 +7,7 @@ using static HexGridMeshGenerator;
 public class DeckManager : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField]List<GameObject> cardsInDeck;
+    [SerializeField] List<GameObject> cardsInDeck;
     [SerializeField] List<GameObject> cardsOnHand;
     [SerializeField] List<GameObject> usedCards;
     [SerializeField] float speedOfCard = 5;
@@ -29,11 +29,15 @@ public class DeckManager : MonoBehaviour
 
     private void OnEnable()
     {
+        MouseController.instance.UseCard += UseCard;
+        MouseController.instance.SetCursor += SetCursor;
         CameraBehaviour.changeView += changeView;
     }
 
     private void OnDisable()
     {
+        MouseController.instance.UseCard -= UseCard;
+        MouseController.instance.SetCursor -= SetCursor;
         CameraBehaviour.changeView -= changeView;
     }
 
@@ -98,6 +102,18 @@ public class DeckManager : MonoBehaviour
         this.viewNumber = (int)type;
     }
 
+    private void SetCursor(RaycastHit hit, bool isSelected)
+    {
+        if (!isSelected)
+        {
+            cursor = -1;
+            return;
+        }
+
+        int index = findIndexOfCard(hit.collider.gameObject);
+        cursor = index + 1;
+    }
+
     private void handlePlayerInput()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -131,7 +147,7 @@ public class DeckManager : MonoBehaviour
             if (cursor >= 1 && cursor <= cardsOnHand.Count)
             {
                 Debug.Log(cardsOnHand[cursor - 1].GetComponent<CardBehaviour>().NameOfCard);
-                useCard();
+                //useCard(new RaycastHit());
             }
 
             if (cursor < 1 || cursor > cardsOnHand.Count)
@@ -184,14 +200,32 @@ public class DeckManager : MonoBehaviour
         }
     }
 
+    private int findIndexOfCard(GameObject card)
+    {
+        int index = -1;
+        for (int i = 0; i < cardsOnHand.Count; i++)
+        {
+            if (cardsOnHand[i].GetInstanceID() == card.GetInstanceID())
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
 
     //TODO implement shuffling cards when none are available in deck
 
-    public void useCard()
+    private void UseCard(RaycastHit hit)
     {
-        cardsOnHand[cursor - 1].SetActive(false);
-        usedCards.Add(cardsOnHand[cursor - 1]);
-        cardsOnHand.RemoveAt(cursor - 1);
+        GameObject card = hit.collider.gameObject;
+        int index = findIndexOfCard(card);
+        
+
+        cardsOnHand[index].SetActive(false);
+        usedCards.Add(cardsOnHand[index]);
+        cardsOnHand.RemoveAt(index);
     }
 
     public void burnCard()
