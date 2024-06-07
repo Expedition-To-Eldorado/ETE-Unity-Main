@@ -32,6 +32,7 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.UseCard += UseCard;
         MouseController.instance.SetCursor += SetCursor;
         CameraBehaviour.changeView += changeView;
+        ShopBehaviour.AddCardToDeck += AddCardToDeck;
     }
 
     private void OnDisable()
@@ -39,6 +40,7 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.UseCard -= UseCard;
         MouseController.instance.SetCursor -= SetCursor;
         CameraBehaviour.changeView -= changeView;
+        ShopBehaviour.AddCardToDeck -= AddCardToDeck;
     }
 
     // Update is called once per frame
@@ -172,12 +174,15 @@ public class DeckManager : MonoBehaviour
         for (int i = 0; i < cardsInDeck.Count; i++)
         {
             cardsInDeck[i].SetActive(false);
+            cardsInDeck[i].tag = "Card_Deck";
         }
 
     }
 
-    public void addCardToDeck(GameObject card)
+    public void AddCardToDeck(GameObject card)
     {
+        Debug.Log("im not here: " + card);
+        card.tag = "Card_Deck";
         usedCards.Add(card);
     }
 
@@ -191,6 +196,7 @@ public class DeckManager : MonoBehaviour
                 GameObject card = cardsInDeck[index];
                 cardsOnHand.Add(cardsInDeck[index]);
                 card.SetActive(true);
+                card.tag = "Card_Hand";
                 cardsInDeck.RemoveAt(index);
             }
             else

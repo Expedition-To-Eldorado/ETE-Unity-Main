@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Occupied
+  - Card
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - UI
   - Grid
   - Cells
-  - 
+  - Cards_Hand
   - 
   - 
   - 
