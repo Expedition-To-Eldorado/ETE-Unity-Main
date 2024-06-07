@@ -17,18 +17,6 @@ public class HexCell : MonoBehaviour
     [field:NonSerialized] public List<HexCell> Neighbours { get; private set; }
 
     [field:SerializeField] public Transform terrain { get; set; }
-    /*public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
-    public static movePawn MovePawn;
-    
-    private void OnEnable()
-    {
-        MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-    }
-    
-    private void OnDisable()
-    {
-        MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
-    }*/
 
     public void SetCoordinates(Vector2 axialCoordinates, HexOrientation orientation)
     {
@@ -98,17 +86,4 @@ public class HexCell : MonoBehaviour
             UnityEngine.Object.Destroy(terrain.gameObject);
         }
     }
-    
-    /*private void OnLeftMouseClick(RaycastHit hit)
-    {
-        HexCell clickedCell = hit.transform.GetComponent<HexCell>();
-        int x = (int)clickedCell.AxialCoordinates.x;
-        int z = (int)clickedCell.AxialCoordinates.y;
-        TerrainType terrain = clickedCell.TerrainType;
-        Debug.Log("Position:\tBoardPiece " + clickedCell.Grid.BoardPieceLetter + "\tCords (" + x + ", " + z + ")" +
-                  "\n\t    TerrainType:\t" + terrain.name);
-        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, clickedCell.Grid, terrain.name, "Jungle1", 1));
-        Debug.Log(errcode.ToString());
-    }*/
-
 }
