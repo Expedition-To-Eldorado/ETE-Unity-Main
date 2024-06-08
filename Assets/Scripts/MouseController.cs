@@ -27,20 +27,23 @@ public class MouseController : Singleton<MouseController>
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (GameLoop.isMyTurn)
         {
-            CheckMouseClick(0);
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            CheckMouseClick(1);
-        }
-        if (Input.GetMouseButtonDown(2))
-        {
-            CheckMouseClick(2);
-        }
-        CheckMouseOver();
-        CheckMouseOverCard();   
+            if (Input.GetMouseButtonDown(0))
+            {
+                CheckMouseClick(0);
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                CheckMouseClick(1);
+            }
+            if (Input.GetMouseButtonDown(2))
+            {
+                CheckMouseClick(2);
+            }
+            CheckMouseOver();
+            CheckMouseOverCard();
+        } 
     }
 
     //I decided to make another check for cards because the other method seems

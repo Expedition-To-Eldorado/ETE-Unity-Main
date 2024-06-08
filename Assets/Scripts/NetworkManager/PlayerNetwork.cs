@@ -56,7 +56,9 @@ public class PlayerNetwork : NetworkBehaviour
     private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
     {
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;
-        
+
+        Debug.Log(this);
+
         ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, cardType, cardPower);
         if (errCode == ErrorMsg.OK)
         {
