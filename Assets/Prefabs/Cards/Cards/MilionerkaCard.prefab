@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8541555862840533574}
   - component: {fileID: 340163765262222581}
   - component: {fileID: 5928643519250029570}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,9 +119,9 @@ GameObject:
   - component: {fileID: 7368443581493360663}
   - component: {fileID: 1481186820488510906}
   - component: {fileID: 2368460373446773157}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MilionerkaCard
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

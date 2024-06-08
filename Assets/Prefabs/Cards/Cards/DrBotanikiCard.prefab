@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4743405714294202308}
   - component: {fileID: 8813293622956565769}
   - component: {fileID: 3401841127178588198}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DrBotanikiCard
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,6 +138,10 @@ PrefabInstance:
     - target: {fileID: 4403557917269306096, guid: 7ebc5c4ced65e7647990ff9d1f296767, type: 3}
       propertyPath: m_Name
       value: Back
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403557917269306096, guid: 7ebc5c4ced65e7647990ff9d1f296767, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7662573586487991036, guid: 7ebc5c4ced65e7647990ff9d1f296767, type: 3}
       propertyPath: m_LocalPosition.x

@@ -4,12 +4,17 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using GeneralEnumerations;
 
 public class MouseController : Singleton<MouseController>
 {
     public Action<RaycastHit> OnLeftMouseClick;
     public Action<RaycastHit> OnRightMouseClick;
     public Action<RaycastHit> OnMiddleMouseClick;
+    public Action<RaycastHit> UseCard;
+    public Action<RaycastHit, bool> SetCursor;
+    public Action<GameObject, int> BuyCard;
+
     private Transform mouseOverRecent;
     private Transform mouseOver;
     
@@ -35,6 +40,26 @@ public class MouseController : Singleton<MouseController>
             CheckMouseClick(2);
         }
         CheckMouseOver();
+        CheckMouseOverCard();   
+    }
+
+    //I decided to make another check for cards because the other method seems
+    //to be strongly bound to checking if cursor is over board. 
+    //I'd contemplate changing the name of the method because it's misleading
+    void CheckMouseOverCard()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        int layer_mask_card_hand = LayerMask.GetMask("Cards");
+        if (!EventSystem.current.IsPointerOverGameObject() &&
+            Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_card_hand))
+        {
+            SetCursor?.Invoke(hit, true);
+        }
+        else
+        {
+            SetCursor?.Invoke(new RaycastHit(), false);
+        }
     }
 
     void CheckMouseOver()
@@ -45,10 +70,12 @@ public class MouseController : Singleton<MouseController>
         RaycastHit hitGrid;
         int layer_mask_grid = LayerMask.GetMask("Grid");
         int layer_mask = LayerMask.GetMask("Cells");
+        int layer_mask_card_hand = LayerMask.GetMask("Cards");
         if (!EventSystem.current.IsPointerOverGameObject() && 
             Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) &&
             Physics.Raycast(ray, out hitGrid, Mathf.Infinity, layer_mask_grid) &&
-            checkIfNotOccupiedPosition(getCellCords(hitGrid)))
+            checkIfNotOccupiedPosition(getCellCords(hitGrid)) &&
+            !Physics.Raycast(ray, Mathf.Infinity, layer_mask_card_hand))
         {
             mouseOver = hit.transform;
             // if mouse is over different cell than before
@@ -84,21 +111,45 @@ public class MouseController : Singleton<MouseController>
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         int layer_mask_grid = LayerMask.GetMask("Grid");
+        int layer_mask_card = LayerMask.GetMask("Cards");
 
-        if(!EventSystem.current.IsPointerOverGameObject() 
-           && Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid))
+        //if the cursos is not pointing on the ui element
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if(mouseButton == 0)
+            //if it is over board 
+            if(Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid)
+                && !Physics.Raycast(ray, Mathf.Infinity, layer_mask_card))
             {
-                OnLeftMouseClick?.Invoke(hit);
+                if (mouseButton == 0)
+                {
+                    OnLeftMouseClick?.Invoke(hit);
+                }
+                else if (mouseButton == 1)
+                {
+                    OnRightMouseClick?.Invoke(hit);
+                }
+                else if (mouseButton == 2)
+                {
+                    OnMiddleMouseClick?.Invoke(hit);
+                }
+                return;
             }
-            else if(mouseButton == 1)
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_card))
             {
-                OnRightMouseClick?.Invoke(hit);
-            }
-            else if (mouseButton == 2)
-            {
-                OnMiddleMouseClick?.Invoke(hit);
+                //fuck you
+                GameObject card = hit.collider.gameObject;
+                if (mouseButton == 0)
+                {
+                    if (card.CompareTag("Card_Hand")) {
+                        UseCard?.Invoke(hit);
+                    }
+                    else if (card.CompareTag("Card_Shop"))
+                    {
+                        BuyCard?.Invoke(hit.collider.gameObject, 4);
+                    }
+                }
+                return;
             }
         }
     }

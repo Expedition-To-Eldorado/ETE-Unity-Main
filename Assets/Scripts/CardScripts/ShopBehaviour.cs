@@ -2,32 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
+using System;
 
-public class ShopBehaviour : MonoBehaviour
+public class ShopBehaviour : Singleton<ShopBehaviour>
 {
     [SerializeField] List<GameObject> activeShopPositions;
     [SerializeField] List<GameObject> looseCardPositions;
     [SerializeField] List<GameObject> cards;
     public List<GameObject> cardsInShop;
     public List<GameObject> looseCards;
+    public GameObject Deck;
+
+    public Action<GameObject> AddCardToDeck;
 
     // Start is called before the first frame update
     void Start()
     {
+        GameObject tmp;
         for (int i = 0; i < activeShopPositions.Count; i++)
         {
-            cardsInShop.Add(Instantiate(cards[i], activeShopPositions[i].transform));
+            tmp = Instantiate(cards[i], activeShopPositions[i].transform);
+            tmp.tag = "Card_Shop";
+            cardsInShop.Add(tmp);
         }
         for (int i = 0; i < looseCardPositions.Count; i++)
         {
-            looseCards.Add(Instantiate(cards[i+6], looseCardPositions[i].transform));
+            tmp = Instantiate(cards[i + 6], looseCardPositions[i].transform);
+            tmp.tag = "Card_Shop";
+            looseCards.Add(tmp);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        MouseController.instance.BuyCard += BuyCard;
+    }
+
+    private void OnDisable()
+    {
+        MouseController.instance.BuyCard -= BuyCard;
     }
 
     public int FindCardInShop(GameObject card)
@@ -45,20 +58,6 @@ public class ShopBehaviour : MonoBehaviour
         return index;
     }
 
-    public void ClearCard(GameObject card)
-    {
-        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        for (int i = 0; i < cards.Count; i++)
-        {
-            if (card.name == cards[i].name)
-            {
-                int index = FindCardInShop(card);
-                if (index >= 0)activeShopPositions.RemoveAt(index);
-                Destroy(card);
-            }
-        }
-    }
-
     public int FindEmptySlotInShop()
     {
         int index = -1;
@@ -73,32 +72,34 @@ public class ShopBehaviour : MonoBehaviour
         return index;
     }
 
-    public bool BuyCard(GameObject card, int coins)
+    private void BuyCard(GameObject card, int coins)
     {
-        if (!card.GetComponent("CardBehaviour"))
+
+        //choseCardFromDeck;
+
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+        if (coins >= cardBehaviour.price)
         {
-            CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-            if (coins>= cardBehaviour.price)
+            int index = FindEmptySlotInShop();
+            if (!cardBehaviour.isBuyable && (index != -1))
             {
-                int index = FindEmptySlotInShop();
-                if (!cardBehaviour.isBuyable && (index!=-1))
-                {
-                    int quantity = cardBehaviour.quantityInShop;
-                    cardsInShop.Add(Instantiate(card, activeShopPositions[index].transform));
-                }
-                else
-                {
-                    return false;
-                }
-                cardBehaviour.UpdateQuantity();
-                if (cardBehaviour.quantityInShop == 0)
-                {
-                    ClearCard(card);
-                }
-                return true;
-            }else
-            return false;
-        }else 
-            return false;
+                Destroy(card);
+                GameObject tmp = Instantiate(card, activeShopPositions[index].transform);
+                CardBehaviour tmpBehaviour = tmp.GetComponent<CardBehaviour>();
+                tmpBehaviour.isBuyable = true;  
+                tmpBehaviour.UpdateQuantity();
+                cardsInShop.Add(tmp);
+            }
+            else if (!cardBehaviour.isBuyable && index == -1)
+            {
+                return;
+            }
+            cardBehaviour.UpdateQuantity();
+            AddCardToDeck?.Invoke(Instantiate(card, Deck.transform));
+            if (cardBehaviour.quantityInShop == 0)
+            {
+                Destroy(card);
+            }
+        }
     }
 }
