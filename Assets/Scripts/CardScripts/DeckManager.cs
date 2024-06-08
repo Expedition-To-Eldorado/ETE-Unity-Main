@@ -147,6 +147,7 @@ public class DeckManager : MonoBehaviour
     public void AddCardToDeck(GameObject card)
     {
         card.tag = "Card_Used";
+        card.SetActive(false);
         usedCards.Add(card);
     }
 
