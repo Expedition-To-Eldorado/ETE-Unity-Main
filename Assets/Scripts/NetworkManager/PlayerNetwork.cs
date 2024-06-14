@@ -11,9 +11,10 @@ public class PlayerNetwork : NetworkBehaviour
     //Networking fields
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private List<Material> PawnMaterials;
-        
+
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
+    private int leftCardPower = 0;
     
     private void Awake()
     {
@@ -53,13 +54,13 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
+    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string typ, int power)
     {
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;
+        int terrainPower = terrainName[terrainName.Length - 1] - '0';
+        terrainName = terrainName.Substring(0, terrainName.Length - 1);
 
-        Debug.Log(this);
-
-        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, cardType, cardPower);
+        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, typ);
         if (errCode == ErrorMsg.OK)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
@@ -75,7 +76,7 @@ public class PlayerNetwork : NetworkBehaviour
     }
 
     //i hate it that it is here MOVE IT SOMEWHERE ELSE FUCKo
-    private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
+    private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType)
     {
         //check if the field is adjacent to the current field
         float distance = Vector3.Distance(centre, transform.position - offset);

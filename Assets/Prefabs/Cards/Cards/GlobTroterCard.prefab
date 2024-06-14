@@ -155,12 +155,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 1
+  leftPower: 1
   NameOfCard: Globtroter
-  Typ: 
+  Typ: Jungle
   isStartingCard: 1
   isBuyable: 0
   quantityInShop: 0
   price: 0
+  isSelected: 0
 --- !u!33 &1003238575791977050
 MeshFilter:
   m_ObjectHideFlags: 0

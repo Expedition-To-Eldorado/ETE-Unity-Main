@@ -5,15 +5,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using GeneralEnumerations;
+using Mono.Cecil.Cil;
 
 public class MouseController : Singleton<MouseController>
 {
     public Action<RaycastHit> OnLeftMouseClick;
     public Action<RaycastHit> OnRightMouseClick;
     public Action<RaycastHit> OnMiddleMouseClick;
-    public Action<RaycastHit> UseCard;
     public Action<RaycastHit, bool> SetCursor;
-    public Action<GameObject, int> BuyCard;
+    public Action<RaycastHit> SetSelectedCursor;
+    public Action<RaycastHit> SetMultipleCursor;
+    //public Action<GameObject, int> BuyCard;
+    public delegate ErrorMsg buyCard(GameObject card, int coins);
+    public static buyCard BuyCard;
+
+    public DeckManager DeckManager;
 
     private Transform mouseOverRecent;
     private Transform mouseOver;
@@ -23,6 +29,11 @@ public class MouseController : Singleton<MouseController>
     private const float MOVE_UP = 0.5f;
     private const float MOVE_DOWN = 0f;
     private const float LT_TIME = 0.2f;
+
+    public void Start()
+    {
+        DeckManager = GameObject.FindObjectOfType<DeckManager>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -140,16 +151,25 @@ public class MouseController : Singleton<MouseController>
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_card))
             {
-                //fuck you
                 GameObject card = hit.collider.gameObject;
                 if (mouseButton == 0)
                 {
-                    if (card.CompareTag("Card_Hand")) {
-                        UseCard?.Invoke(hit);
+                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE) {
+                        SetSelectedCursor?.Invoke(hit);
+                    }
+                    else if (card.CompareTag("Card_Hand") 
+                        && (GameLoop.PlayerPhase == Phase.BUYING_PHASE || GameLoop.PlayerPhase == Phase.REDRAW_PHASE))
+                    {
+                        SetMultipleCursor?.Invoke(hit);
                     }
                     else if (card.CompareTag("Card_Shop"))
                     {
-                        BuyCard?.Invoke(hit.collider.gameObject, 4);
+                        ErrorMsg msg = (ErrorMsg)(BuyCard?.Invoke(hit.collider.gameObject, DeckManager.getSumOfCoins()));
+                        if(msg == ErrorMsg.OK)
+                        {
+                            DeckManager.clearMultipleChosenCards();
+                            GameLoop.PlayerPhase++;
+                        }
                     }
                 }
                 return;

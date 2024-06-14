@@ -1,16 +1,38 @@
+using GeneralEnumerations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameLoop : NetworkBehaviour
 {
 
     public static bool isMyTurn;
+    [SerializeField] public static Phase PlayerPhase;
+    [SerializeField] private Button nextPhaseButton;
 
     public void Start()
     {
-        isMyTurn = false;
+        isMyTurn = true;
+    }
+
+    public void Awake()
+    {
+        nextPhaseButton.onClick.AddListener(() =>
+        {
+            if (!isMyTurn)
+            {
+                return;
+            }
+
+            PlayerPhase++;
+            Debug.Log("Current phase: " + PlayerPhase);
+            if (PlayerPhase >= Phase.FINAL_ELEMENT)
+            {
+                PlayerPhase = Phase.MOVEMENT_PHASE;
+            }
+        });
     }
 
     private void Update()
@@ -40,6 +62,7 @@ public class GameLoop : NetworkBehaviour
     public void nextPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
         isMyTurn = true;
+        PlayerPhase = Phase.MOVEMENT_PHASE;
         Debug.Log("yo bitch its my turn");
         //action 1
         //action 2

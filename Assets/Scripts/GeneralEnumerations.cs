@@ -51,8 +51,17 @@ namespace GeneralEnumerations
         FIELD_IS_MNTN,
         FIELD_OCCUPIED,
         CARD_NOT_MATCHING,
-        NOT_ACTIVE_PAWN
+        NOT_ACTIVE_PAWN,
+        CARD_NOT_SELECTED,
+        SHOP_FULL,
+        NOT_ENOUGH_COINS,
     }
     
-    
+    public enum Phase
+    {
+        MOVEMENT_PHASE,
+        BUYING_PHASE,
+        REDRAW_PHASE,
+        FINAL_ELEMENT
+    }
 }

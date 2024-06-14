@@ -8,13 +8,14 @@ using Unity.Netcode;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexGridMeshGenerator : MonoBehaviour
 {
-    [field:SerializeField] public LayerMask gridLayer { get; private set; }
+    [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
     //public static Action<int, int, HexGrid, string, string, int> MovePawn;
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string typ, int power);
     public static movePawn MovePawn;
+    [SerializeField] public DeckManager deckManager;
 
     private void Awake()
     {
@@ -26,6 +27,7 @@ public class HexGridMeshGenerator : MonoBehaviour
         {
             Debug.LogError("HexGridMeshGenerator could not find a HexGrid component in its parent or itself.");
         }
+        deckManager = GameObject.FindObjectOfType<DeckManager>();
     }
 
     private void OnEnable()
@@ -151,7 +153,34 @@ public class HexGridMeshGenerator : MonoBehaviour
             "\n\t    TerrainType:\t" + terrain.name);
         //Im not sure if this should be called in here. 
         //This delegate call is for debug only for the time being!!!
-        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1));
+
+
+        GameObject card = deckManager.getSelectedCard();
+
+        //GameObject card = DeckManager.getSelectedCard(); 
+        if (card == null)
+        {
+            return;
+        }
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+        int terrainPower = terrain.name[terrain.name.Length - 1] - '0';
+
+        ErrorMsg errcode = ErrorMsg.CARD_NOT_SELECTED;
+        if (cardBehaviour.leftPower >= terrainPower 
+            && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+        {
+            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour.Typ, cardBehaviour.Power));
+        }
+
+        if (errcode == ErrorMsg.OK)
+        {
+            cardBehaviour.leftPower -= terrainPower;
+        }
+        if (cardBehaviour.leftPower == 0)
+        {
+            deckManager.UseCard();
+        }
+
         Debug.Log(errcode.ToString());
     }
 

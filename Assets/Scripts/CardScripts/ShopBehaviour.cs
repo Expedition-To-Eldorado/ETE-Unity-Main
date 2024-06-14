@@ -35,12 +35,12 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
 
     private void OnEnable()
     {
-        MouseController.instance.BuyCard += BuyCard;
+        MouseController.BuyCard += BuyCard;
     }
 
     private void OnDisable()
     {
-        MouseController.instance.BuyCard -= BuyCard;
+        MouseController.BuyCard -= BuyCard;
     }
 
     public int FindCardInShop(GameObject card)
@@ -72,7 +72,7 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
         return index;
     }
 
-    private void BuyCard(GameObject card, int coins)
+    private ErrorMsg BuyCard(GameObject card, int coins)
     {
 
         //choseCardFromDeck;
@@ -92,7 +92,7 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
             }
             else if (!cardBehaviour.isBuyable && index == -1)
             {
-                return;
+                return ErrorMsg.SHOP_FULL;
             }
             cardBehaviour.UpdateQuantity();
             AddCardToDeck?.Invoke(Instantiate(card, Deck.transform));
@@ -101,5 +101,10 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 Destroy(card);
             }
         }
+        else
+        {
+            return ErrorMsg.NOT_ENOUGH_COINS;
+        }
+        return ErrorMsg.OK;
     }
 }
