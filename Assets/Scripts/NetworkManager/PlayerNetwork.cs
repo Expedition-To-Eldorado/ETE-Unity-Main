@@ -84,7 +84,7 @@ public class PlayerNetwork : NetworkBehaviour
             || errCode == ErrorMsg.END_GAME)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
-            SendCordsServerRpc(x, z, new ServerRpcParams());
+            SendCordsServerRpc(x, z, boardPiece.BoardPieceLetter, new ServerRpcParams());
         }
         else
         {
@@ -158,7 +158,7 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         //check if any other player is on the selected field
-        if (!MouseController.instance.checkIfNotOccupiedPosition(new Vector2(x, z)))
+        if (!MouseController.instance.checkIfNotOccupiedPosition(new PawnPosition(boardPiece.BoardPieceLetter, new Vector2(x, z))))
         {
             Debug.Log("Field is occupied by player, the caller is " + this.name);
             return ErrorMsg.FIELD_OCCUPIED;
@@ -175,19 +175,19 @@ public class PlayerNetwork : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SendCordsServerRpc(int x, int z, ServerRpcParams serverRpcParams)
+    public void SendCordsServerRpc(int x, int z, BoardPiece boardPiece, ServerRpcParams serverRpcParams)
     {
         // Some Client sent data about their new position to the serwer
         int SenderId = (int)serverRpcParams.Receive.SenderClientId;
-        BoardSingleton.instance.PawnPositions[SenderId] = new Vector2(x, z);
-        UpdateCordsClientRpc(x, z, SenderId, NetworkManager.Singleton.ConnectedClients.Count);
+        BoardSingleton.instance.PawnPositions[SenderId] = new PawnPosition(boardPiece, new Vector2(x, z));
+        UpdateCordsClientRpc(x, z, boardPiece, SenderId, NetworkManager.Singleton.ConnectedClients.Count);
     }
 
     [ClientRpc]
-    private void UpdateCordsClientRpc(int x, int z, int SenderId, int NumberOfClients)
+    private void UpdateCordsClientRpc(int x, int z, BoardPiece boardPiece, int SenderId, int NumberOfClients)
     {
         // Sending data about new position of some client to all clients
-        BoardSingleton.instance.PawnPositions[SenderId] = new Vector2(x, z);
+        BoardSingleton.instance.PawnPositions[SenderId] = new PawnPosition(boardPiece, new Vector2(x, z));
         // Print Positions of all clients in game in all clients debug log
         // int i = 0;
         // foreach( var Pawn in BoardSingleton.instance.PawnPositions) {
