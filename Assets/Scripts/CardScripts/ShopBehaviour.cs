@@ -78,7 +78,7 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
         //choseCardFromDeck;
 
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        if (coins >= cardBehaviour.price)
+        if (coins == cardBehaviour.price)
         {
             int index = FindEmptySlotInShop();
             if (!cardBehaviour.isBuyable && (index != -1))
@@ -86,7 +86,7 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 Destroy(card);
                 GameObject tmp = Instantiate(card, activeShopPositions[index].transform);
                 CardBehaviour tmpBehaviour = tmp.GetComponent<CardBehaviour>();
-                tmpBehaviour.isBuyable = true;  
+                tmpBehaviour.isBuyable = true;
                 tmpBehaviour.UpdateQuantity();
                 cardsInShop.Add(tmp);
             }
@@ -101,9 +101,13 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 Destroy(card);
             }
         }
-        else
+        else if (coins < cardBehaviour.price)
         {
             return ErrorMsg.NOT_ENOUGH_COINS;
+        }
+        else if (coins > cardBehaviour.price)
+        {
+            return ErrorMsg.TOO_MUCH_COINS;
         }
         return ErrorMsg.OK;
     }

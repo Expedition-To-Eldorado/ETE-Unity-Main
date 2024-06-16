@@ -162,7 +162,7 @@ public class MouseController : Singleton<MouseController>
                     {
                         SetMultipleCursor?.Invoke(hit);
                     }
-                    else if (card.CompareTag("Card_Shop"))
+                    else if (card.CompareTag("Card_Shop") && GameLoop.PlayerPhase == Phase.BUYING_PHASE)
                     {
                         ErrorMsg msg = (ErrorMsg)(BuyCard?.Invoke(hit.collider.gameObject, DeckManager.getSumOfCoins()));
                         if(msg == ErrorMsg.OK)
