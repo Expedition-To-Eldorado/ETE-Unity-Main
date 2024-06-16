@@ -100,11 +100,10 @@ public class PlayerNetwork : NetworkBehaviour
         if (errCode == ErrorMsg.OK)
         {
             card.leftPower -= terrainPower;
-        }
-
-        if (card.leftPower <= 0 && errCode == ErrorMsg.OK)
-        {
-            UseCard?.Invoke();
+            if (card.leftPower <= 0)
+            {
+                UseCard?.Invoke();
+            }
         }
 
         if (errCode == ErrorMsg.DISCARD_CARD)
