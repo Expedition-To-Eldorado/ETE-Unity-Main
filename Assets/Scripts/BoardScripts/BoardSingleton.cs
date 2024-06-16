@@ -73,7 +73,7 @@ public class BoardSingleton : MonoBehaviour
         // B boardPiece = 1
         Pieces.Add(new List<List<int>> {
                             new List<int> { -1, -1, -1, 18, 19, 20, 21 },
-                            new List<int> { -1, -1,  1,  1,  1,  1,  1 },
+                            new List<int> { -1, -1,  15,  1,  1,  1,  1 },
                             new List<int> { -1,  1,  1,  1,  4,  1,  1 },
                             new List<int> {  1,  1,  8,  1,  1,  0,  8 },
                             new List<int> {  1,  1,  4,  1,  4, 12, -1 },
