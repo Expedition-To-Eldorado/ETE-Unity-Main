@@ -37,6 +37,10 @@ public class DeckManager : MonoBehaviour
             }
         });
     }
+    public int getNumberOfChosenCards()
+    {
+        return multipleChosenCards.Count;
+    }
 
     public void clearMultipleChosenCards()
     {
@@ -152,7 +156,7 @@ public class DeckManager : MonoBehaviour
         float selectedOffset = 0;
         for (int i = 0; i < cardsOnHand.Count; i++)
         {
-            if(GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+            if(GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE && multipleChosenCards.Count == 0)
             {
                 if (selectedCursor != -1 && selectedCursor != i)
                 {
@@ -163,8 +167,7 @@ public class DeckManager : MonoBehaviour
                     selectedOffset = 0;
                 }
             }
-            else if ((GameLoop.PlayerPhase == Phase.BUYING_PHASE 
-                || GameLoop.PlayerPhase == Phase.REDRAW_PHASE) && multipleChosenCards.Count != 0)
+            else if (multipleChosenCards.Count != 0)
             {
                 bool isFound = false;
                 foreach(var card in multipleChosenCards)
@@ -356,6 +359,19 @@ public class DeckManager : MonoBehaviour
         usedCards.Add(cardsOnHand[index]);
         cardsOnHand.RemoveAt(index);
         selectedCursor = -1;
+    }
+
+    public void burnMultipleCards()
+    {
+        for (int i = 0;i < multipleChosenCards.Count;i++)
+        {
+            GameObject card = multipleChosenCards[i];
+            card.SetActive(false);
+            int index = findIndexOfCard(card);
+            cardsOnHand.RemoveAt(index);
+            Destroy(card);
+        }
+        multipleChosenCards.Clear();
     }
 
     public void burnCard()

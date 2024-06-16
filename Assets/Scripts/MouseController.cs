@@ -172,6 +172,14 @@ public class MouseController : Singleton<MouseController>
                         }
                     }
                 }
+                else if(mouseButton == 1)
+                {
+                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+                    {
+                        //Debug.Log("huj kurwa piach w oczy");
+                        SetMultipleCursor?.Invoke(hit);
+                    }
+                }
                 return;
             }
         }

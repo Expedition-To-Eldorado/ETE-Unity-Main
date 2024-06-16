@@ -57,7 +57,9 @@ namespace GeneralEnumerations
         NOT_ENOUGH_COINS,
         TOO_MUCH_COINS,
         NOT_OWNER,
-        BURN_CARD
+        BURN_CARD,
+        DISCARD_CARD,
+        NOT_ENOUGH_CARDS
     }
     
     public enum Phase

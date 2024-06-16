@@ -11,7 +11,7 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card);
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards);
     public static movePawn MovePawn;
     [SerializeField] public DeckManager deckManager;
 
@@ -150,6 +150,27 @@ public class HexGridMeshGenerator : MonoBehaviour
         Debug.Log("Position:\tBoardPiece " + grid.BoardPiece + "\tCords (" + x + ", " + z + ")" +
             "\n\t    TerrainType:\t" + terrain.name);
 
+        string terrainName = terrain.name.Substring(0, terrain.name.Length - 1);
+        int terrainPower = terrain.name[terrain.name.Length - 1] - '0';
+        ErrorMsg errcode = ErrorMsg.CARD_NOT_SELECTED;
+
+        if (terrainName == "Discard" || terrainName == "Camp")
+        {
+            int numberOfchosenCards = deckManager.getNumberOfChosenCards();
+            if (numberOfchosenCards <= 0) return;
+            if (terrainPower != numberOfchosenCards) return;
+            
+            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, null, deckManager.getNumberOfChosenCards()));
+            if (errcode == ErrorMsg.DISCARD_CARD)
+            {
+                deckManager.clearMultipleChosenCards();
+            }
+            else if(errcode == ErrorMsg.BURN_CARD)
+            {
+                deckManager.burnMultipleCards();
+            }
+        }
+
         GameObject card = deckManager.getSelectedCard();
 
         if (card == null)
@@ -157,13 +178,11 @@ public class HexGridMeshGenerator : MonoBehaviour
             return;
         }
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        int terrainPower = terrain.name[terrain.name.Length - 1] - '0';
 
-        ErrorMsg errcode = ErrorMsg.CARD_NOT_SELECTED;
         if (cardBehaviour.leftPower >= terrainPower 
             && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
         {
-            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour));
+            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour, deckManager.getNumberOfChosenCards()));
         }
 
         if (cardBehaviour.leftPower <= 0 && errcode == ErrorMsg.OK)

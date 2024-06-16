@@ -54,7 +54,7 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card)
+    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards)
     {
         if (!IsOwner) return ErrorMsg.NOT_OWNER;
 
@@ -64,8 +64,19 @@ public class PlayerNetwork : NetworkBehaviour
         int terrainPower = terrainName[terrainName.Length - 1] - '0';
         terrainName = terrainName.Substring(0, terrainName.Length - 1);
 
-        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, card.Typ);
-        if (errCode == ErrorMsg.OK || errCode == ErrorMsg.BURN_CARD)
+        ErrorMsg errCode;
+        if (card == null)
+        {
+            errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, null);
+        }
+        else
+        {
+            errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, card.Typ);
+        }
+
+        if (errCode == ErrorMsg.OK 
+            || errCode == ErrorMsg.BURN_CARD 
+            || errCode == ErrorMsg.DISCARD_CARD)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
             SendCordsServerRpc(x, z, new ServerRpcParams());
@@ -107,6 +118,12 @@ public class PlayerNetwork : NetworkBehaviour
         {
             Debug.Log("Burning card");
             return ErrorMsg.BURN_CARD;
+        }
+
+        if(terrainName == "Discard")
+        {
+            Debug.Log("Discard card field");
+            return ErrorMsg.DISCARD_CARD;
         }
 
         //check if any other player is on the selected field
