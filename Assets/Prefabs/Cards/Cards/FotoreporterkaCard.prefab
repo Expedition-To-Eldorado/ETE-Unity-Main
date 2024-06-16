@@ -155,12 +155,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 2
+  leftPower: 0
   NameOfCard: Fotoreporterka
-  Typ: 
+  Typ: Village
   isStartingCard: 0
   isBuyable: 1
   quantityInShop: 3
   price: 2
+  isSelected: 0
 --- !u!33 &4045003841529715894
 MeshFilter:
   m_ObjectHideFlags: 0
