@@ -166,9 +166,13 @@ public class HexGridMeshGenerator : MonoBehaviour
             errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour));
         }
 
-        if (cardBehaviour.leftPower <= 0)
+        if (cardBehaviour.leftPower <= 0 && errcode == ErrorMsg.OK)
         {
             deckManager.UseCard();
+        }
+        else if(errcode == ErrorMsg.BURN_CARD)
+        {
+            deckManager.burnCard();
         }
 
         Debug.Log(errcode.ToString());

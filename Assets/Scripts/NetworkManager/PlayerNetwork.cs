@@ -65,7 +65,7 @@ public class PlayerNetwork : NetworkBehaviour
         terrainName = terrainName.Substring(0, terrainName.Length - 1);
 
         ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, card.Typ);
-        if (errCode == ErrorMsg.OK)
+        if (errCode == ErrorMsg.OK || errCode == ErrorMsg.BURN_CARD)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
             SendCordsServerRpc(x, z, new ServerRpcParams());
@@ -80,7 +80,8 @@ public class PlayerNetwork : NetworkBehaviour
             card.leftPower -= terrainPower;
         }
 
-        return ErrorMsg.OK;
+
+        return errCode;
     }
 
     private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType)
@@ -100,6 +101,12 @@ public class PlayerNetwork : NetworkBehaviour
         {
             Debug.Log("Player can not move to mountains");
             return ErrorMsg.FIELD_IS_MNTN;
+        }
+
+        if(terrainName == "Camp")
+        {
+            Debug.Log("Burning card");
+            return ErrorMsg.BURN_CARD;
         }
 
         //check if any other player is on the selected field

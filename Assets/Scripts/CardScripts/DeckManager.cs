@@ -7,6 +7,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEditor;
+using System.Reflection;
 
 public class DeckManager : MonoBehaviour
 {
@@ -359,9 +360,11 @@ public class DeckManager : MonoBehaviour
 
     public void burnCard()
     {
-        cardsOnHand[cursor - 1].SetActive(false);
-        GameObject card = cardsOnHand[cursor - 1];
-        cardsOnHand.RemoveAt(cursor - 1);
+        int index = selectedCursor;
+        cardsOnHand[index].SetActive(false);
+        GameObject card = cardsOnHand[index];
+        cardsOnHand.RemoveAt(index);
         Destroy(card);
+        selectedCursor = -1;
     }
 }
