@@ -2,6 +2,8 @@ using GeneralEnumerations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,7 @@ public class GameLoop : NetworkBehaviour
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
     public static Action<int> drawFullHand;
+    [SerializeField] private TextMeshPro YouWonTxt;
 
     public void Start()
     {
@@ -42,6 +45,12 @@ public class GameLoop : NetworkBehaviour
 
     private void Update()
     {
+        if (isMyTurn && PlayerPhase == Phase.GAME_WON)
+        {
+            isMyTurn = false;
+            YouWonTxt.IsActive(true);
+            nextPlayerServerRpc(false, new ServerRpcParams());
+        }
         //somehow start turn with 1 player
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -67,7 +76,10 @@ public class GameLoop : NetworkBehaviour
     public void nextPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
         isMyTurn = true;
-        PlayerPhase = Phase.MOVEMENT_PHASE;
+        if(PlayerPhase != Phase.GAME_WON)
+        {
+            PlayerPhase = Phase.MOVEMENT_PHASE;
+        }
         Debug.Log("It is my turn");
     }
 }

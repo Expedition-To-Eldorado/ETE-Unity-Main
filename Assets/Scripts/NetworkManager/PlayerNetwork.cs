@@ -11,10 +11,12 @@ public class PlayerNetwork : NetworkBehaviour
     //Networking fields
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private List<Material> PawnMaterials;
+    public static Action UseCard;
+    public static Action clearMultipleChosenCards;
+    public static Action burnMultipleCards;
 
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
-    private int leftCardPower = 0;
     
     private void Awake()
     {
@@ -54,9 +56,11 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards)
+    private void movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards)
     {
-        if (!IsOwner) return ErrorMsg.NOT_OWNER;
+        Debug.Log("am i host? " + IsHost);
+
+        if (!IsOwner) return;
 
         Debug.Log("Moving pawn, caller: " + OwnerClientId);
 
@@ -76,14 +80,21 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (errCode == ErrorMsg.OK 
             || errCode == ErrorMsg.BURN_CARD 
-            || errCode == ErrorMsg.DISCARD_CARD)
+            || errCode == ErrorMsg.DISCARD_CARD
+            || errCode == ErrorMsg.END_GAME)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
             SendCordsServerRpc(x, z, new ServerRpcParams());
         }
         else
         {
-            return errCode;
+            return;
+        }
+
+        if (errCode == ErrorMsg.END_GAME)
+        {
+            GameLoop.PlayerPhase = Phase.GAME_WON;
+            Debug.Log("Game ended");
         }
 
         if (errCode == ErrorMsg.OK)
@@ -91,8 +102,22 @@ public class PlayerNetwork : NetworkBehaviour
             card.leftPower -= terrainPower;
         }
 
+        if (card.leftPower <= 0 && errCode == ErrorMsg.OK)
+        {
+            UseCard?.Invoke();
+        }
 
-        return errCode;
+        if (errCode == ErrorMsg.DISCARD_CARD)
+        {
+            clearMultipleChosenCards?.Invoke();
+        }
+        else if (errCode == ErrorMsg.BURN_CARD)
+        {
+            burnMultipleCards?.Invoke();
+        }
+
+        Debug.Log(errCode);
+        return;
     }
 
     private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType)
@@ -114,16 +139,22 @@ public class PlayerNetwork : NetworkBehaviour
             return ErrorMsg.FIELD_IS_MNTN;
         }
 
-        if(terrainName == "Camp")
+        if (terrainName == "Camp")
         {
             Debug.Log("Burning card");
             return ErrorMsg.BURN_CARD;
         }
 
-        if(terrainName == "Discard")
+        if (terrainName == "Discard")
         {
             Debug.Log("Discard card field");
             return ErrorMsg.DISCARD_CARD;
+        }
+
+        if (terrainName == "EndJungle" && cardType == "Jungle")
+        {
+            Debug.Log("You won the game");
+            return ErrorMsg.END_GAME;
         }
 
         //check if any other player is on the selected field
@@ -139,7 +170,6 @@ public class PlayerNetwork : NetworkBehaviour
             Debug.Log("Chosen card " + cardType + " does not match the chosen field " + terrainName);
             return ErrorMsg.CARD_NOT_MATCHING;
         }
-        
 
         return ErrorMsg.OK;
     }

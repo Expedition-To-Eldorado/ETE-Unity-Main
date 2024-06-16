@@ -103,6 +103,9 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.SetSelectedCursor += SetSelectedCursor;
         MouseController.instance.SetMultipleCursor += SetMultipleCursor;
         GameLoop.drawFullHand += drawFullHand;
+        PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
+        PlayerNetwork.burnMultipleCards += burnMultipleCards;
+        PlayerNetwork.UseCard += UseCard;
     }
 
     private void OnDisable()
@@ -113,6 +116,9 @@ public class DeckManager : MonoBehaviour
         MouseController.instance.SetSelectedCursor -= SetSelectedCursor;
         MouseController.instance.SetMultipleCursor -= SetMultipleCursor;
         GameLoop.drawFullHand -= drawFullHand;
+        PlayerNetwork.clearMultipleChosenCards -= clearMultipleChosenCards;
+        PlayerNetwork.burnMultipleCards -= burnMultipleCards;
+        PlayerNetwork.UseCard -= UseCard;
     }
 
 

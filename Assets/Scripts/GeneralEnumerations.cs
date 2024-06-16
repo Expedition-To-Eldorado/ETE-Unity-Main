@@ -59,7 +59,8 @@ namespace GeneralEnumerations
         NOT_OWNER,
         BURN_CARD,
         DISCARD_CARD,
-        NOT_ENOUGH_CARDS
+        NOT_ENOUGH_CARDS,
+        END_GAME
     }
     
     public enum Phase
@@ -67,6 +68,7 @@ namespace GeneralEnumerations
         MOVEMENT_PHASE,
         BUYING_PHASE,
         REDRAW_PHASE,
-        FINAL_ELEMENT
+        FINAL_ELEMENT,
+        GAME_WON
     }
 }
