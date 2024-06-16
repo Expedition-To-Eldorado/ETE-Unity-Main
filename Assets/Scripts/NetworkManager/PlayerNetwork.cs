@@ -11,7 +11,10 @@ public class PlayerNetwork : NetworkBehaviour
     //Networking fields
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private List<Material> PawnMaterials;
-        
+    public static Action UseCard;
+    public static Action clearMultipleChosenCards;
+    public static Action burnMultipleCards;
+
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
     
@@ -53,27 +56,71 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
+    private void movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards)
     {
+        Debug.Log("am i host? " + IsHost);
+
+        if (!IsOwner) return;
+
+        Debug.Log("Moving pawn, caller: " + OwnerClientId);
+
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;
-        
-        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, cardType, cardPower);
-        if (errCode == ErrorMsg.OK)
+        int terrainPower = terrainName[terrainName.Length - 1] - '0';
+        terrainName = terrainName.Substring(0, terrainName.Length - 1);
+
+        ErrorMsg errCode;
+        if (card == null)
+        {
+            errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, null);
+        }
+        else
+        {
+            errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, card.Typ);
+        }
+
+        if (errCode == ErrorMsg.OK 
+            || errCode == ErrorMsg.BURN_CARD 
+            || errCode == ErrorMsg.DISCARD_CARD
+            || errCode == ErrorMsg.END_GAME)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
-            // Send my position to the server and then to all clients
             SendCordsServerRpc(x, z, boardPiece.BoardPieceLetter, new ServerRpcParams());
         }
         else
         {
-            return errCode;
+            return;
         }
-        
-        return ErrorMsg.OK;
+
+        if (errCode == ErrorMsg.END_GAME)
+        {
+            GameLoop.PlayerPhase = Phase.GAME_WON;
+            Debug.Log("Game ended");
+        }
+
+        if (errCode == ErrorMsg.OK)
+        {
+            card.leftPower -= terrainPower;
+        }
+
+        if (card.leftPower <= 0 && errCode == ErrorMsg.OK)
+        {
+            UseCard?.Invoke();
+        }
+
+        if (errCode == ErrorMsg.DISCARD_CARD)
+        {
+            clearMultipleChosenCards?.Invoke();
+        }
+        else if (errCode == ErrorMsg.BURN_CARD)
+        {
+            burnMultipleCards?.Invoke();
+        }
+
+        Debug.Log(errCode);
+        return;
     }
 
-    //i hate it that it is here MOVE IT SOMEWHERE ELSE FUCKo
-    private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
+    private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType)
     {
         //check if the field is adjacent to the current field
         float distance = Vector3.Distance(centre, transform.position - offset);
@@ -92,6 +139,24 @@ public class PlayerNetwork : NetworkBehaviour
             return ErrorMsg.FIELD_IS_MNTN;
         }
 
+        if (terrainName == "Camp")
+        {
+            Debug.Log("Burning card");
+            return ErrorMsg.BURN_CARD;
+        }
+
+        if (terrainName == "Discard")
+        {
+            Debug.Log("Discard card field");
+            return ErrorMsg.DISCARD_CARD;
+        }
+
+        if (terrainName == "EndJungle" && cardType == "Jungle")
+        {
+            Debug.Log("You won the game");
+            return ErrorMsg.END_GAME;
+        }
+
         //check if any other player is on the selected field
         if (!MouseController.instance.checkIfNotOccupiedPosition(new PawnPosition(boardPiece.BoardPieceLetter, new Vector2(x, z))))
         {
@@ -105,7 +170,6 @@ public class PlayerNetwork : NetworkBehaviour
             Debug.Log("Chosen card " + cardType + " does not match the chosen field " + terrainName);
             return ErrorMsg.CARD_NOT_MATCHING;
         }
-        
 
         return ErrorMsg.OK;
     }

@@ -3,45 +3,124 @@ using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
 using static HexGridMeshGenerator;
+using System;
+using Unity.VisualScripting;
+using UnityEngine.UI;
+using UnityEditor;
+using System.Reflection;
 
 public class DeckManager : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField] List<GameObject> cardsInDeck;
-    [SerializeField] List<GameObject> cardsOnHand;
-    [SerializeField] List<GameObject> usedCards;
+    [SerializeField] public List<GameObject> cardsInDeck;
+    [SerializeField] public List<GameObject> cardsOnHand;
+    [SerializeField] public List<GameObject> usedCards;
     [SerializeField] float speedOfCard = 5;
     [SerializeField] double spaceBetweenCard = 5;
     public GameObject Deck;
     public GameObject[] starterCardPack = new GameObject[3];
-    int viewNumber = (int)ViewTypes.CardsOnly; 
+    int viewNumber = (int)ViewTypes.CardsOnly;
     int cursor = -1;
+    int selectedCursor = -1;
+    [SerializeField] float selectedCursorOffsetValue = 0;
+    [SerializeField] List<GameObject> multipleChosenCards;
+    [SerializeField] private Button redrawCardsBtn;
     //Obecnie tworzony jest widok 3 - widok na karty
 
+    public void Awake()
+    {
+        redrawCardsBtn.onClick.AddListener(() =>
+        {
+            if (GameLoop.PlayerPhase == Phase.REDRAW_PHASE)
+            {
+                clearMultipleChosenCards();
+            }
+        });
+    }
+    public int getNumberOfChosenCards()
+    {
+        return multipleChosenCards.Count;
+    }
 
+    public void clearMultipleChosenCards()
+    {
+        GameObject tmp;
+        foreach (var card in multipleChosenCards)
+        {
+            card.tag = "Card_Used";
+            card.SetActive(false);
+            usedCards.Add(card);
+            int index = findIndexOfCard(card);
+            cardsOnHand.RemoveAt(index);
+        }
+
+        multipleChosenCards.Clear();
+    }
+
+    public int getSumOfCoins()
+    {
+        float sum = 0;
+        foreach(var card in multipleChosenCards)
+        {
+            CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+            float cardCoins = cardBehaviour.Power;
+            float coins = 0;
+            if (cardBehaviour.Typ == "Village")
+            {
+                coins = cardCoins;
+            }
+            else
+            {
+                coins = 0.5f;
+            }
+            sum += coins;
+        }
+
+        return (int) sum;
+    }
+
+    public GameObject getSelectedCard()
+    {
+        if ( selectedCursor !=  -1 )
+        {
+            return cardsOnHand[selectedCursor];
+        }
+        return null;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         createStarterDeck();
-        drawCards(4);
+        drawFullHand(0);
     }
 
     private void OnEnable()
     {
-        MouseController.instance.UseCard += UseCard;
         MouseController.instance.SetCursor += SetCursor;
         CameraBehaviour.changeView += changeView;
         ShopBehaviour.instance.AddCardToDeck += AddCardToDeck;
+        MouseController.instance.SetSelectedCursor += SetSelectedCursor;
+        MouseController.instance.SetMultipleCursor += SetMultipleCursor;
+        GameLoop.drawFullHand += drawFullHand;
+        PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
+        PlayerNetwork.burnMultipleCards += burnMultipleCards;
+        PlayerNetwork.UseCard += UseCard;
     }
 
     private void OnDisable()
     {
-        MouseController.instance.UseCard -= UseCard;
         MouseController.instance.SetCursor -= SetCursor;
         CameraBehaviour.changeView -= changeView;
         ShopBehaviour.instance.AddCardToDeck -= AddCardToDeck;
+        MouseController.instance.SetSelectedCursor -= SetSelectedCursor;
+        MouseController.instance.SetMultipleCursor -= SetMultipleCursor;
+        GameLoop.drawFullHand -= drawFullHand;
+        PlayerNetwork.clearMultipleChosenCards -= clearMultipleChosenCards;
+        PlayerNetwork.burnMultipleCards -= burnMultipleCards;
+        PlayerNetwork.UseCard -= UseCard;
     }
+
 
     // Update is called once per frame
     void Update()
@@ -80,16 +159,48 @@ public class DeckManager : MonoBehaviour
             spaces = 0;
         }
 
+        float selectedOffset = 0;
         for (int i = 0; i < cardsOnHand.Count; i++)
         {
+            if(GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE && multipleChosenCards.Count == 0)
+            {
+                if (selectedCursor != -1 && selectedCursor != i)
+                {
+                    selectedOffset = selectedCursorOffsetValue;
+                }
+                else
+                {
+                    selectedOffset = 0;
+                }
+            }
+            else if (multipleChosenCards.Count != 0)
+            {
+                bool isFound = false;
+                foreach(var card in multipleChosenCards)
+                {
+                    if( card == cardsOnHand[i] )
+                    {
+                        isFound = true;
+                        selectedOffset = 0;
+                        break;
+                    }
+                }
+                if (!isFound)
+                {
+                    selectedOffset = selectedCursorOffsetValue;
+                }
+            }
+
             cardPosition[i].x = (float)(mainCamera.transform.position.x + (i * spaces) - range / 2);
             cardPosition[i].y = mainCamera.transform.position.y + viewModifierY;
-            cardPosition[i].z = mainCamera.transform.position.z + viewModifierZ;
+            cardPosition[i].z = mainCamera.transform.position.z + viewModifierZ + selectedOffset;
 
             if (cursor == i + 1)
             {
                 cardPosition[i].z += 4;
             }
+
+
         }
 
         //zastosowac ta interpolacje (daje ten efekt ruchu) 
@@ -116,11 +227,47 @@ public class DeckManager : MonoBehaviour
         cursor = index + 1;
     }
 
+    private void SetSelectedCursor(RaycastHit hit)
+    {
+        int index = findIndexOfCard(hit.collider.gameObject);
+        selectedCursor = index;
+    }
+
+    private void SetMultipleCursor(RaycastHit hit)
+    {
+        GameObject card = hit.collider.gameObject;
+        bool isInList = false;
+        foreach(var  tmp in multipleChosenCards)
+        {
+            if (tmp == card)
+            {
+                isInList = true;
+            }
+        }
+
+        if (isInList)
+        {
+            multipleChosenCards.Remove(card);
+            return;
+        }
+
+        multipleChosenCards.Add(hit.collider.gameObject);
+    }
+
     private void handlePlayerInput()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            drawCards(1);
+            drawFullHand(1);
+        }
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            CardBehaviour cardBehaviour = cardsOnHand[selectedCursor].GetComponent<CardBehaviour>();
+            if (cardBehaviour.leftPower != cardBehaviour.Power)
+            {
+                UseCard();
+            }
+            selectedCursor = -1;
         }
     }
 
@@ -149,15 +296,37 @@ public class DeckManager : MonoBehaviour
         card.tag = "Card_Used";
         card.SetActive(false);
         usedCards.Add(card);
+        /*card.tag = "Card_Hand";
+        card.SetActive(true);
+        cardsOnHand.Add(card);*/
     }
 
-    public void drawCards(int numOfCards)
+    public void drawFullHand(int numOfCards)
     {
+        if (numOfCards <= 0)
+        {
+            numOfCards = 4 - cardsOnHand.Count;
+            if (numOfCards <= 0)
+            {
+                return;
+            }
+        }
+
+        if (numOfCards > cardsOnHand.Count)
+        {
+            foreach (var card in usedCards)
+            {
+                card.tag = "Card_Deck";
+                cardsInDeck.Add(card);
+            }
+            usedCards.Clear();
+        }
+
         for(int i = 0; i < numOfCards; i++)
         {
             if(cardsInDeck.Count != 0)
             {
-                int index = Random.Range(0, cardsInDeck.Count);
+                int index = UnityEngine.Random.Range(0, cardsInDeck.Count);
                 GameObject card = cardsInDeck[index];
                 cardsOnHand.Add(cardsInDeck[index]);
                 card.SetActive(true);
@@ -185,26 +354,39 @@ public class DeckManager : MonoBehaviour
         return index;
     }
 
-
-    //TODO implement shuffling cards when none are available in deck
-
-    private void UseCard(RaycastHit hit)
+    public void UseCard()
     {
-        GameObject card = hit.collider.gameObject;
-        int index = findIndexOfCard(card);
+        int index = selectedCursor;
 
-
+        CardBehaviour cardBehaviour = cardsOnHand[index].GetComponent<CardBehaviour>();
+        cardBehaviour.leftPower = cardBehaviour.Power;
         cardsOnHand[index].tag = "Card_Used";
         cardsOnHand[index].SetActive(false);
         usedCards.Add(cardsOnHand[index]);
         cardsOnHand.RemoveAt(index);
+        selectedCursor = -1;
+    }
+
+    public void burnMultipleCards()
+    {
+        for (int i = 0;i < multipleChosenCards.Count;i++)
+        {
+            GameObject card = multipleChosenCards[i];
+            card.SetActive(false);
+            int index = findIndexOfCard(card);
+            cardsOnHand.RemoveAt(index);
+            Destroy(card);
+        }
+        multipleChosenCards.Clear();
     }
 
     public void burnCard()
     {
-        cardsOnHand[cursor - 1].SetActive(false);
-        GameObject card = cardsOnHand[cursor - 1];
-        cardsOnHand.RemoveAt(cursor - 1);
+        int index = selectedCursor;
+        cardsOnHand[index].SetActive(false);
+        GameObject card = cardsOnHand[index];
+        cardsOnHand.RemoveAt(index);
         Destroy(card);
+        selectedCursor = -1;
     }
 }

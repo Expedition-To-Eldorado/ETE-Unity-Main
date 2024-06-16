@@ -11,9 +11,14 @@ public class MouseController : Singleton<MouseController>
     public Action<RaycastHit> OnLeftMouseClick;
     public Action<RaycastHit> OnRightMouseClick;
     public Action<RaycastHit> OnMiddleMouseClick;
-    public Action<RaycastHit> UseCard;
     public Action<RaycastHit, bool> SetCursor;
-    public Action<GameObject, int> BuyCard;
+    public Action<RaycastHit> SetSelectedCursor;
+    public Action<RaycastHit> SetMultipleCursor;
+    //public Action<GameObject, int> BuyCard;
+    public delegate ErrorMsg buyCard(GameObject card, int coins);
+    public static buyCard BuyCard;
+
+    public DeckManager DeckManager;
 
     private Transform mouseOverRecent;
     private Transform mouseOver;
@@ -24,23 +29,32 @@ public class MouseController : Singleton<MouseController>
     private const float MOVE_DOWN = 0f;
     private const float LT_TIME = 0.2f;
 
+    public void Start()
+    {
+        DeckManager = GameObject.FindObjectOfType<DeckManager>();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+
+        if (GameLoop.isMyTurn)
         {
-            CheckMouseClick(0);
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            CheckMouseClick(1);
-        }
-        if (Input.GetMouseButtonDown(2))
-        {
-            CheckMouseClick(2);
-        }
-        CheckMouseOver();
-        CheckMouseOverCard();   
+            if (Input.GetMouseButtonDown(0))
+            {
+                CheckMouseClick(0);
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                CheckMouseClick(1);
+            }
+            if (Input.GetMouseButtonDown(2))
+            {
+                CheckMouseClick(2);
+            }
+            CheckMouseOver();
+            CheckMouseOverCard();
+        } 
     }
 
     //I decided to make another check for cards because the other method seems
@@ -137,16 +151,33 @@ public class MouseController : Singleton<MouseController>
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_card))
             {
-                //fuck you
                 GameObject card = hit.collider.gameObject;
                 if (mouseButton == 0)
                 {
-                    if (card.CompareTag("Card_Hand")) {
-                        UseCard?.Invoke(hit);
+                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE) {
+                        SetSelectedCursor?.Invoke(hit);
                     }
-                    else if (card.CompareTag("Card_Shop"))
+                    else if (card.CompareTag("Card_Hand") 
+                        && (GameLoop.PlayerPhase == Phase.BUYING_PHASE || GameLoop.PlayerPhase == Phase.REDRAW_PHASE))
                     {
-                        BuyCard?.Invoke(hit.collider.gameObject, 4);
+                        SetMultipleCursor?.Invoke(hit);
+                    }
+                    else if (card.CompareTag("Card_Shop") && GameLoop.PlayerPhase == Phase.BUYING_PHASE)
+                    {
+                        ErrorMsg msg = (ErrorMsg)(BuyCard?.Invoke(hit.collider.gameObject, DeckManager.getSumOfCoins()));
+                        if(msg == ErrorMsg.OK)
+                        {
+                            DeckManager.clearMultipleChosenCards();
+                            GameLoop.PlayerPhase++;
+                        }
+                    }
+                }
+                else if(mouseButton == 1)
+                {
+                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+                    {
+                        //Debug.Log("huj kurwa piach w oczy");
+                        SetMultipleCursor?.Invoke(hit);
                     }
                 }
                 return;

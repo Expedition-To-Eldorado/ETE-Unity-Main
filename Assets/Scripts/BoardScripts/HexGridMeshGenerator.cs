@@ -8,13 +8,11 @@ using Unity.Netcode;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexGridMeshGenerator : MonoBehaviour
 {
-    [field:SerializeField] public LayerMask gridLayer { get; private set; }
+    [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
-    //public Transform explosionTest;
-    //public static Action<int, int, HexGrid, string, string, int> MovePawn;
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower);
-    public static movePawn MovePawn;
+    public static Action<int, int, HexGrid, string, CardBehaviour, int> MovePawn;
+    [SerializeField] public DeckManager deckManager;
 
     private void Awake()
     {
@@ -26,18 +24,17 @@ public class HexGridMeshGenerator : MonoBehaviour
         {
             Debug.LogError("HexGridMeshGenerator could not find a HexGrid component in its parent or itself.");
         }
+        deckManager = GameObject.FindObjectOfType<DeckManager>();
     }
 
     private void OnEnable()
     {
         MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick += OnRightMouseClick;
     }
     
     private void OnDisable()
     {
         MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
     }
 
     public void CreateHexMesh()
@@ -140,6 +137,8 @@ public class HexGridMeshGenerator : MonoBehaviour
 
     private void OnLeftMouseClick(RaycastHit hit)
     {
+        if (hit.collider.name != transform.name) return;
+
         HexGrid grid = hit.transform.GetComponent<HexGrid>();
         Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
         float localX = hit.point.x - hit.transform.position.x;
@@ -149,14 +148,31 @@ public class HexGridMeshGenerator : MonoBehaviour
         TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[grid.BoardPiece][z][x]];
         Debug.Log("Position:\tBoardPiece " + grid.BoardPiece + "\tCords (" + x + ", " + z + ")" +
             "\n\t    TerrainType:\t" + terrain.name);
-        //Im not sure if this should be called in here. 
-        //This delegate call is for debug only for the time being!!!
-        ErrorMsg errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, "Jungle1", 1));
-        Debug.Log(errcode.ToString());
-    }
 
-    /*private void OnRightMouseClick(RaycastHit hit)
-    {
-    
-    }*/
+        string terrainName = terrain.name.Substring(0, terrain.name.Length - 1);
+        int terrainPower = terrain.name[terrain.name.Length - 1] - '0';
+
+        //if the chosen field is special
+        if (terrainName == "Discard" || terrainName == "Camp")
+        {
+            int numberOfchosenCards = deckManager.getNumberOfChosenCards();
+            if (numberOfchosenCards <= 0) return;
+            if (terrainPower != numberOfchosenCards) return;
+            
+            MovePawn?.Invoke(x, z, grid, terrain.name, null, deckManager.getNumberOfChosenCards());
+        }
+
+        //otherwise handle it as a normal field
+        GameObject card = deckManager.getSelectedCard();
+
+        if (card == null) return;
+
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+
+        if (cardBehaviour.leftPower >= terrainPower 
+            && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+        {
+            MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour, deckManager.getNumberOfChosenCards());
+        }
+    }
 }

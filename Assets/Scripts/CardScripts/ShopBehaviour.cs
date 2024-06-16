@@ -35,12 +35,12 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
 
     private void OnEnable()
     {
-        MouseController.instance.BuyCard += BuyCard;
+        MouseController.BuyCard += BuyCard;
     }
 
     private void OnDisable()
     {
-        MouseController.instance.BuyCard -= BuyCard;
+        MouseController.BuyCard -= BuyCard;
     }
 
     public int FindCardInShop(GameObject card)
@@ -72,13 +72,13 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
         return index;
     }
 
-    private void BuyCard(GameObject card, int coins)
+    private ErrorMsg BuyCard(GameObject card, int coins)
     {
 
         //choseCardFromDeck;
 
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        if (coins >= cardBehaviour.price)
+        if (coins == cardBehaviour.price)
         {
             int index = FindEmptySlotInShop();
             if (!cardBehaviour.isBuyable && (index != -1))
@@ -86,13 +86,13 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 Destroy(card);
                 GameObject tmp = Instantiate(card, activeShopPositions[index].transform);
                 CardBehaviour tmpBehaviour = tmp.GetComponent<CardBehaviour>();
-                tmpBehaviour.isBuyable = true;  
+                tmpBehaviour.isBuyable = true;
                 tmpBehaviour.UpdateQuantity();
                 cardsInShop.Add(tmp);
             }
             else if (!cardBehaviour.isBuyable && index == -1)
             {
-                return;
+                return ErrorMsg.SHOP_FULL;
             }
             cardBehaviour.UpdateQuantity();
             AddCardToDeck?.Invoke(Instantiate(card, Deck.transform));
@@ -101,5 +101,14 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 Destroy(card);
             }
         }
+        else if (coins < cardBehaviour.price)
+        {
+            return ErrorMsg.NOT_ENOUGH_COINS;
+        }
+        else if (coins > cardBehaviour.price)
+        {
+            return ErrorMsg.TOO_MUCH_COINS;
+        }
+        return ErrorMsg.OK;
     }
 }
