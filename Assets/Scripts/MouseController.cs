@@ -74,7 +74,7 @@ public class MouseController : Singleton<MouseController>
         if (!EventSystem.current.IsPointerOverGameObject() && 
             Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) &&
             Physics.Raycast(ray, out hitGrid, Mathf.Infinity, layer_mask_grid) &&
-            checkIfNotOccupiedPosition(getCellCords(hitGrid)) &&
+            checkIfNotOccupiedPosition(getCellPosition(hitGrid)) &&
             !Physics.Raycast(ray, Mathf.Infinity, layer_mask_card_hand))
         {
             mouseOver = hit.transform;
@@ -160,7 +160,7 @@ public class MouseController : Singleton<MouseController>
         LeanTween.moveY(obj.gameObject, move, LT_TIME).setEase(LeanTweenType.easeOutBack);
     }
 
-    private Vector2 getCellCords(RaycastHit hit)
+    private PawnPosition getCellPosition(RaycastHit hit)
     {
         HexGrid grid = hit.transform.GetComponentInParent<HexGrid>();
         float localX = hit.point.x - hit.transform.position.x;
@@ -168,12 +168,13 @@ public class MouseController : Singleton<MouseController>
         int x = (int)HexMetrics.CoordinateToAxial(localX, localZ, grid.HexSize, grid.Orientation).x;
         int z = (int)HexMetrics.CoordinateToAxial(localX, localZ, grid.HexSize, grid.Orientation).y;
         //Debug.Log("Hoover cell cords: " + new Vector2(x, z));
-        return new Vector2(x, z);
+        PawnPosition position = new PawnPosition(grid.BoardPieceLetter, new Vector2(x, z));
+        return position;
     }
-    public bool checkIfNotOccupiedPosition(Vector2 cellCords)
+    public bool checkIfNotOccupiedPosition(PawnPosition position)
     {
-        foreach (var pawnPosition in BoardSingleton.instance.PawnPositions)
-            if (pawnPosition == cellCords) return false;
+        foreach (PawnPosition pawnPosition in BoardSingleton.instance.PawnPositions)
+            if (pawnPosition.EqualsTo(position)) return false;
         return true;
     }
 }

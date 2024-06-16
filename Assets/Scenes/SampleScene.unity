@@ -1287,7 +1287,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd145952e612444586994ec408ddd15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PawnPositions: []
   TerrainTypes:
   - {fileID: 11400000, guid: e473066373e3b0a46b7a03b59609e252, type: 2}
   - {fileID: 11400000, guid: ba2ba3b25da78a24a9225d1acaddc0fb, type: 2}
@@ -8004,6 +8003,7 @@ MonoBehaviour:
   - {fileID: 7559758747263783677, guid: 16470b7c28b497f4eb23e65367ac3171, type: 3}
   cardsInShop: []
   looseCards: []
+  Deck: {fileID: 1947963862}
 --- !u!1 &2025291279
 GameObject:
   m_ObjectHideFlags: 0

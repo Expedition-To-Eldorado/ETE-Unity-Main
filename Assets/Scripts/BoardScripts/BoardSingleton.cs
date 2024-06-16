@@ -3,15 +3,36 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
+using Unity.VisualScripting;
+
+public struct PawnPosition
+{
+    public BoardPiece BoardPiece;
+    public Vector2 PawnCords;
+
+    public PawnPosition(BoardPiece boardPiece, Vector2 pawnCords)
+    {
+        this.BoardPiece = boardPiece;
+        this.PawnCords = pawnCords;
+    }
+
+    public bool EqualsTo(PawnPosition position)
+    {
+        if (this.BoardPiece == position.BoardPiece && this.PawnCords == position.PawnCords)
+            return true;
+        else
+            return false;
+    }
+}
 
 public class BoardSingleton : MonoBehaviour
 {
     public static BoardSingleton instance { get; private set; }
     private static TerrainType[] AllTerrains;
-    public List<Vector2> PawnPositions;
+    public List<PawnPosition> PawnPositions = new List<PawnPosition>();
     public List<TerrainType> TerrainTypes = new List<TerrainType>();
     public List<List<List<int>>> Pieces = new List<List<List<int>>>();
-
+    
     public void Awake()
     {
         if (!gameObject.activeSelf)
@@ -28,12 +49,11 @@ public class BoardSingleton : MonoBehaviour
         {
             instance = this;
         }
-        
-        PawnPositions = new List<Vector2>();
-        PawnPositions.Add(new Vector2(3, 0)); // Strart position of player 0
-        PawnPositions.Add(new Vector2(4, 0)); // Strart position of player 1
-        PawnPositions.Add(new Vector2(5, 0)); // Strart position of player 2
-        PawnPositions.Add(new Vector2(6, 0)); // Strart position of player 3
+        for (int i = 0; i <= 3; i++)
+        {
+            PawnPosition pawnPosition = new PawnPosition(BoardPiece.StartB, new Vector2(i + 3, 0));
+            PawnPositions.Add(pawnPosition);
+        }
         
         SetBoardPieces();
     }
