@@ -55,6 +55,7 @@ namespace GeneralEnumerations
         CARD_NOT_SELECTED,
         SHOP_FULL,
         NOT_ENOUGH_COINS,
+        NOT_OWNER
     }
     
     public enum Phase

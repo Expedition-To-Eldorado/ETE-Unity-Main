@@ -281,12 +281,12 @@ public class DeckManager : MonoBehaviour
 
     public void AddCardToDeck(GameObject card)
     {
-        card.tag = "Card_Used";
+        /*card.tag = "Card_Used";
         card.SetActive(false);
-        usedCards.Add(card);
-        //card.tag = "Card_Hand";
-        //card.SetActive(true);
-        //cardsOnHand.Add(card);
+        usedCards.Add(card);*/
+        card.tag = "Card_Hand";
+        card.SetActive(true);
+        cardsOnHand.Add(card);
     }
 
     public void drawCards(int numOfCards)

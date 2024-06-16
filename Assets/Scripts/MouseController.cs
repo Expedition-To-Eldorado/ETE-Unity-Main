@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using GeneralEnumerations;
-using Mono.Cecil.Cil;
 
 public class MouseController : Singleton<MouseController>
 {
@@ -38,6 +37,7 @@ public class MouseController : Singleton<MouseController>
     // Update is called once per frame
     void Update()
     {
+
         if (GameLoop.isMyTurn)
         {
             if (Input.GetMouseButtonDown(0))

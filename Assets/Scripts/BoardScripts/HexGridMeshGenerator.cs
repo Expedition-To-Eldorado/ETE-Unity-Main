@@ -13,7 +13,7 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
     //public Transform explosionTest;
     //public static Action<int, int, HexGrid, string, string, int> MovePawn;
-    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string typ, int power);
+    public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card);
     public static movePawn MovePawn;
     [SerializeField] public DeckManager deckManager;
 
@@ -142,6 +142,8 @@ public class HexGridMeshGenerator : MonoBehaviour
 
     private void OnLeftMouseClick(RaycastHit hit)
     {
+        if (hit.collider.name != transform.name) return;
+
         HexGrid grid = hit.transform.GetComponent<HexGrid>();
         Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
         float localX = hit.point.x - hit.transform.position.x;
@@ -151,13 +153,9 @@ public class HexGridMeshGenerator : MonoBehaviour
         TerrainType terrain = BoardSingleton.instance.TerrainTypes[BoardSingleton.instance.Pieces[grid.BoardPiece][z][x]];
         Debug.Log("Position:\tBoardPiece " + grid.BoardPiece + "\tCords (" + x + ", " + z + ")" +
             "\n\t    TerrainType:\t" + terrain.name);
-        //Im not sure if this should be called in here. 
-        //This delegate call is for debug only for the time being!!!
-
 
         GameObject card = deckManager.getSelectedCard();
 
-        //GameObject card = DeckManager.getSelectedCard(); 
         if (card == null)
         {
             return;
@@ -169,14 +167,10 @@ public class HexGridMeshGenerator : MonoBehaviour
         if (cardBehaviour.leftPower >= terrainPower 
             && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
         {
-            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour.Typ, cardBehaviour.Power));
+            errcode = (ErrorMsg)(MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour));
         }
 
-        if (errcode == ErrorMsg.OK)
-        {
-            cardBehaviour.leftPower -= terrainPower;
-        }
-        if (cardBehaviour.leftPower == 0)
+        if (cardBehaviour.leftPower <= 0)
         {
             deckManager.UseCard();
         }

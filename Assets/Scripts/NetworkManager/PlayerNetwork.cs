@@ -54,28 +54,35 @@ public class PlayerNetwork : NetworkBehaviour
     }
     
     
-    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string typ, int power)
+    private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card)
     {
+        if (!IsOwner) return ErrorMsg.NOT_OWNER;
+
+        Debug.Log("Moving pawn, caller: " + OwnerClientId);
+
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;
         int terrainPower = terrainName[terrainName.Length - 1] - '0';
         terrainName = terrainName.Substring(0, terrainName.Length - 1);
 
-        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, typ);
+        ErrorMsg errCode = checkIfCanMove(centre, x, z, boardPiece, terrainName, card.Typ);
         if (errCode == ErrorMsg.OK)
         {
             LeanTween.move(this.gameObject, centre + offset, 0.5f).setEase(LeanTweenType.easeInOutQuint);
-            // Send my position to the server and then to all clients
             SendCordsServerRpc(x, z, new ServerRpcParams());
         }
         else
         {
             return errCode;
         }
-        
+
+        if (errCode == ErrorMsg.OK)
+        {
+            card.leftPower -= terrainPower;
+        }
+
         return ErrorMsg.OK;
     }
 
-    //i hate it that it is here MOVE IT SOMEWHERE ELSE FUCKo
     private ErrorMsg checkIfCanMove(Vector3 centre, int x, int z, HexGrid boardPiece, string terrainName, string cardType)
     {
         //check if the field is adjacent to the current field

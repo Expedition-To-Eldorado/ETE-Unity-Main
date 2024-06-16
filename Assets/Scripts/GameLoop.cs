@@ -14,7 +14,7 @@ public class GameLoop : NetworkBehaviour
 
     public void Start()
     {
-        isMyTurn = true;
+        isMyTurn = false;
     }
 
     public void Awake()
@@ -31,6 +31,8 @@ public class GameLoop : NetworkBehaviour
             if (PlayerPhase >= Phase.FINAL_ELEMENT)
             {
                 PlayerPhase = Phase.MOVEMENT_PHASE;
+                isMyTurn = false;
+                nextPlayerServerRpc(false, new ServerRpcParams());
             }
         });
     }
@@ -63,11 +65,6 @@ public class GameLoop : NetworkBehaviour
     {
         isMyTurn = true;
         PlayerPhase = Phase.MOVEMENT_PHASE;
-        Debug.Log("yo bitch its my turn");
-        //action 1
-        //action 2
-        //action 3
-        isMyTurn = false;
-        nextPlayerServerRpc(false, new ServerRpcParams());
+        Debug.Log("It is my turn");
     }
 }
