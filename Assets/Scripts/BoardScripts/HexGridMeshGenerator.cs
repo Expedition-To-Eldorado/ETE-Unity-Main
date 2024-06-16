@@ -11,8 +11,6 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     [field: SerializeField] public Shader hexClickedShader { get; private set; }
-    //public Transform explosionTest;
-    //public static Action<int, int, HexGrid, string, string, int> MovePawn;
     public delegate ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card);
     public static movePawn MovePawn;
     [SerializeField] public DeckManager deckManager;
@@ -33,13 +31,11 @@ public class HexGridMeshGenerator : MonoBehaviour
     private void OnEnable()
     {
         MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick += OnRightMouseClick;
     }
     
     private void OnDisable()
     {
         MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
     }
 
     public void CreateHexMesh()
@@ -177,9 +173,4 @@ public class HexGridMeshGenerator : MonoBehaviour
 
         Debug.Log(errcode.ToString());
     }
-
-    /*private void OnRightMouseClick(RaycastHit hit)
-    {
-    
-    }*/
 }

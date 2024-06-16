@@ -6,13 +6,14 @@ using static HexGridMeshGenerator;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class DeckManager : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField] List<GameObject> cardsInDeck;
-    [SerializeField] List<GameObject> cardsOnHand;
-    [SerializeField] List<GameObject> usedCards;
+    [SerializeField] public List<GameObject> cardsInDeck;
+    [SerializeField] public List<GameObject> cardsOnHand;
+    [SerializeField] public List<GameObject> usedCards;
     [SerializeField] float speedOfCard = 5;
     [SerializeField] double spaceBetweenCard = 5;
     public GameObject Deck;
@@ -57,7 +58,7 @@ public class DeckManager : MonoBehaviour
         foreach(var card in multipleChosenCards)
         {
             CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-            int cardCoins = cardBehaviour.Power;
+            float cardCoins = cardBehaviour.Power;
             float coins = 0;
             if (cardBehaviour.Typ == "Village")
             {
@@ -67,7 +68,7 @@ public class DeckManager : MonoBehaviour
             {
                 coins = 0.5f;
             }
-            sum += card.GetComponent<CardBehaviour>().Power;
+            sum += coins;
         }
 
         return (int) sum;
@@ -86,7 +87,7 @@ public class DeckManager : MonoBehaviour
     void Start()
     {
         createStarterDeck();
-        drawCards(4);
+        drawFullHand(0);
     }
 
     private void OnEnable()
@@ -96,6 +97,7 @@ public class DeckManager : MonoBehaviour
         ShopBehaviour.instance.AddCardToDeck += AddCardToDeck;
         MouseController.instance.SetSelectedCursor += SetSelectedCursor;
         MouseController.instance.SetMultipleCursor += SetMultipleCursor;
+        GameLoop.drawFullHand += drawFullHand;
     }
 
     private void OnDisable()
@@ -105,6 +107,7 @@ public class DeckManager : MonoBehaviour
         ShopBehaviour.instance.AddCardToDeck -= AddCardToDeck;
         MouseController.instance.SetSelectedCursor -= SetSelectedCursor;
         MouseController.instance.SetMultipleCursor -= SetMultipleCursor;
+        GameLoop.drawFullHand -= drawFullHand;
     }
 
 
@@ -222,7 +225,6 @@ public class DeckManager : MonoBehaviour
 
     private void SetMultipleCursor(RaycastHit hit)
     {
-        //int index = findIndexOfCard(hit.collider.gameObject);
         GameObject card = hit.collider.gameObject;
         bool isInList = false;
         foreach(var  tmp in multipleChosenCards)
@@ -246,7 +248,7 @@ public class DeckManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            drawCards(1);
+            drawFullHand(1);
         }
         else if(Input.GetKeyDown(KeyCode.Escape))
         {
@@ -281,16 +283,35 @@ public class DeckManager : MonoBehaviour
 
     public void AddCardToDeck(GameObject card)
     {
-        /*card.tag = "Card_Used";
+        card.tag = "Card_Used";
         card.SetActive(false);
-        usedCards.Add(card);*/
-        card.tag = "Card_Hand";
+        usedCards.Add(card);
+        /*card.tag = "Card_Hand";
         card.SetActive(true);
-        cardsOnHand.Add(card);
+        cardsOnHand.Add(card);*/
     }
 
-    public void drawCards(int numOfCards)
+    public void drawFullHand(int numOfCards)
     {
+        if (numOfCards <= 0)
+        {
+            numOfCards = 4 - cardsOnHand.Count;
+            if (numOfCards <= 0)
+            {
+                return;
+            }
+        }
+
+        if (numOfCards > cardsOnHand.Count)
+        {
+            foreach (var card in usedCards)
+            {
+                card.tag = "Card_Deck";
+                cardsInDeck.Add(card);
+            }
+            usedCards.Clear();
+        }
+
         for(int i = 0; i < numOfCards; i++)
         {
             if(cardsInDeck.Count != 0)
@@ -323,16 +344,12 @@ public class DeckManager : MonoBehaviour
         return index;
     }
 
-
-    //TODO implement shuffling cards when none are available in deck
-
     public void UseCard()
     {
-        //GameObject card = hit.collider.gameObject;
-        //int index = findIndexOfCard(card);
         int index = selectedCursor;
 
-
+        CardBehaviour cardBehaviour = cardsOnHand[index].GetComponent<CardBehaviour>();
+        cardBehaviour.leftPower = cardBehaviour.Power;
         cardsOnHand[index].tag = "Card_Used";
         cardsOnHand[index].SetActive(false);
         usedCards.Add(cardsOnHand[index]);

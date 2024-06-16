@@ -1,4 +1,5 @@
 using GeneralEnumerations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -11,6 +12,7 @@ public class GameLoop : NetworkBehaviour
     public static bool isMyTurn;
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
+    public static Action<int> drawFullHand;
 
     public void Start()
     {
@@ -32,6 +34,7 @@ public class GameLoop : NetworkBehaviour
             {
                 PlayerPhase = Phase.MOVEMENT_PHASE;
                 isMyTurn = false;
+                drawFullHand?.Invoke(0);
                 nextPlayerServerRpc(false, new ServerRpcParams());
             }
         });
