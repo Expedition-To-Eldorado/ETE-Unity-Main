@@ -8863,7 +8863,13 @@ MonoBehaviour:
   - {fileID: 3335920078982955356, guid: 5a150ca0a8e1f724d9294ad74c82a844, type: 3}
   - {fileID: 5508173640785035031, guid: ab0c841943eb43046ad7436064bc2212, type: 3}
   - {fileID: 7559758747263783677, guid: 16470b7c28b497f4eb23e65367ac3171, type: 3}
-  cardsInShop: []
+  cardsInShop:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   looseCards: []
 --- !u!114 &1999767868
 MonoBehaviour:

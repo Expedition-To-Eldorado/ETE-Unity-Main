@@ -11,7 +11,7 @@ public class ShopBehaviour : NetworkBehaviour
     [SerializeField] List<GameObject> activeShopPositions;
     [SerializeField] List<GameObject> looseCardPositions;
     [SerializeField] List<GameObject> cards;
-    public List<GameObject> cardsInShop;
+    public GameObject[] cardsInShop;
     public List<GameObject> looseCards;
     //public GameObject Deck;
 
@@ -25,7 +25,7 @@ public class ShopBehaviour : NetworkBehaviour
         {
             tmp = Instantiate(cards[i], activeShopPositions[i].transform);
             tmp.tag = "Card_Shop";
-            cardsInShop.Add(tmp);
+            cardsInShop[i] = tmp;
         }
         for (int i = 0; i < looseCardPositions.Count; i++)
         {
@@ -47,14 +47,30 @@ public class ShopBehaviour : NetworkBehaviour
 
     public int FindCardInShop(GameObject card)
     {
+        //string cardname = card.name.Substring(0, card.name.Length - 7);
         int index = -1;
         for (int i = 0; i < activeShopPositions.Count; i++)
         {
-            GameObject cardInShop = activeShopPositions[i].transform.GetChild(0).gameObject;
-            if (card.name == cardInShop.name)
+            if (cardsInShop[i] != null)
             {
-                index = i;
-                return index;
+                if (card.name == cardsInShop[i].name)
+                {
+                    return i;
+                }
+            }
+        }
+        return index;
+    }
+
+    public int FindCardInLoose(GameObject card)
+    {
+        //string cardname = card.name.Substring(0, card.name.Length - 7);
+        int index = -1;
+        for (int i = 0; i < looseCards.Count; i++)
+        {
+            if (card.name == looseCards[i].name)
+            {
+                return i;
             }
         }
         return index;
@@ -65,7 +81,7 @@ public class ShopBehaviour : NetworkBehaviour
         int index = -1;
         for (int i = 0; i < activeShopPositions.Count; i++)
         {
-            if (activeShopPositions[i].transform.childCount <= 0)
+            if (cardsInShop[i] == null)
             {
                 index = i;
                 return index;
@@ -79,7 +95,7 @@ public class ShopBehaviour : NetworkBehaviour
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
         if (coins == cardBehaviour.price)
         {
-            int index = FindEmptySlotInShop();
+            /*int index = FindEmptySlotInShop();
             if (!cardBehaviour.isBuyable && (index != -1))
             {
                 Destroy(card);
@@ -88,22 +104,32 @@ public class ShopBehaviour : NetworkBehaviour
                 tmpBehaviour.isBuyable = true;
                 tmpBehaviour.UpdateQuantity();
                 cardsInShop.Add(tmp);
-            }
-            else if (!cardBehaviour.isBuyable && index == -1)
+            }*/
+            int index = FindEmptySlotInShop();
+            if (!cardBehaviour.isBuyable && index == -1)
             {
                 return ErrorMsg.SHOP_FULL;
             }
-            cardBehaviour.UpdateQuantity();
+            //cardBehaviour.UpdateQuantity();
 
             GameObject deck = GameObject.Find("Deck");
 
             GameObject tmp2 = Instantiate(card, deck.transform);
             tmp2.transform.Rotate(0, 180, 0);
             AddCardToDeck?.Invoke(tmp2);
-            if (cardBehaviour.quantityInShop == 0)
+            /*if (cardBehaviour.quantityInShop == 0)
             {
                 Destroy(card);
+            }*/
+
+            index = FindCardInShop(card);
+            bool isInShop = true;
+            if (index == -1)
+            {
+                isInShop = false;
+                index = FindCardInLoose(card);
             }
+            updateShopServerRpc(index, isInShop);
         }
         else if (coins < cardBehaviour.price)
         {
@@ -114,5 +140,64 @@ public class ShopBehaviour : NetworkBehaviour
             return ErrorMsg.TOO_MUCH_COINS;
         }
         return ErrorMsg.OK;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void updateShopServerRpc(int index, bool isInShop)
+    {
+
+        updateShopClientRpc(index, isInShop);
+    }
+
+    [ClientRpc]
+    public void updateShopClientRpc(int indexOfCard, bool isInShop)
+    {
+        Debug.Log("Im calling the updateshopclientrpc method, i am: " + OwnerClientId);
+        if (!IsOwner)
+        {
+            Debug.Log("Since im not the owner, updateshop was not called, i am: " + OwnerClientId);
+            //return;
+        }
+
+        GameObject card;
+        if (isInShop)
+        {
+            card = cardsInShop[indexOfCard];
+        }
+        else
+        {
+            card = looseCards[indexOfCard];
+        }
+
+        int index = FindEmptySlotInShop();
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+        if (!cardBehaviour.isBuyable && (index != -1))
+        {
+            //Destroy(card);
+            card.transform.position = activeShopPositions[index].transform.position;
+
+            //GameObject tmp = Instantiate(card, activeShopPositions[index].transform);
+            card.transform.parent = activeShopPositions[index].transform;
+            CardBehaviour tmpBehaviour = card.GetComponent<CardBehaviour>();
+            tmpBehaviour.isBuyable = true;
+            //tmpBehaviour.UpdateQuantity();
+            looseCards.RemoveAt(indexOfCard);
+            cardsInShop[index] = card;
+        }
+
+        cardBehaviour.UpdateQuantity();
+
+        if (cardBehaviour.quantityInShop == 0)
+        {
+            if(isInShop)
+            {
+                cardsInShop[indexOfCard] = null;
+            }
+            else
+            {
+                looseCards.RemoveAt(indexOfCard);
+            }
+            Destroy(card);
+        }
     }
 }
