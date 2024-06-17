@@ -4,17 +4,18 @@ using UnityEngine;
 using GeneralEnumerations;
 using System;
 using static Unity.Burst.Intrinsics.X86.Avx;
+using Unity.Netcode;
 
-public class ShopBehaviour : Singleton<ShopBehaviour>
+public class ShopBehaviour : NetworkBehaviour
 {
     [SerializeField] List<GameObject> activeShopPositions;
     [SerializeField] List<GameObject> looseCardPositions;
     [SerializeField] List<GameObject> cards;
     public List<GameObject> cardsInShop;
     public List<GameObject> looseCards;
-    public GameObject Deck;
+    //public GameObject Deck;
 
-    public Action<GameObject> AddCardToDeck;
+    public static Action<GameObject> AddCardToDeck;
 
     // Start is called before the first frame update
     void Start()
@@ -75,9 +76,6 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
 
     private ErrorMsg BuyCard(GameObject card, int coins)
     {
-
-        //choseCardFromDeck;
-
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
         if (coins == cardBehaviour.price)
         {
@@ -97,7 +95,9 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
             }
             cardBehaviour.UpdateQuantity();
 
-            GameObject tmp2 = Instantiate(card, Deck.transform);
+            GameObject deck = GameObject.Find("Deck");
+
+            GameObject tmp2 = Instantiate(card, deck.transform);
             tmp2.transform.Rotate(0, 180, 0);
             AddCardToDeck?.Invoke(tmp2);
             if (cardBehaviour.quantityInShop == 0)
