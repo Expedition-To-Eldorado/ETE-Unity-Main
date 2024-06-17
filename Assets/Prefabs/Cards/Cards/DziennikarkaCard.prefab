@@ -155,12 +155,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 3
+  leftPower: 0
   NameOfCard: Dziennikarka
-  Typ: 
+  Typ: Village
   isStartingCard: 0
   isBuyable: 0
   quantityInShop: 3
   price: 3
+  isSelected: 0
 --- !u!33 &2502644080868698182
 MeshFilter:
   m_ObjectHideFlags: 0

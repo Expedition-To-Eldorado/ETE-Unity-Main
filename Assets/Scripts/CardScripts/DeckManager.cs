@@ -44,16 +44,15 @@ public class DeckManager : MonoBehaviour
 
     public void clearMultipleChosenCards()
     {
-        GameObject tmp;
-        foreach (var card in multipleChosenCards)
+        for (int i = 0; i < multipleChosenCards.Count; i++)
         {
+            GameObject card = multipleChosenCards[i];
             card.tag = "Card_Used";
             card.SetActive(false);
             usedCards.Add(card);
             int index = findIndexOfCard(card);
             cardsOnHand.RemoveAt(index);
         }
-
         multipleChosenCards.Clear();
     }
 

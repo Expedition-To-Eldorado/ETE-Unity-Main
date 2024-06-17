@@ -49,12 +49,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 4
+  leftPower: 0
   NameOfCard: "SkrzyniaSkarb\xF3w"
-  Typ: 
+  Typ: Village
   isStartingCard: 0
   isBuyable: 1
   quantityInShop: 3
   price: 3
+  isSelected: 0
 --- !u!33 &2744133498759942585
 MeshFilter:
   m_ObjectHideFlags: 0
