@@ -64,7 +64,7 @@ public class DeckManager : MonoBehaviour
             CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
             float cardCoins = cardBehaviour.Power;
             float coins = 0;
-            if (cardBehaviour.Typ == "Village")
+            if (cardBehaviour.Typ == "Village" || cardBehaviour.Typ == "All")
             {
                 coins = cardCoins;
             }
@@ -98,7 +98,7 @@ public class DeckManager : MonoBehaviour
     {
         MouseController.instance.SetCursor += SetCursor;
         CameraBehaviour.changeView += changeView;
-        ShopBehaviour.instance.AddCardToDeck += AddCardToDeck;
+        ShopBehaviour.AddCardToDeck += AddCardToDeck;
         MouseController.instance.SetSelectedCursor += SetSelectedCursor;
         MouseController.instance.SetMultipleCursor += SetMultipleCursor;
         GameLoop.drawFullHand += drawFullHand;
@@ -111,7 +111,7 @@ public class DeckManager : MonoBehaviour
     {
         MouseController.instance.SetCursor -= SetCursor;
         CameraBehaviour.changeView -= changeView;
-        ShopBehaviour.instance.AddCardToDeck -= AddCardToDeck;
+        ShopBehaviour.AddCardToDeck -= AddCardToDeck;
         MouseController.instance.SetSelectedCursor -= SetSelectedCursor;
         MouseController.instance.SetMultipleCursor -= SetMultipleCursor;
         GameLoop.drawFullHand -= drawFullHand;

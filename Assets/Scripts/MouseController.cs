@@ -14,6 +14,7 @@ public class MouseController : Singleton<MouseController>
     public Action<RaycastHit, bool> SetCursor;
     public Action<RaycastHit> SetSelectedCursor;
     public Action<RaycastHit> SetMultipleCursor;
+    public Action NextPhase;
     //public Action<GameObject, int> BuyCard;
     public delegate ErrorMsg buyCard(GameObject card, int coins);
     public static buyCard BuyCard;
@@ -168,7 +169,7 @@ public class MouseController : Singleton<MouseController>
                         if(msg == ErrorMsg.OK)
                         {
                             DeckManager.clearMultipleChosenCards();
-                            GameLoop.PlayerPhase++;
+                            NextPhase?.Invoke();
                         }
                     }
                 }
@@ -176,7 +177,6 @@ public class MouseController : Singleton<MouseController>
                 {
                     if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
                     {
-                        //Debug.Log("huj kurwa piach w oczy");
                         SetMultipleCursor?.Invoke(hit);
                     }
                 }
