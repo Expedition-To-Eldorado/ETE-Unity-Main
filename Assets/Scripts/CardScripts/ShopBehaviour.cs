@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
 using System;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class ShopBehaviour : Singleton<ShopBehaviour>
 {
@@ -95,7 +96,10 @@ public class ShopBehaviour : Singleton<ShopBehaviour>
                 return ErrorMsg.SHOP_FULL;
             }
             cardBehaviour.UpdateQuantity();
-            AddCardToDeck?.Invoke(Instantiate(card, Deck.transform));
+
+            GameObject tmp2 = Instantiate(card, Deck.transform);
+            tmp2.transform.Rotate(0, 180, 0);
+            AddCardToDeck?.Invoke(tmp2);
             if (cardBehaviour.quantityInShop == 0)
             {
                 Destroy(card);
