@@ -311,7 +311,7 @@ public class DeckManager : MonoBehaviour
             }
         }
 
-        if (numOfCards > cardsOnHand.Count)
+        if (numOfCards > cardsInDeck.Count)
         {
             foreach (var card in usedCards)
             {
