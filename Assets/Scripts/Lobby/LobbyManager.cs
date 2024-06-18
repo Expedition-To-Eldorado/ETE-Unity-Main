@@ -103,15 +103,16 @@ public class LobbyManager : MonoBehaviour
                         RelayManager.Instance.JoinRelay(joinedLobby.Data[KEY_START_GAME].Value);
                         UpdatePlayerLaunchStatus("Yes");
                     }
-                }
-                if (CheckIfEveryPlayerLaunchedTheGame(joinedLobby))
-                {
-                    if (IsLobbyHost())
-                    {
-                        GameLoop.Instance.CanStartGame = true;
-                    }
                     joinedLobby = null;
                 }
+                // if (CheckIfEveryPlayerLaunchedTheGame(joinedLobby))
+                // {
+                //     if (IsLobbyHost())
+                //     {
+                //         GameLoop.Instance.CanStartGame = true;
+                //     }
+                //     joinedLobby = null;
+                // }
             }
         }
     }
