@@ -52,6 +52,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Start2
       objectReference: {fileID: 0}
+    - target: {fileID: 5528812835231690318, guid: 4caf3df3be317b14bb93908f88f3443e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5528812835231690318, guid: 4caf3df3be317b14bb93908f88f3443e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -8.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5528812835231690318, guid: 4caf3df3be317b14bb93908f88f3443e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.58
+      objectReference: {fileID: 0}
     - target: {fileID: 6953435128824720055, guid: 4caf3df3be317b14bb93908f88f3443e, type: 3}
       propertyPath: m_text
       value: 2

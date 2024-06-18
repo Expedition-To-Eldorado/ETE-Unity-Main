@@ -12,17 +12,21 @@ using UnityEngine.UI;
 public class GameLoop : NetworkBehaviour
 {
 
+    public static GameLoop Instance { get; private set; }
     public static bool isMyTurn;
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
     public static Action<int> drawFullHand;
     [SerializeField] private GameObject YouWonTxt;
+    public bool CanStartGame;
     [SerializeField] private GameObject PhaseTxt;
     private TMP_Text PhaseTxtComponent;
 
     public void Start()
     {
+        Instance = this;
         isMyTurn = false;
+        CanStartGame = false;
     }
 
     public void OnEnable()
@@ -109,6 +113,10 @@ public class GameLoop : NetworkBehaviour
         {
             nextPlayerServerRpc(true, new ServerRpcParams());
             updateText();
+        }
+        if (CanStartGame)
+        {
+            nextPlayerServerRpc(true, new ServerRpcParams());
         }
     }
 
