@@ -8,13 +8,13 @@ public class StartWindowUI : MonoBehaviour
     [SerializeField] private Button createGame;
     [SerializeField] private Button joinGame;
     
-    void Start()
+    public void Awake()
     {
         createGame.onClick.AddListener(() => {
             CreateGameUI.Instance.Show();
         });
         joinGame.onClick.AddListener(() => {
-            
+            JoinGameUI.Instance.Show();
         });
     }
 }

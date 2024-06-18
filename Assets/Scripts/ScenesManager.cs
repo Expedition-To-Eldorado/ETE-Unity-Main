@@ -16,7 +16,7 @@ public class ScenesManager : MonoBehaviour
     public enum Scene
     {
         StartWindow,
-        EasyMap1,
+        EasyGoldenHills,
     }
 
     public void LoadScene(Scene scene)

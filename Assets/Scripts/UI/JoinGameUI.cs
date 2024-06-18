@@ -1,30 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CreateGameUI : MonoBehaviour
+public class JoinGameUI : MonoBehaviour
 {
-    public static CreateGameUI Instance { get; private set; }
+    public static JoinGameUI Instance { get; private set; }
     
-    [SerializeField] private TextMeshProUGUI GameNameInput;
-    //[SerializeField] private Dropdown boardDropdown;
+    [SerializeField] private TextMeshProUGUI GameCodeInput;
     [SerializeField] private TextMeshProUGUI PlayerNameInput;
-    [SerializeField] private Button CreateGameButton;
+    [SerializeField] private Button JoinGameButton;
 
-    private string GameName;
     private string PlayerName;
+    private string GameCode;
     
     private void Awake()
     {
         Instance = this;
-        CreateGameButton.onClick.AddListener(async () => {
+        JoinGameButton.onClick.AddListener(async () => {
             ValidateNames();
             await LobbyManager.Instance.Authenticate(PlayerName);
-            await LobbyManager.Instance.CreateLobby(GameName);
+            await LobbyManager.Instance.JoinLobbyByCode(GameCode);
             Hide();
             LobbyUI.Instance.Show();
         });
@@ -39,10 +36,10 @@ public class CreateGameUI : MonoBehaviour
     public void Show() {
         gameObject.SetActive(true);
     }
-
+    
     private void ValidateNames()
     {
-        GameName = LobbyManager.Instance.ValidateName(GameNameInput.text);
+        GameCode = LobbyManager.Instance.ValidateName(GameCodeInput.text);
         PlayerName = LobbyManager.Instance.ValidateName(PlayerNameInput.text);
     }
 }

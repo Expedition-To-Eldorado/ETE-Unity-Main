@@ -22,8 +22,8 @@ public class LobbyUI : MonoBehaviour
         Instance = this;
 
         playerLobbyTemplate.gameObject.SetActive(false);
-        startGameButton.onClick.AddListener(() => {
-            
+        startGameButton.onClick.AddListener( () => {
+            LobbyManager.Instance.StartGame();
         });
 
         // leaveLobbyButton.onClick.AddListener(() => {
@@ -58,11 +58,9 @@ public class LobbyUI : MonoBehaviour
             Transform playerSingleTransform = Instantiate(playerLobbyTemplate, container);
             playerSingleTransform.gameObject.SetActive(true);
             LobbyPlayerUI lobbyPlayerSingleUI = playerSingleTransform.GetComponent<LobbyPlayerUI>();
-
-            // lobbyPlayerSingleUI.SetKickPlayerButtonVisible(
-            //     LobbyManager.Instance.IsLobbyHost() &&
-            //     player.Id != AuthenticationService.Instance.PlayerId // Don't allow kick self
-            // );
+            
+            if(!LobbyManager.Instance.IsLobbyHost())
+                startGameButton.gameObject.SetActive(false);
 
             lobbyPlayerSingleUI.UpdatePlayer(player);
         }
