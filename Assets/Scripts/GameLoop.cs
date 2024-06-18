@@ -11,15 +11,19 @@ using UnityEngine.UI;
 public class GameLoop : NetworkBehaviour
 {
 
+    public static GameLoop Instance { get; private set; }
     public static bool isMyTurn;
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
     public static Action<int> drawFullHand;
     [SerializeField] private GameObject YouWonTxt;
+    public bool CanStartGame;
 
     public void Start()
     {
+        Instance = this;
         isMyTurn = false;
+        CanStartGame = false;
     }
 
     public void Awake()
@@ -57,6 +61,10 @@ public class GameLoop : NetworkBehaviour
         }
         //somehow start turn with 1 player
         if (Input.GetKeyDown(KeyCode.T))
+        {
+            nextPlayerServerRpc(true, new ServerRpcParams());
+        }
+        if (CanStartGame)
         {
             nextPlayerServerRpc(true, new ServerRpcParams());
         }

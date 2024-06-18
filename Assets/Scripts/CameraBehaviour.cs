@@ -55,6 +55,11 @@ public class CameraBehaviour : MonoBehaviour
         setView(new Vector3(0,0));
     }
 
+    private void Awake()
+    {
+        
+    }
+
     // Update is called once per frame
     void Update()
     {

@@ -19,12 +19,14 @@ public class LobbyManager : MonoBehaviour
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_PLAYER_COLOR = "Color";
     public const string KEY_START_GAME = "StartGame";
+    public const string KEY_GAME_LAUNCHED = "GameLaunched";
     
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
     private string playerName;
+    public bool startedTheGame;
     
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
@@ -42,6 +44,7 @@ public class LobbyManager : MonoBehaviour
     
     private void Awake() {
         Instance = this;
+        startedTheGame = false;
     }
 
     void Update()
@@ -98,10 +101,16 @@ public class LobbyManager : MonoBehaviour
                     if (!IsLobbyHost())
                     {
                         RelayManager.Instance.JoinRelay(joinedLobby.Data[KEY_START_GAME].Value);
+                        UpdatePlayerLaunchStatus("Yes");
                     }
-
+                }
+                if (CheckIfEveryPlayerLaunchedTheGame(joinedLobby))
+                {
+                    if (IsLobbyHost())
+                    {
+                        GameLoop.Instance.CanStartGame = true;
+                    }
                     joinedLobby = null;
-                    
                 }
             }
         }
@@ -212,7 +221,8 @@ public class LobbyManager : MonoBehaviour
     {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
-            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerColor.Red.ToString()) }
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerColor.Red.ToString()) },
+            { KEY_GAME_LAUNCHED, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "No") }
         });
     }
 
@@ -255,6 +265,31 @@ public class LobbyManager : MonoBehaviour
                         KEY_PLAYER_COLOR, new PlayerDataObject(
                             visibility: PlayerDataObject.VisibilityOptions.Public,
                             value: playerColor.ToString())
+                    }
+                };
+
+                string playerId = AuthenticationService.Instance.PlayerId;
+
+                Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, playerId, options);
+                joinedLobby = lobby;
+
+                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+            } catch (LobbyServiceException e) {
+                Debug.Log(e);
+            }
+        }
+    }
+    
+    public async void UpdatePlayerLaunchStatus(string status) {
+        if (joinedLobby != null) {
+            try {
+                UpdatePlayerOptions options = new UpdatePlayerOptions();
+
+                options.Data = new Dictionary<string, PlayerDataObject>() {
+                    {
+                        KEY_GAME_LAUNCHED, new PlayerDataObject(
+                            visibility: PlayerDataObject.VisibilityOptions.Member,
+                            value: status)
                     }
                 };
 
@@ -336,7 +371,7 @@ public class LobbyManager : MonoBehaviour
             {
                 Debug.Log("StartGame");
                 string relayCode = await RelayManager.Instance.CreateRelay();
-
+                UpdatePlayerLaunchStatus("Yes");
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
                 {
                     Data = new Dictionary<string, DataObject>
@@ -350,5 +385,15 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log(e);
             }
         }
+    }
+
+    public bool CheckIfEveryPlayerLaunchedTheGame(Lobby lobby)
+    {
+        foreach (Player player in lobby.Players)
+        {
+            if (player.Data[key: KEY_GAME_LAUNCHED].Value == "No")
+                return false;
+        }
+        return true;
     }
 }
