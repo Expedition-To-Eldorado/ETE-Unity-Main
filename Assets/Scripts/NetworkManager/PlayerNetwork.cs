@@ -100,11 +100,10 @@ public class PlayerNetwork : NetworkBehaviour
         if (errCode == ErrorMsg.OK)
         {
             card.leftPower -= terrainPower;
-        }
-
-        if (card.leftPower <= 0 && errCode == ErrorMsg.OK)
-        {
-            UseCard?.Invoke();
+            if (card.leftPower <= 0)
+            {
+                UseCard?.Invoke();
+            }
         }
 
         if (errCode == ErrorMsg.DISCARD_CARD)
@@ -165,7 +164,7 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         //check if selected card matches the field and its power
-        if (cardType != terrainName)
+        if (cardType != terrainName && cardType != "All")
         {
             Debug.Log("Chosen card " + cardType + " does not match the chosen field " + terrainName);
             return ErrorMsg.CARD_NOT_MATCHING;
