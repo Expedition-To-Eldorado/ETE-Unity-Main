@@ -117,6 +117,8 @@ public class GameLoop : NetworkBehaviour
         if (CanStartGame)
         {
             nextPlayerServerRpc(true, new ServerRpcParams());
+            updateText();
+            CanStartGame = false;
         }
     }
 
