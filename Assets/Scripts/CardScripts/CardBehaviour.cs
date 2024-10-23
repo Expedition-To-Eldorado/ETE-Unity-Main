@@ -21,6 +21,7 @@ public class CardBehaviour : MonoBehaviour
     public static Action useCard;
     public static Action burnCard;
     public static Action<int> specialEffectBurn;
+    public static Action specialEffectBuy;
 
 
     private void Awake()
@@ -71,6 +72,11 @@ public class CardBehaviour : MonoBehaviour
             drawCard?.Invoke();
             drawCard?.Invoke();
             drawCard?.Invoke();
+            burnCard?.Invoke();
+        }
+        else if (cardBehaviour.NameOfCard == "Nadajnik")
+        {
+            specialEffectBuy?.Invoke();
             burnCard?.Invoke();
         }
     }

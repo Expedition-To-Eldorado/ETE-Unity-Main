@@ -7554,11 +7554,12 @@ MonoBehaviour:
   - {fileID: 3863177216940408413, guid: 2ac9b1f83b5d5e949a0c0c502d600cb4, type: 3}
   - {fileID: 8764124051144005569, guid: 86f8ae75387d36545a8a8231f4b76bb0, type: 3}
   - {fileID: 3863177216940408413, guid: 9dddc82cebb3e2e4f8fe6d31cc388ce8, type: 3}
-  - {fileID: 5508173640785035031, guid: ab0c841943eb43046ad7436064bc2212, type: 3}
+  - {fileID: 4270067843275035874, guid: 239496ae1569b284f82b41f50209ac05, type: 3}
   selectedCursorOffsetValue: -1.26
   multipleChosenCards: []
   redrawCardsBtn: {fileID: 1817219765}
   InformationTxt: {fileID: 2034353306}
+  buyAnyCard: 0
   cardsToBurn: 0
 --- !u!4 &1747200723
 Transform:
@@ -8775,6 +8776,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   looseCards: []
+  InformationTxt: {fileID: 2034353306}
+  deckManager: {fileID: 1747200722}
 --- !u!114 &1999767868
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,6 +16,8 @@ public class ShopBehaviour : NetworkBehaviour
     //public GameObject Deck;
 
     public static Action<GameObject> AddCardToDeck;
+    public GameObject InformationTxt;
+    public DeckManager deckManager;
 
     // Start is called before the first frame update
     void Start()
@@ -38,11 +40,13 @@ public class ShopBehaviour : NetworkBehaviour
     private void OnEnable()
     {
         MouseController.BuyCard += BuyCard;
+        MouseController.buyAnyCardEffect += buyAnyCardEffect;
     }
 
     private void OnDisable()
     {
         MouseController.BuyCard -= BuyCard;
+        MouseController.buyAnyCardEffect -= buyAnyCardEffect;
     }
 
     public int FindCardInShop(GameObject card)
@@ -88,6 +92,20 @@ public class ShopBehaviour : NetworkBehaviour
             }
         }
         return index;
+    }
+
+    public void buyAnyCardEffect(RaycastHit hit)
+    {
+        GameObject card = hit.collider.gameObject;
+
+        GameObject deck = GameObject.Find("Deck");
+
+        GameObject tmp2 = Instantiate(card, deck.transform);
+        tmp2.transform.Rotate(0, 180, 0);
+        AddCardToDeck?.Invoke(tmp2);
+
+        InformationTxt.SetActive(false);
+        deckManager.buyAnyCard = false;
     }
 
     private ErrorMsg BuyCard(GameObject card, int coins)

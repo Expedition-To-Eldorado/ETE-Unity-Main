@@ -15,6 +15,7 @@ public class MouseController : Singleton<MouseController>
     public Action<RaycastHit> SetSelectedCursor;
     public Action<RaycastHit> SetMultipleCursor;
     public Action NextPhase;
+    public static Action<RaycastHit> buyAnyCardEffect;
     //public Action<GameObject, int> BuyCard;
     public delegate ErrorMsg buyCard(GameObject card, int coins);
     public static buyCard BuyCard;
@@ -171,6 +172,11 @@ public class MouseController : Singleton<MouseController>
                             DeckManager.clearMultipleChosenCards();
                             NextPhase?.Invoke();
                         }
+                    }
+                    else if (card.CompareTag("Card_Shop") && DeckManager.buyAnyCard)
+                    {
+                        //buy the card
+                        buyAnyCardEffect?.Invoke(hit);
                     }
                 }
                 else if(mouseButton == 1)
