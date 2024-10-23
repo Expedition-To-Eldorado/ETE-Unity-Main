@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEditor;
 using System.Reflection;
+using TMPro;
 
 public class DeckManager : MonoBehaviour
 {
@@ -25,7 +26,12 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
-    //Obecnie tworzony jest widok 3 - widok na karty
+    public GameObject InformationTxt;
+
+    //cards to burn from special effect
+    public int cardsToBurn;
+
+    public static Action<RaycastHit> ExecuteSpecialEffect;
 
     public void Awake()
     {
@@ -105,6 +111,9 @@ public class DeckManager : MonoBehaviour
         PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards += burnMultipleCards;
         PlayerNetwork.UseCard += UseCard;
+        CardBehaviour.drawCard += drawCard;
+        CardBehaviour.useCard += UseCard;
+        CardBehaviour.specialEffectBurn += specialEffectBurn;
     }
 
     private void OnDisable()
@@ -118,6 +127,9 @@ public class DeckManager : MonoBehaviour
         PlayerNetwork.clearMultipleChosenCards -= clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards -= burnMultipleCards;
         PlayerNetwork.UseCard -= UseCard;
+        CardBehaviour.drawCard -= drawCard;
+        CardBehaviour.useCard -= UseCard;
+        CardBehaviour.specialEffectBurn -= specialEffectBurn;
     }
 
 
@@ -226,10 +238,29 @@ public class DeckManager : MonoBehaviour
         cursor = index + 1;
     }
 
+    //is only invoked in movement phase, in movement phase the special efect of cards can be executed
     private void SetSelectedCursor(RaycastHit hit)
     {
         int index = findIndexOfCard(hit.collider.gameObject);
         selectedCursor = index;
+
+        //if special effect includes burning cards
+        if (cardsToBurn > 0)
+        {
+            burnCard();
+            cardsToBurn--;
+            InformationTxt.GetComponent<TextMeshProUGUI>().text = "Choose " + cardsToBurn + " cards to burn";
+        }
+        
+        if(cardsToBurn == 0)
+        {
+            InformationTxt.SetActive(false);
+        }
+
+        if (hit.collider.gameObject.GetComponent<CardBehaviour>().Typ == "Special")
+        {
+            ExecuteSpecialEffect?.Invoke(hit);
+        }
     }
 
     private void SetMultipleCursor(RaycastHit hit)
@@ -281,6 +312,8 @@ public class DeckManager : MonoBehaviour
         cardsInDeck.Add(Instantiate(starterCardPack[(int)CardTypes.Globtroter], Deck.transform));
         cardsInDeck.Add(Instantiate(starterCardPack[(int)CardTypes.Globtroter], Deck.transform));
         cardsInDeck.Add(Instantiate(starterCardPack[(int)CardTypes.Marynarz], Deck.transform));
+        //for debug 
+        cardsInDeck.Add(Instantiate(starterCardPack[3], Deck.transform));
 
         for (int i = 0; i < cardsInDeck.Count; i++)
         {
@@ -298,6 +331,20 @@ public class DeckManager : MonoBehaviour
         /*card.tag = "Card_Hand";
         card.SetActive(true);
         cardsOnHand.Add(card);*/
+    }
+
+    //draw random card from deck
+    public void drawCard()
+    {
+        if (cardsInDeck.Count != 0)
+        {
+            int index = UnityEngine.Random.Range(0, cardsInDeck.Count);
+            GameObject card = cardsInDeck[index];
+            cardsOnHand.Add(cardsInDeck[index]);
+            card.SetActive(true);
+            card.tag = "Card_Hand";
+            cardsInDeck.RemoveAt(index);
+        }
     }
 
     public void drawFullHand(int numOfCards)
@@ -323,19 +370,8 @@ public class DeckManager : MonoBehaviour
 
         for(int i = 0; i < numOfCards; i++)
         {
-            if(cardsInDeck.Count != 0)
-            {
-                int index = UnityEngine.Random.Range(0, cardsInDeck.Count);
-                GameObject card = cardsInDeck[index];
-                cardsOnHand.Add(cardsInDeck[index]);
-                card.SetActive(true);
-                card.tag = "Card_Hand";
-                cardsInDeck.RemoveAt(index);
-            }
-            else
-            {
-                Debug.Log("not enough cards in deck: " + (numOfCards - i) + " left");
-            }
+            if(cardsInDeck.Count == 0) Debug.Log("not enough cards in deck: " + (numOfCards - i) + " left");
+            drawCard();
         }
     }
 
@@ -387,5 +423,13 @@ public class DeckManager : MonoBehaviour
         cardsOnHand.RemoveAt(index);
         Destroy(card);
         selectedCursor = -1;
+    }
+
+    public void specialEffectBurn(int numOfCardsToBurn)
+    {
+        Debug.Log(InformationTxt);
+        cardsToBurn = numOfCardsToBurn;
+        InformationTxt.GetComponent<TextMeshProUGUI>().text = "Choose " + cardsToBurn + " cards to burn";
+        InformationTxt.SetActive(true);
     }
 }

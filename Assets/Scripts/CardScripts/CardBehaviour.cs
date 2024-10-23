@@ -15,21 +15,43 @@ public class CardBehaviour : MonoBehaviour
     [SerializeField] public int price;
     [SerializeField] public bool isSelected;
 
+    public DeckManager deckManager;
+
+    public static Action drawCard;
+    public static Action useCard;
+    public static Action<int> specialEffectBurn;
+
 
     private void Awake()
     {
         leftPower = Power;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnEnable()
     {
+        DeckManager.ExecuteSpecialEffect += ExecuteSpecialEffect;
+    }
+
+    public void OnDisable()
+    {
+        DeckManager.ExecuteSpecialEffect -= ExecuteSpecialEffect;
+    }
+
+    public void ExecuteSpecialEffect(RaycastHit hit)
+    {
+        if (hit.collider.gameObject != gameObject) return;
+
+        GameObject card = hit.collider.gameObject;
+        CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
+
+        //TODO - decide if string is enough or should be changed to enum
+        if(cardBehaviour.NameOfCard == "DrBotaniki")
+        {
+            drawCard?.Invoke();
+            useCard?.Invoke();
+            specialEffectBurn?.Invoke(2);
+        }
         
     }
 
