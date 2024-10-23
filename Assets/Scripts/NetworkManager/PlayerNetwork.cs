@@ -99,7 +99,16 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (errCode == ErrorMsg.OK)
         {
-            card.leftPower -= terrainPower;
+            //i thought that there is no need for overcomplicating this card
+            if(card.NameOfCard == "Tubylec")
+            {
+                card.leftPower = 0;
+            }
+            else
+            {
+                card.leftPower -= terrainPower;
+            }
+
             if (card.leftPower <= 0)
             {
                 UseCard?.Invoke();
