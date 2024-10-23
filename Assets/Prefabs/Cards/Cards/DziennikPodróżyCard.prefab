@@ -156,13 +156,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Power: 0
   leftPower: 0
-  NameOfCard: "DziennikPodr\xF3\u017Cy"
+  NameOfCard: DziennikPodrozy
   Typ: Special
   isStartingCard: 0
   isBuyable: 0
   quantityInShop: 3
   price: 3
   isSelected: 0
+  deckManager: {fileID: 0}
 --- !u!33 &6057676789670134765
 MeshFilter:
   m_ObjectHideFlags: 0

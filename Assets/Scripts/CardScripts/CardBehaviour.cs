@@ -19,6 +19,7 @@ public class CardBehaviour : MonoBehaviour
 
     public static Action drawCard;
     public static Action useCard;
+    public static Action burnCard;
     public static Action<int> specialEffectBurn;
 
 
@@ -50,9 +51,28 @@ public class CardBehaviour : MonoBehaviour
         {
             drawCard?.Invoke();
             useCard?.Invoke();
+            specialEffectBurn?.Invoke(1);
+        }
+        else if (cardBehaviour.NameOfCard == "DziennikPodrozy")
+        {
+            drawCard?.Invoke();
+            drawCard?.Invoke();
+            burnCard?.Invoke();
             specialEffectBurn?.Invoke(2);
         }
-        
+        else if (cardBehaviour.NameOfCard == "Kartograf")
+        {
+            drawCard?.Invoke();
+            drawCard?.Invoke();
+            useCard?.Invoke();
+        }
+        else if (cardBehaviour.NameOfCard == "Kompas")
+        {
+            drawCard?.Invoke();
+            drawCard?.Invoke();
+            drawCard?.Invoke();
+            burnCard?.Invoke();
+        }
     }
 
     public void UpdateQuantity()

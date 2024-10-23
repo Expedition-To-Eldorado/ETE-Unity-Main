@@ -114,6 +114,7 @@ public class DeckManager : MonoBehaviour
         CardBehaviour.drawCard += drawCard;
         CardBehaviour.useCard += UseCard;
         CardBehaviour.specialEffectBurn += specialEffectBurn;
+        CardBehaviour.burnCard += burnCard;
     }
 
     private void OnDisable()
@@ -130,6 +131,7 @@ public class DeckManager : MonoBehaviour
         CardBehaviour.drawCard -= drawCard;
         CardBehaviour.useCard -= UseCard;
         CardBehaviour.specialEffectBurn -= specialEffectBurn;
+        CardBehaviour.burnCard -= burnCard;
     }
 
 
@@ -333,18 +335,27 @@ public class DeckManager : MonoBehaviour
         cardsOnHand.Add(card);*/
     }
 
+
     //draw random card from deck
     public void drawCard()
     {
-        if (cardsInDeck.Count != 0)
+        if(cardsInDeck.Count == 0)
         {
-            int index = UnityEngine.Random.Range(0, cardsInDeck.Count);
-            GameObject card = cardsInDeck[index];
-            cardsOnHand.Add(cardsInDeck[index]);
-            card.SetActive(true);
-            card.tag = "Card_Hand";
-            cardsInDeck.RemoveAt(index);
+            foreach (var usedCard in usedCards)
+            {
+                usedCard.tag = "Card_Deck";
+                cardsInDeck.Add(usedCard);
+            }
+            usedCards.Clear();
+            Debug.Log("Reshufled the used cards");
         }
+
+        int index = UnityEngine.Random.Range(0, cardsInDeck.Count);
+        GameObject card = cardsInDeck[index];
+        cardsOnHand.Add(cardsInDeck[index]);
+        card.SetActive(true);
+        card.tag = "Card_Hand";
+        cardsInDeck.RemoveAt(index);
     }
 
     public void drawFullHand(int numOfCards)
