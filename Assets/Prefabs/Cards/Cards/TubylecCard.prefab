@@ -154,15 +154,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d47d2853a4d414fab2620299abf7cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Power: 0
-  leftPower: 0
+  Power: 100
+  leftPower: 100
   NameOfCard: Tubylec
-  Typ: Special
+  Typ: All
   isStartingCard: 0
   isBuyable: 0
   quantityInShop: 3
   price: 5
   isSelected: 0
+  deckManager: {fileID: 0}
 --- !u!33 &4371037089354293554
 MeshFilter:
   m_ObjectHideFlags: 0

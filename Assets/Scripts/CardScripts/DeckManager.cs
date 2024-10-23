@@ -381,7 +381,6 @@ public class DeckManager : MonoBehaviour
 
         for(int i = 0; i < numOfCards; i++)
         {
-            if(cardsInDeck.Count == 0) Debug.Log("not enough cards in deck: " + (numOfCards - i) + " left");
             drawCard();
         }
     }
