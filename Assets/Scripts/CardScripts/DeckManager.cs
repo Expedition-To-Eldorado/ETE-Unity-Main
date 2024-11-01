@@ -27,6 +27,7 @@ public class DeckManager : MonoBehaviour
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
     public GameObject InformationTxt;
+    public Button cancelButton;
     public bool buyAnyCard = false;
 
     //cards to burn from special effect
@@ -42,6 +43,12 @@ public class DeckManager : MonoBehaviour
             {
                 clearMultipleChosenCards();
             }
+        });
+
+        cancelButton.onClick.AddListener(() => {
+            cardsToBurn = 0;
+            cancelButton.gameObject.SetActive(false);
+            InformationTxt.SetActive(false);
         });
     }
     public int getNumberOfChosenCards()
@@ -441,6 +448,7 @@ public class DeckManager : MonoBehaviour
     public void specialEffectBurn(int numOfCardsToBurn)
     {
         cardsToBurn = numOfCardsToBurn;
+        cancelButton.gameObject.SetActive(true);
         InformationTxt.GetComponent<TextMeshProUGUI>().text = "Choose " + cardsToBurn + " cards to burn";
         InformationTxt.SetActive(true);
     }
