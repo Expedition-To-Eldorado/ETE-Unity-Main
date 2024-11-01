@@ -325,7 +325,7 @@ public class DeckManager : MonoBehaviour
         cardsInDeck.Add(Instantiate(starterCardPack[(int)CardTypes.Globtroter], Deck.transform));
         cardsInDeck.Add(Instantiate(starterCardPack[(int)CardTypes.Marynarz], Deck.transform));
         //for debug 
-        cardsInDeck.Add(Instantiate(starterCardPack[3], Deck.transform));
+        //cardsInDeck.Add(Instantiate(starterCardPack[3], Deck.transform));
 
         for (int i = 0; i < cardsInDeck.Count; i++)
         {

@@ -83,6 +83,7 @@ public class CardBehaviour : MonoBehaviour
 
     public void UpdateQuantity()
     {
+        Debug.Log("bought a card: " + NameOfCard);
         quantityInShop--;
     }
     

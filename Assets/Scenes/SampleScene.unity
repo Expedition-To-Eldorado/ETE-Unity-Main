@@ -7809,7 +7809,7 @@ MonoBehaviour:
   - {fileID: 3863177216940408413, guid: 2ac9b1f83b5d5e949a0c0c502d600cb4, type: 3}
   - {fileID: 8764124051144005569, guid: 86f8ae75387d36545a8a8231f4b76bb0, type: 3}
   - {fileID: 3863177216940408413, guid: 9dddc82cebb3e2e4f8fe6d31cc388ce8, type: 3}
-  - {fileID: 6438731069088563993, guid: b1c30c57d4e8eea45b5030d454723c7b, type: 3}
+  - {fileID: 4270067843275035874, guid: 239496ae1569b284f82b41f50209ac05, type: 3}
   selectedCursorOffsetValue: -1.26
   multipleChosenCards: []
   redrawCardsBtn: {fileID: 1817219765}

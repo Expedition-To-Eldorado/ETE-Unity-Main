@@ -5,6 +5,7 @@ using GeneralEnumerations;
 using System;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using Unity.Netcode;
+using System.Reflection;
 
 public class ShopBehaviour : NetworkBehaviour
 {
@@ -104,6 +105,15 @@ public class ShopBehaviour : NetworkBehaviour
         tmp2.transform.Rotate(0, 180, 0);
         AddCardToDeck?.Invoke(tmp2);
 
+        int index = FindCardInShop(card);
+        bool isInShop = true;
+        if (index == -1)
+        {
+            isInShop = false;
+            index = FindCardInLoose(card);
+        }
+        updateShopServerRpc(index, isInShop);
+
         InformationTxt.SetActive(false);
         deckManager.buyAnyCard = false;
     }
@@ -189,7 +199,7 @@ public class ShopBehaviour : NetworkBehaviour
 
         int index = FindEmptySlotInShop();
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        if (!cardBehaviour.isBuyable && (index != -1))
+        if (!cardBehaviour.isBuyable && (index != -1) && !deckManager.buyAnyCard)
         {
             //Destroy(card);
             card.transform.position = activeShopPositions[index].transform.position;
@@ -203,6 +213,7 @@ public class ShopBehaviour : NetworkBehaviour
             cardsInShop[index] = card;
         }
 
+        Debug.Log("im buying a mfing card");
         cardBehaviour.UpdateQuantity();
 
         if (cardBehaviour.quantityInShop == 0)
