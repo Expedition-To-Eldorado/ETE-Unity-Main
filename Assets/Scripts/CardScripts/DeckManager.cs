@@ -25,6 +25,8 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
+    public static bool isHydroplaneUsed = false;
+    public static string hydroplaneField = "";
     //Obecnie tworzony jest widok 3 - widok na karty
 
     public void Awake()
@@ -104,7 +106,7 @@ public class DeckManager : MonoBehaviour
         GameLoop.drawFullHand += drawFullHand;
         PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards += burnMultipleCards;
-        PlayerNetwork.UseCard += UseCard;
+        PlayerNetwork.UseCard += useCard;
     }
 
     private void OnDisable()
@@ -117,7 +119,7 @@ public class DeckManager : MonoBehaviour
         GameLoop.drawFullHand -= drawFullHand;
         PlayerNetwork.clearMultipleChosenCards -= clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards -= burnMultipleCards;
-        PlayerNetwork.UseCard -= UseCard;
+        PlayerNetwork.UseCard -= useCard;
     }
 
 
@@ -264,7 +266,7 @@ public class DeckManager : MonoBehaviour
             CardBehaviour cardBehaviour = cardsOnHand[selectedCursor].GetComponent<CardBehaviour>();
             if (cardBehaviour.leftPower != cardBehaviour.Power)
             {
-                UseCard();
+                useCard();
             }
             selectedCursor = -1;
         }
@@ -353,11 +355,24 @@ public class DeckManager : MonoBehaviour
         return index;
     }
 
-    public void UseCard()
+    public void useCard()
     {
         int index = selectedCursor;
-
         CardBehaviour cardBehaviour = cardsOnHand[index].GetComponent<CardBehaviour>();
+
+        if (cardBehaviour.NameOfCard.Equals("Hydroplan"))
+        {
+            isHydroplaneUsed = false;
+            hydroplaneField = "";
+        }
+
+
+        if (cardBehaviour.isBurnable)
+        {
+            burnCard();
+            return;
+        }
+
         cardBehaviour.leftPower = cardBehaviour.Power;
         cardsOnHand[index].tag = "Card_Used";
         cardsOnHand[index].SetActive(false);

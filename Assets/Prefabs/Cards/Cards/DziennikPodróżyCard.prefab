@@ -163,6 +163,7 @@ MonoBehaviour:
   quantityInShop: 3
   price: 3
   isSelected: 0
+  isBurnable: 1
 --- !u!33 &6057676789670134765
 MeshFilter:
   m_ObjectHideFlags: 0
