@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardBehaviour : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class CardBehaviour : MonoBehaviour
     [SerializeField] public int quantityInShop;
     [SerializeField] public int price;
     [SerializeField] public bool isSelected;
+    [SerializeField] public Texture2D inspectionImage;
 
 
     private void Awake()

@@ -25,6 +25,10 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
+
+    public RawImage cardInspectionImage;
+    public Button quitInspectionView;
+    public static bool isInspectionView;
     //Obecnie tworzony jest widok 3 - widok na karty
 
     public void Awake()
@@ -35,6 +39,13 @@ public class DeckManager : MonoBehaviour
             {
                 clearMultipleChosenCards();
             }
+        });
+
+        quitInspectionView.onClick.AddListener(() =>
+        {
+            cardInspectionImage.gameObject.SetActive(false);
+            quitInspectionView.gameObject.SetActive(false);
+            isInspectionView = false;
         });
     }
     public int getNumberOfChosenCards()
@@ -101,6 +112,7 @@ public class DeckManager : MonoBehaviour
         ShopBehaviour.AddCardToDeck += AddCardToDeck;
         MouseController.instance.SetSelectedCursor += SetSelectedCursor;
         MouseController.instance.SetMultipleCursor += SetMultipleCursor;
+        MouseController.instance.OnMiddleMouseClick += turnOnInspectionView;
         GameLoop.drawFullHand += drawFullHand;
         PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards += burnMultipleCards;
@@ -351,6 +363,14 @@ public class DeckManager : MonoBehaviour
             }
         }
         return index;
+    }
+
+    public void turnOnInspectionView(RaycastHit hit)
+    {
+        cardInspectionImage.texture = hit.collider.gameObject.GetComponent<CardBehaviour>().inspectionImage;
+        cardInspectionImage.gameObject.SetActive(true);
+        quitInspectionView.gameObject.SetActive(true);
+        isInspectionView = true;
     }
 
     public void UseCard()

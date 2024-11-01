@@ -163,6 +163,7 @@ MonoBehaviour:
   quantityInShop: 3
   price: 3
   isSelected: 0
+  inspectionImage: {fileID: 2800000, guid: caaf891e2005d7d4882fb9b393b68368, type: 3}
 --- !u!33 &6057676789670134765
 MeshFilter:
   m_ObjectHideFlags: 0
