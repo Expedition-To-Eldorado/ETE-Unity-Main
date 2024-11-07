@@ -13,28 +13,6 @@ public class PawnBehaviour : MonoBehaviour
     [SerializeField] int zCurrentPos;
     public bool isActivePawn;
 
-    void Start()
-    {
-        
-    }
-
-    // private void OnEnable()
-    // {
-    //     HexGridMeshGenerator.MovePawn += movePawn;
-    //     //HexCell.MovePawn += movePawn;
-    // }
-    //
-    // private void OnDisable()
-    // {
-    //     HexGridMeshGenerator.MovePawn -= movePawn;
-    //     //HexCell.MovePawn -= movePawn;
-    // }
-
-    void Update()
-    {
-        
-    }
-
     private ErrorMsg movePawn(int x, int z, HexGrid boardPiece, string terrainName, string cardType, int cardPower)
     {
         Vector3 centre = HexMetrics.Center(boardPiece.HexSize, x, z, boardPiece.Orientation) + boardPiece.gridOrigin;

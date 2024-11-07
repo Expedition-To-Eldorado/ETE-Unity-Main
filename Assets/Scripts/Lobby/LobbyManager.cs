@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -26,10 +27,12 @@ public class LobbyManager : MonoBehaviour
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
     private string playerName;
+    private Player myPlayer;
     public bool startedTheGame;
     
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
+    public static Action<string, PlayerColor> SetPlayerData;
     public class LobbyEventArgs : EventArgs {
         public Lobby lobby;
     }
@@ -103,6 +106,8 @@ public class LobbyManager : MonoBehaviour
                         RelayManager.Instance.JoinRelay(joinedLobby.Data[KEY_START_GAME].Value);
                         //UpdatePlayerLaunchStatus("Yes");
                     }
+                    SetPlayerData?.Invoke(myPlayer.Data[KEY_PLAYER_NAME].Value,
+                        System.Enum.Parse<PlayerColor>(myPlayer.Data[KEY_PLAYER_COLOR].Value));
                     joinedLobby = null;
                 }
                 // if (CheckIfEveryPlayerLaunchedTheGame(joinedLobby))
@@ -134,6 +139,7 @@ public class LobbyManager : MonoBehaviour
             };
             hostLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
             joinedLobby = hostLobby;
+            myPlayer = player;
             Debug.Log("Created Lobby! " + hostLobby.Name + ", maxPlayers: " + hostLobby.MaxPlayers + ", LobbyCode: " + hostLobby.LobbyCode);
             PrintPlayers(hostLobby);
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
@@ -146,6 +152,10 @@ public class LobbyManager : MonoBehaviour
 
     public Lobby GetJoinedLobby() {
         return joinedLobby;
+    }
+
+    public Player GetMyPlayerInLobby() {
+        return myPlayer;
     }
     
     public bool IsLobbyHost() {
@@ -186,14 +196,18 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
+            Player player = GetPlayer();
             JoinLobbyByCodeOptions joinLobbyByCodeOptions = new JoinLobbyByCodeOptions
             {
-                Player = GetPlayer()
+                Player = player
             };
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, joinLobbyByCodeOptions);
             joinedLobby = lobby;
             Debug.Log("Joined Lobby with code " + lobbyCode);
             PrintPlayers(joinedLobby);
+            int numberOfPlayer = joinedLobby.Players.Count - 1;
+            UpdatePlayerCharacter((PlayerColor)numberOfPlayer);
+            myPlayer = player;
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
         }
         catch (LobbyServiceException e)
@@ -270,7 +284,6 @@ public class LobbyManager : MonoBehaviour
                 };
 
                 string playerId = AuthenticationService.Instance.PlayerId;
-
                 Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, playerId, options);
                 joinedLobby = lobby;
 
@@ -373,6 +386,7 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log("StartGame");
                 string relayCode = await RelayManager.Instance.CreateRelay();
                 //UpdatePlayerLaunchStatus("Yes");
+                
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
                 {
                     Data = new Dictionary<string, DataObject>
@@ -387,6 +401,18 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log(e);
             }
         }
+        // SetPlayerData?.Invoke(myPlayer.Data[KEY_PLAYER_NAME].Value,
+        //         System.Enum.Parse<PlayerColor>(myPlayer.Data[KEY_PLAYER_COLOR].Value));
+        
+        Debug.Log("setting player data NOT SUCCESSFUL!");
+        
+        
+        // foreach (Player player in joinedLobby.Players)
+        // {
+        //     PlayerNetwork.PlayerColor =
+        //         System.Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+        // }
+        
     }
 
     public bool CheckIfEveryPlayerLaunchedTheGame(Lobby lobby)

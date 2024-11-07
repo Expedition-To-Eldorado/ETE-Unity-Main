@@ -30,6 +30,7 @@ public class BoardSingleton : MonoBehaviour
     public static BoardSingleton instance { get; private set; }
     private static TerrainType[] AllTerrains;
     public List<PawnPosition> PawnPositions = new List<PawnPosition>();
+    public List<(string, LobbyManager.PlayerColor)> PawnsData = new List<(string Name, LobbyManager.PlayerColor Color)>();
     public List<TerrainType> TerrainTypes = new List<TerrainType>();
     public List<List<List<int>>> Pieces = new List<List<List<int>>>();
     
@@ -53,6 +54,7 @@ public class BoardSingleton : MonoBehaviour
         {
             PawnPosition pawnPosition = new PawnPosition(BoardPiece.StartB, new Vector2(i + 3, 0));
             PawnPositions.Add(pawnPosition);
+            PawnsData.Add(("Player" + i, LobbyManager.PlayerColor.Red));
         }
         
         SetBoardPieces();
