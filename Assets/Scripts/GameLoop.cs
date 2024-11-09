@@ -90,7 +90,7 @@ public class GameLoop : NetworkBehaviour
                     Debug.Log("something went wrong");
                     break;
             }
-            PhaseTxtComponent.text = "Current phase is: " + message;
+            PhaseTxtComponent.text =  message;
         }
 
         

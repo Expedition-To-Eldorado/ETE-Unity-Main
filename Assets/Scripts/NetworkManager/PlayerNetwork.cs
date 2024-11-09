@@ -5,6 +5,8 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using GeneralEnumerations;
+using IngameDebugConsole;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 
 public class PlayerNetwork : NetworkBehaviour
@@ -14,8 +16,6 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private List<Material> PawnMaterials;
     public string PlayerName;
     public LobbyManager.PlayerColor PlayerColor;
-    //public NetworkVariable<string> PlayerName = new NetworkVariable<string>("Player0", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    //public NetworkVariable<int> PlayerColor = new NetworkVariable<int>((int)LobbyManager.PlayerColor.Red, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public static Action UseCard;
     public static Action clearMultipleChosenCards;
     public static Action burnMultipleCards;
@@ -41,38 +41,23 @@ public class PlayerNetwork : NetworkBehaviour
                 return;
             }
             transform.position = new Vector3(32f + (int)OwnerClientId*10, 0.55f, -4.3f);
-            //PlayerName.Value = LobbyManager.Instance.GetMyPlayerInLobby().Data[LobbyManager.KEY_PLAYER_NAME].Value;
-            //PlayerColor.Value = int.Parse(LobbyManager.Instance.GetMyPlayerInLobby().Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+            Player player = LobbyManager.Instance.GetPlayerByIdAfterGameStart(AuthenticationService.Instance.PlayerId);
+            PlayerName = player.Data[LobbyManager.KEY_PLAYER_NAME].Value;
+            PlayerColor = System.Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+            Debug.Log("PLAYER NAME: " + player.Data[LobbyManager.KEY_PLAYER_NAME].Value + "PLAYER COLOR: "+ (int)PlayerColor);
+            SetPlayerInfoServerRpc(PlayerName, PlayerColor, new ServerRpcParams());
         }
-
-        // UpdatePawnColor();
-        meshRenderer.material = PawnMaterials[0];
-    }
-
-    private void UpdatePawnData()
-    {
-        if (IsOwner)
-        {
-            (PlayerName, PlayerColor) = BoardSingleton.instance.PawnsData[(int)OwnerClientId];
-            meshRenderer.material = PawnMaterials[(int)PlayerColor];
-        }
-    }
-
-    private void Update()
-    {
-        
+        meshRenderer.material = PawnMaterials[(int)PlayerColor];
     }
 
     private void OnEnable()
     {
         HexGridMeshGenerator.MovePawn += movePawn;
-        LobbyManager.SetPlayerData += setPlayerData;
     }
 
     private void OnDisable()
     {
         HexGridMeshGenerator.MovePawn -= movePawn;
-        LobbyManager.SetPlayerData -= setPlayerData;
     }
     
     
@@ -215,36 +200,23 @@ public class PlayerNetwork : NetworkBehaviour
         //     if (i >= NumberOfClients) break;
         // }
     }
-
-    private void setPlayerData(string playerName, LobbyManager.PlayerColor color)
-    {
-        if (IsOwner)
-        {
-            //PlayerName.Value = playerName;
-            //PlayerColor.Value = (int)color;
-            SetPlayerInfoServerRpc(playerName, color, new ServerRpcParams());
-            UpdatePawnData();
-        }
-    }
     
     [ServerRpc]
     public void SetPlayerInfoServerRpc(string name, LobbyManager.PlayerColor color, ServerRpcParams serverRpcParams)
     {
-        // Ustawienie wartości na serwerze
-        //PlayerName = name;
-        //PlayerColor = color;
         int SenderId = (int)serverRpcParams.Receive.SenderClientId;
         BoardSingleton.instance.PawnsData[SenderId] = (name, color);
-        // Synchronizacja z klientami
+        // Send info about player data to all clients
         UpdatePlayerInfoClientRpc(name, color, SenderId);
     }
     
     [ClientRpc]
     private void UpdatePlayerInfoClientRpc(string name, LobbyManager.PlayerColor color, int SenderId)
     {
-        //PlayerName = name;
-        //PlayerColor = color;
         BoardSingleton.instance.PawnsData[SenderId] = (name, color);
+        (string myName , LobbyManager.PlayerColor myColor) = BoardSingleton.instance.PawnsData[(int)OwnerClientId];
+        meshRenderer.material = PawnMaterials[(int)myColor];
+        PlayerBoardUI.Instance.UpdatePlayers();
     }
     
 }
