@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using TMPro;
-using Unity.Services.Lobbies.Models;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,15 +26,33 @@ public class PlayerBoardUI : MonoBehaviour
     {
         for(int i = 0; i < numberOfPlayers; i++)
         {
-            playerBoardFieldUIList[i].GetComponent<PlayerBoardFieldUI>().UpdatePlayer(
-                BoardSingleton.instance.PawnsData[i].Item1, BoardSingleton.instance.PawnsData[i].Item2);
+            playerBoardFieldUIList[i].GetComponent<PlayerBoardFieldUI>().UpdatePlayer(BoardSingleton.instance.PawnsData[i]);
         }
+        ShowActivePlayer();
     }
     
-    public void ChangeActivePlayer() {
-        foreach (var player in playerBoardFieldUIList)
+    public void ChangeActivePlayer(int activePlayerID) {
+        if (activePlayerID == 0) {
+            playerBoardFieldUIList[numberOfPlayers - 1].GetComponent<PlayerBoardFieldUI>().SetNotActive();
+        }
+        else {
+            playerBoardFieldUIList[activePlayerID - 1].GetComponent<PlayerBoardFieldUI>().SetNotActive();
+        }
+        playerBoardFieldUIList[activePlayerID].GetComponent<PlayerBoardFieldUI>().SetActive();
+        ShowActivePlayer();
+    }
+
+    public void ShowActivePlayer()
+    {
+        foreach (var playerField in playerBoardFieldUIList)
         {
-            
+            PlayerBoardFieldUI playerBoardFieldUI = playerField.GetComponent<PlayerBoardFieldUI>();
+            if (playerBoardFieldUI.IsActive()) {
+                playerBoardFieldUI.ShowActive();
+            }
+            else {
+                playerBoardFieldUI.ShowNotActive();
+            }
         }
     }
 }

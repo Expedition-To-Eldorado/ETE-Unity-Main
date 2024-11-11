@@ -4,33 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using GeneralEnumerations;
 using Unity.VisualScripting;
-
-public struct PawnPosition
-{
-    public BoardPiece BoardPiece;
-    public Vector2 PawnCords;
-
-    public PawnPosition(BoardPiece boardPiece, Vector2 pawnCords)
-    {
-        this.BoardPiece = boardPiece;
-        this.PawnCords = pawnCords;
-    }
-
-    public bool EqualsTo(PawnPosition position)
-    {
-        if (this.BoardPiece == position.BoardPiece && this.PawnCords == position.PawnCords)
-            return true;
-        else
-            return false;
-    }
-}
+using Unity.Netcode;
 
 public class BoardSingleton : MonoBehaviour
 {
     public static BoardSingleton instance { get; private set; }
     private static TerrainType[] AllTerrains;
     public List<PawnPosition> PawnPositions = new List<PawnPosition>();
-    public List<(string, LobbyManager.PlayerColor)> PawnsData = new List<(string Name, LobbyManager.PlayerColor Color)>();
+    public List<PawnData> PawnsData = new List<PawnData>();
     public List<TerrainType> TerrainTypes = new List<TerrainType>();
     public List<List<List<int>>> Pieces = new List<List<List<int>>>();
     
@@ -54,7 +35,9 @@ public class BoardSingleton : MonoBehaviour
         {
             PawnPosition pawnPosition = new PawnPosition(BoardPiece.StartB, new Vector2(i + 3, 0));
             PawnPositions.Add(pawnPosition);
-            PawnsData.Add(("Player" + i, LobbyManager.PlayerColor.Red));
+            string defaultName = "Player" + i;
+            PawnData pawnData = new PawnData(defaultName, LobbyManager.PlayerColor.Red);
+            PawnsData.Add(pawnData);
         }
         
         SetBoardPieces();
@@ -214,5 +197,51 @@ public class BoardSingleton : MonoBehaviour
             new List<int> { -1 ,24, 22 },
             new List<int> { 24, 22, -1 }
         });
+    }
+}
+
+public struct PawnPosition
+{
+    public BoardPiece BoardPiece;
+    public Vector2 PawnCords;
+
+    public PawnPosition(BoardPiece boardPiece, Vector2 pawnCords)
+    {
+        this.BoardPiece = boardPiece;
+        this.PawnCords = pawnCords;
+    }
+
+    public bool EqualsTo(PawnPosition position)
+    {
+        if (this.BoardPiece == position.BoardPiece && this.PawnCords == position.PawnCords)
+            return true;
+        else
+            return false;
+    }
+}
+
+public struct PawnData : INetworkSerializable
+{
+    public string PlayerName;
+    public LobbyManager.PlayerColor PawnColor;
+
+    // Konstruktor
+    public PawnData(string playerName, LobbyManager.PlayerColor pawnColor)
+    {
+        this.PlayerName = playerName;
+        this.PawnColor = pawnColor;
+    }
+
+    // Implementacja metody NetworkSerialize
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref PlayerName);
+        serializer.SerializeValue(ref PawnColor);
+    }
+
+    // Metoda porównująca dwa obiekty PawnData
+    public bool EqualsTo(PawnData data)
+    {
+        return this.PlayerName == data.PlayerName && this.PawnColor == data.PawnColor;
     }
 }

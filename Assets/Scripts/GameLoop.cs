@@ -133,6 +133,7 @@ public class GameLoop : NetworkBehaviour
             nextId = 0;
         }
         nextPlayerClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { (ulong)nextId } } });
+        ShowActivePlayerClientRpc(nextId);
     }
 
 
@@ -140,11 +141,17 @@ public class GameLoop : NetworkBehaviour
     public void nextPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
         isMyTurn = true;
-        if(PlayerPhase != Phase.GAME_WON)
+        if (PlayerPhase != Phase.GAME_WON)
         {
             PlayerPhase = Phase.MOVEMENT_PHASE;
         }
         updateText();
         Debug.Log("It is my turn");
+    }
+
+    [ClientRpc]
+    public void ShowActivePlayerClientRpc(int activePlayer)
+    {
+        PlayerBoardUI.Instance.ChangeActivePlayer(activePlayer);
     }
 }

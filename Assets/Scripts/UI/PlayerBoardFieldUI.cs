@@ -9,28 +9,39 @@ public class PlayerBoardFieldUI : MonoBehaviour
     [SerializeField] public int Id;
     [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] public Image characterImage;
-    [SerializeField] private bool activePlayer;
+    [SerializeField] public bool activePlayer;
 
-    // private void Awake()
-    // {
-    //     if (LobbyManager.Instance.GetLobbyBeforeGame().Players.Count >= Id)
-    //     {
-    //         
-    //     }
-    // }
+    public void UpdatePlayer(PawnData pawnData) {
+        playerNameText.text = pawnData.PlayerName;
+        characterImage.sprite = LobbyAssets.Instance.GetSprite(pawnData.PawnColor);
+    }
 
-    public void UpdatePlayer(string playerName, LobbyManager.PlayerColor playerColor) {
-        playerNameText.text = playerName;
-        characterImage.sprite = LobbyAssets.Instance.GetSprite(playerColor);
+    public bool IsActive()
+    {
+        return activePlayer;
     }
 
     public void SetActive()
     {
         activePlayer = true;
     }
-
+    
     public void SetNotActive()
     {
         activePlayer = false;
+    }
+
+    public void ShowActive()
+    {
+        GameObject background = gameObject.transform.GetChild(0).gameObject;
+        Image img =  background.GetComponent<Image>();
+        img.color = new Color(img.color.r, img.color.g, img.color.b, 0.5f);
+    }
+
+    public void ShowNotActive()
+    {
+        GameObject background = gameObject.transform.GetChild(0).gameObject;
+        Image img =  background.GetComponent<Image>();
+        img.color = new Color(img.color.r, img.color.g, img.color.b, 0f);
     }
 }
