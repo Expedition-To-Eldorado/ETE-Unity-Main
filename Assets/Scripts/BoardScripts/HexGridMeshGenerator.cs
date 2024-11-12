@@ -172,6 +172,10 @@ public class HexGridMeshGenerator : MonoBehaviour
         if (cardBehaviour.leftPower >= terrainPower 
             && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
         {
+            if (cardBehaviour.NameOfCard.Equals("Hydroplan"))
+            {
+                DeckManager.isHydroplaneUsed = true;
+            }
             MovePawn?.Invoke(x, z, grid, terrain.name, cardBehaviour, deckManager.getNumberOfChosenCards());
         }
     }

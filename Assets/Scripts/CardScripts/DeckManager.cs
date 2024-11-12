@@ -26,6 +26,8 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
+    public static bool isHydroplaneUsed = false;
+    public static string hydroplaneField = "";
 
     public RawImage cardInspectionImage;
     public Button quitInspectionView;
@@ -423,6 +425,7 @@ public class DeckManager : MonoBehaviour
         return index;
     }
 
+
     public void turnOnInspectionView(RaycastHit hit)
     {
         cardInspectionImage.texture = hit.collider.gameObject.GetComponent<CardBehaviour>().inspectionImage;
@@ -432,10 +435,24 @@ public class DeckManager : MonoBehaviour
     }
 
     public void UseCard()
+
     {
         int index = selectedCursor;
-
         CardBehaviour cardBehaviour = cardsOnHand[index].GetComponent<CardBehaviour>();
+
+        if (cardBehaviour.NameOfCard.Equals("Hydroplan"))
+        {
+            isHydroplaneUsed = false;
+            hydroplaneField = "";
+        }
+
+
+        if (cardBehaviour.isBurnable)
+        {
+            burnCard();
+            return;
+        }
+
         cardBehaviour.leftPower = cardBehaviour.Power;
         cardsOnHand[index].tag = "Card_Used";
         cardsOnHand[index].SetActive(false);

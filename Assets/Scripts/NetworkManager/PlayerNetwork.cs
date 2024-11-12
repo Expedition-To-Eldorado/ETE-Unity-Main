@@ -176,6 +176,21 @@ public class PlayerNetwork : NetworkBehaviour
             return ErrorMsg.FIELD_OCCUPIED;
         }
 
+        //if hydroplane is being used for first time
+        if(DeckManager.isHydroplaneUsed && DeckManager.hydroplaneField.Equals("")){
+            DeckManager.hydroplaneField = terrainName;
+            Debug.Log("hydroplane on " + terrainName + " was used");
+            return ErrorMsg.OK;
+        }
+
+        //hydroplane is used on a different field
+        if (DeckManager.isHydroplaneUsed && !DeckManager.hydroplaneField.Equals(terrainName))
+        {
+            Debug.Log("hydroplane on " + terrainName + " cannot be used because hydroplane field is: " + DeckManager.hydroplaneField);
+            DeckManager.isHydroplaneUsed = false;
+            return ErrorMsg.CARD_NOT_MATCHING;
+        }
+
         //check if selected card matches the field and its power
         if (cardType != terrainName && cardType != "All")
         {

@@ -15,6 +15,7 @@ public class CardBehaviour : MonoBehaviour
     [SerializeField] public int quantityInShop;
     [SerializeField] public int price;
     [SerializeField] public bool isSelected;
+    [SerializeField] public bool isBurnable;
     [SerializeField] public Texture2D inspectionImage;
 
     public DeckManager deckManager;

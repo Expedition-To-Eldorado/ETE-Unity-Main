@@ -57,6 +57,7 @@ MonoBehaviour:
   quantityInShop: 3
   price: 4
   isSelected: 0
+  isBurnable: 1
   inspectionImage: {fileID: 2800000, guid: 98032478b0925d74dabd612875c74955, type: 3}
 --- !u!33 &3068871394680093645
 MeshFilter:
