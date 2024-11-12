@@ -5,15 +5,21 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using GeneralEnumerations;
+using IngameDebugConsole;
+using Unity.Services.Authentication;
+using Unity.Services.Lobbies.Models;
 
 public class PlayerNetwork : NetworkBehaviour
 {
     //Networking fields
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private List<Material> PawnMaterials;
+    public string PlayerName;
+    public LobbyManager.PlayerColor PlayerColor;
     public static Action UseCard;
     public static Action clearMultipleChosenCards;
     public static Action burnMultipleCards;
+    private int numberOfPlayers;
 
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
@@ -28,21 +34,19 @@ public class PlayerNetwork : NetworkBehaviour
         // making sure that code is executed only for the owner of the script
         if (IsOwner)
         {
-            //Player = this.transform;
-            if (OwnerClientId >= 5)
-            {
-                // Not working :(
-                // Destroy(gameObject);
-                return;
-            }
             transform.position = new Vector3(32f + (int)OwnerClientId*10, 0.55f, -4.3f);
+            Player player = LobbyManager.Instance.GetPlayerByIdAfterGameStart(AuthenticationService.Instance.PlayerId);
+            PlayerName = player.Data[LobbyManager.KEY_PLAYER_NAME].Value;
+            PlayerColor = System.Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+            Debug.Log("PLAYER NAME: " + player.Data[LobbyManager.KEY_PLAYER_NAME].Value + "PLAYER COLOR: "+ (int)PlayerColor);
+            SetPlayerInfoServerRpc(PlayerName, PlayerColor, new ServerRpcParams());
+            numberOfPlayers = LobbyManager.Instance.GetLobbyBeforeGame().Players.Count;
+            if ((int)OwnerClientId == numberOfPlayers - 1)
+            {
+                NotifyServerToSendAllPlayerDataServerRpc();
+            }
         }
-        meshRenderer.material = PawnMaterials[(int)OwnerClientId];
-    }
-
-    private void Update()
-    {
-        
+        meshRenderer.material = PawnMaterials[(int)PlayerColor];
     }
 
     private void OnEnable()
@@ -196,13 +200,38 @@ public class PlayerNetwork : NetworkBehaviour
     {
         // Sending data about new position of some client to all clients
         BoardSingleton.instance.PawnPositions[SenderId] = new PawnPosition(boardPiece, new Vector2(x, z));
-        // Print Positions of all clients in game in all clients debug log
-        // int i = 0;
-        // foreach( var Pawn in BoardSingleton.instance.PawnPositions) {
-        //     Debug.Log("Player"+ i + ": " + Pawn.ToString());
-        //     i++;
-        //     if (i >= NumberOfClients) break;
-        // }
     }
     
+    [ServerRpc]
+    public void SetPlayerInfoServerRpc(string name, LobbyManager.PlayerColor color, ServerRpcParams serverRpcParams)
+    {
+        int SenderId = (int)serverRpcParams.Receive.SenderClientId;
+        BoardSingleton.instance.PawnsData[SenderId] = new PawnData(name, color);
+        // Send info about player data to all clients
+        UpdatePlayerInfoClientRpc(name, color, SenderId);
+    }
+    
+    [ClientRpc]
+    private void UpdatePlayerInfoClientRpc(string name, LobbyManager.PlayerColor color, int SenderId)
+    {
+        BoardSingleton.instance.PawnsData[SenderId] = new PawnData(name, color);
+        LobbyManager.PlayerColor pawnColor = BoardSingleton.instance.PawnsData[(int)OwnerClientId].PawnColor;
+        meshRenderer.material = PawnMaterials[(int)pawnColor];
+    }
+    
+    [ClientRpc]
+    private void UpdateAllPlayersInfoClientRpc(PawnData[] pawnsData)
+    {
+        for (var i = 0; i < numberOfPlayers; i++)
+        {
+            BoardSingleton.instance.PawnsData[i] = pawnsData[i];
+        }
+        PlayerBoardUI.Instance.UpdatePlayers();
+    }
+
+    [ServerRpc]
+    private void NotifyServerToSendAllPlayerDataServerRpc()
+    {
+        UpdateAllPlayersInfoClientRpc(BoardSingleton.instance.PawnsData.ToArray());
+    }
 }

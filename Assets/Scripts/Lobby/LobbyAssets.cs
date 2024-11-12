@@ -6,7 +6,6 @@ public class LobbyAssets : MonoBehaviour
 {
     public static LobbyAssets Instance { get; private set; }
 
-
     [SerializeField] private Sprite redSprite;
     [SerializeField] private Sprite purpleSprite;
     [SerializeField] private Sprite whiteSprite;
