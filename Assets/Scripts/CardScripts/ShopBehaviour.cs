@@ -5,6 +5,7 @@ using GeneralEnumerations;
 using System;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using Unity.Netcode;
+using System.Reflection;
 
 public class ShopBehaviour : NetworkBehaviour
 {
@@ -16,6 +17,8 @@ public class ShopBehaviour : NetworkBehaviour
     //public GameObject Deck;
 
     public static Action<GameObject> AddCardToDeck;
+    public GameObject InformationTxt;
+    public DeckManager deckManager;
 
     // Start is called before the first frame update
     void Start()
@@ -38,11 +41,13 @@ public class ShopBehaviour : NetworkBehaviour
     private void OnEnable()
     {
         MouseController.BuyCard += BuyCard;
+        MouseController.buyAnyCardEffect += buyAnyCardEffect;
     }
 
     private void OnDisable()
     {
         MouseController.BuyCard -= BuyCard;
+        MouseController.buyAnyCardEffect -= buyAnyCardEffect;
     }
 
     public int FindCardInShop(GameObject card)
@@ -88,6 +93,29 @@ public class ShopBehaviour : NetworkBehaviour
             }
         }
         return index;
+    }
+
+    public void buyAnyCardEffect(RaycastHit hit)
+    {
+        GameObject card = hit.collider.gameObject;
+
+        GameObject deck = GameObject.Find("Deck");
+
+        GameObject tmp2 = Instantiate(card, deck.transform);
+        tmp2.transform.Rotate(0, 180, 0);
+        AddCardToDeck?.Invoke(tmp2);
+
+        int index = FindCardInShop(card);
+        bool isInShop = true;
+        if (index == -1)
+        {
+            isInShop = false;
+            index = FindCardInLoose(card);
+        }
+        updateShopServerRpc(index, isInShop);
+
+        InformationTxt.SetActive(false);
+        deckManager.buyAnyCard = false;
     }
 
     private ErrorMsg BuyCard(GameObject card, int coins)
@@ -171,7 +199,7 @@ public class ShopBehaviour : NetworkBehaviour
 
         int index = FindEmptySlotInShop();
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
-        if (!cardBehaviour.isBuyable && (index != -1))
+        if (!cardBehaviour.isBuyable && (index != -1) && !deckManager.buyAnyCard)
         {
             //Destroy(card);
             card.transform.position = activeShopPositions[index].transform.position;
@@ -185,6 +213,7 @@ public class ShopBehaviour : NetworkBehaviour
             cardsInShop[index] = card;
         }
 
+        Debug.Log("im buying a mfing card");
         cardBehaviour.UpdateQuantity();
 
         if (cardBehaviour.quantityInShop == 0)
