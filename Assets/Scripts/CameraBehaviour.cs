@@ -13,7 +13,7 @@ public class CameraBehaviour : MonoBehaviour
     int lastViewType;
     Vector3 lastPosition;
     [SerializeField] float cameraHeight = 50f;
-    [SerializeField] float shopCameraHeight = 26f;
+    [SerializeField] float shopCameraHeight = 30.7f;
     [SerializeField] float cameraSpeed = 5f;
     [SerializeField] float mouseCameraSpeed = 10f;
     [SerializeField] Vector3[] camPositions = new Vector3[4];
@@ -46,7 +46,7 @@ public class CameraBehaviour : MonoBehaviour
         camPositions[(int)ViewTypes.BoardOnly].z = 0;
         camAngles[(int)ViewTypes.BoardOnly].x = 49.3f;
 
-        camPositions[(int)ViewTypes.Shop].x = -26.7f;
+        camPositions[(int)ViewTypes.Shop].x = -26.2f;
         camPositions[(int)ViewTypes.Shop].y = shopCameraHeight;
         camPositions[(int)ViewTypes.Shop].z = 35.6f;
         camAngles[(int)ViewTypes.Shop].x = 60;

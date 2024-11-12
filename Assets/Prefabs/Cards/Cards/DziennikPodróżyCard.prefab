@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Power: 0
   leftPower: 0
-  NameOfCard: "DziennikPodr\xF3\u017Cy"
+  NameOfCard: DziennikPodrozy
   Typ: Special
   isStartingCard: 0
   isBuyable: 0
@@ -164,6 +164,7 @@ MonoBehaviour:
   price: 3
   isSelected: 0
   isBurnable: 1
+  inspectionImage: {fileID: 2800000, guid: caaf891e2005d7d4882fb9b393b68368, type: 3}
 --- !u!33 &6057676789670134765
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -58,6 +58,7 @@ MonoBehaviour:
   price: 3
   isSelected: 0
   isBurnable: 1
+  inspectionImage: {fileID: 2800000, guid: 4dee0a447bc3cb1489889d59753525d7, type: 3}
 --- !u!33 &2744133498759942585
 MeshFilter:
   m_ObjectHideFlags: 0

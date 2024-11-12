@@ -25,7 +25,7 @@ public class LobbyUI : MonoBehaviour
         startGameButton.onClick.AddListener( () => {
             LobbyManager.Instance.StartGame();
         });
-
+        
         // leaveLobbyButton.onClick.AddListener(() => {
         //     LobbyManager.Instance.LeaveLobby();
         // });
