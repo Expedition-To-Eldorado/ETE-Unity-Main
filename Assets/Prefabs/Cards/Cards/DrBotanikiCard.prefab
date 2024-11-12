@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d47d2853a4d414fab2620299abf7cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Power: 0
+  Power: 1
   leftPower: 0
   NameOfCard: DrBotaniki
   Typ: Special
@@ -57,6 +57,7 @@ MonoBehaviour:
   quantityInShop: 3
   price: 4
   isSelected: 0
+  deckManager: {fileID: 0}
 --- !u!33 &4743405714294202308
 MeshFilter:
   m_ObjectHideFlags: 0
