@@ -26,13 +26,11 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
-<<<<<<< HEAD
 
     public RawImage cardInspectionImage;
     public Button quitInspectionView;
     public static bool isInspectionView;
     //Obecnie tworzony jest widok 3 - widok na karty
-=======
     public GameObject InformationTxt;
     public Button cancelButton;
     public bool buyAnyCard = false;
@@ -41,7 +39,6 @@ public class DeckManager : MonoBehaviour
     public int cardsToBurn;
 
     public static Action<RaycastHit> ExecuteSpecialEffect;
->>>>>>> main
 
     public void Awake()
     {
@@ -53,18 +50,18 @@ public class DeckManager : MonoBehaviour
             }
         });
 
-<<<<<<< HEAD
         quitInspectionView.onClick.AddListener(() =>
         {
             cardInspectionImage.gameObject.SetActive(false);
             quitInspectionView.gameObject.SetActive(false);
             isInspectionView = false;
-=======
-        cancelButton.onClick.AddListener(() => {
+        });
+
+        cancelButton.onClick.AddListener(() =>
+        {
             cardsToBurn = 0;
             cancelButton.gameObject.SetActive(false);
             InformationTxt.SetActive(false);
->>>>>>> main
         });
     }
     public int getNumberOfChosenCards()

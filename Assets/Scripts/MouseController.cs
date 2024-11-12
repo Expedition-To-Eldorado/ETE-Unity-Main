@@ -39,7 +39,10 @@ public class MouseController : Singleton<MouseController>
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(2))
+        {
+            CheckMouseClick(2);
+        }
         if (GameLoop.isMyTurn)
         {
             if (Input.GetMouseButtonDown(0))
@@ -50,10 +53,7 @@ public class MouseController : Singleton<MouseController>
             {
                 CheckMouseClick(1);
             }
-            if (Input.GetMouseButtonDown(2))
-            {
-                CheckMouseClick(2);
-            }
+            
             CheckMouseOver();
             CheckMouseOverCard();
         } 
