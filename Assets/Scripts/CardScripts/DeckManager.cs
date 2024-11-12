@@ -26,6 +26,11 @@ public class DeckManager : MonoBehaviour
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button redrawCardsBtn;
+
+    public RawImage cardInspectionImage;
+    public Button quitInspectionView;
+    public static bool isInspectionView;
+    //Obecnie tworzony jest widok 3 - widok na karty
     public GameObject InformationTxt;
     public Button cancelButton;
     public bool buyAnyCard = false;
@@ -45,7 +50,15 @@ public class DeckManager : MonoBehaviour
             }
         });
 
-        cancelButton.onClick.AddListener(() => {
+        quitInspectionView.onClick.AddListener(() =>
+        {
+            cardInspectionImage.gameObject.SetActive(false);
+            quitInspectionView.gameObject.SetActive(false);
+            isInspectionView = false;
+        });
+
+        cancelButton.onClick.AddListener(() =>
+        {
             cardsToBurn = 0;
             cancelButton.gameObject.SetActive(false);
             InformationTxt.SetActive(false);
@@ -115,6 +128,7 @@ public class DeckManager : MonoBehaviour
         ShopBehaviour.AddCardToDeck += AddCardToDeck;
         MouseController.instance.SetSelectedCursor += SetSelectedCursor;
         MouseController.instance.SetMultipleCursor += SetMultipleCursor;
+        MouseController.instance.OnMiddleMouseClick += turnOnInspectionView;
         GameLoop.drawFullHand += drawFullHand;
         PlayerNetwork.clearMultipleChosenCards += clearMultipleChosenCards;
         PlayerNetwork.burnMultipleCards += burnMultipleCards;
@@ -407,6 +421,14 @@ public class DeckManager : MonoBehaviour
             }
         }
         return index;
+    }
+
+    public void turnOnInspectionView(RaycastHit hit)
+    {
+        cardInspectionImage.texture = hit.collider.gameObject.GetComponent<CardBehaviour>().inspectionImage;
+        cardInspectionImage.gameObject.SetActive(true);
+        quitInspectionView.gameObject.SetActive(true);
+        isInspectionView = true;
     }
 
     public void UseCard()

@@ -163,7 +163,7 @@ MonoBehaviour:
   quantityInShop: 3
   price: 5
   isSelected: 0
-  deckManager: {fileID: 0}
+  inspectionImage: {fileID: 2800000, guid: f4f7bc416b70d7e4a8b07509d545e151, type: 3}
 --- !u!33 &4371037089354293554
 MeshFilter:
   m_ObjectHideFlags: 0

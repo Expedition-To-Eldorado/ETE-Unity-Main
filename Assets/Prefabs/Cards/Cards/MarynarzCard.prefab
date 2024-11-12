@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 1
+  leftPower: 0
   NameOfCard: Marynarz
   Typ: River
   isStartingCard: 1
@@ -56,6 +57,7 @@ MonoBehaviour:
   quantityInShop: 0
   price: 0
   isSelected: 0
+  inspectionImage: {fileID: 2800000, guid: a97d68d904cfdaf43ae5107ee8a06b95, type: 3}
 --- !u!33 &4742456972038937542
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Power: 1
+  leftPower: 0
   NameOfCard: Turystka
   Typ: Village
   isStartingCard: 1
@@ -56,6 +57,7 @@ MonoBehaviour:
   quantityInShop: 0
   price: 0
   isSelected: 0
+  inspectionImage: {fileID: 2800000, guid: 8be82520fefdff04e9b19377ae1f5854, type: 3}
 --- !u!33 &4742456972038937542
 MeshFilter:
   m_ObjectHideFlags: 0

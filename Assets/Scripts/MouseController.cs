@@ -39,7 +39,10 @@ public class MouseController : Singleton<MouseController>
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(2))
+        {
+            CheckMouseClick(2);
+        }
         if (GameLoop.isMyTurn)
         {
             if (Input.GetMouseButtonDown(0))
@@ -50,10 +53,7 @@ public class MouseController : Singleton<MouseController>
             {
                 CheckMouseClick(1);
             }
-            if (Input.GetMouseButtonDown(2))
-            {
-                CheckMouseClick(2);
-            }
+            
             CheckMouseOver();
             CheckMouseOverCard();
         } 
@@ -144,17 +144,17 @@ public class MouseController : Singleton<MouseController>
                 {
                     OnRightMouseClick?.Invoke(hit);
                 }
-                else if (mouseButton == 2)
-                {
-                    OnMiddleMouseClick?.Invoke(hit);
-                }
+                //else if (mouseButton == 2)
+                //{
+                //    OnMiddleMouseClick?.Invoke(hit);
+                //}
                 return;
             }
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_card))
             {
                 GameObject card = hit.collider.gameObject;
-                if (mouseButton == 0)
+                if (mouseButton == 0 && !DeckManager.isInspectionView)
                 {
                     if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE) {
                         SetSelectedCursor?.Invoke(hit);
@@ -179,12 +179,16 @@ public class MouseController : Singleton<MouseController>
                         buyAnyCardEffect?.Invoke(hit);
                     }
                 }
-                else if(mouseButton == 1)
+                else if(mouseButton == 1 && !DeckManager.isInspectionView)
                 {
                     if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
                     {
                         SetMultipleCursor?.Invoke(hit);
                     }
+                }
+                else if (mouseButton == 2)
+                {
+                    OnMiddleMouseClick?.Invoke(hit);
                 }
                 return;
             }
