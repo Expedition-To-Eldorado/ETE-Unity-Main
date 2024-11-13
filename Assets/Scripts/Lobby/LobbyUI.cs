@@ -17,6 +17,8 @@ public class LobbyUI : MonoBehaviour
     //[SerializeField] private TextMeshProUGUI playerCountText;
     //[SerializeField] private Button leaveLobbyButton;
     [SerializeField] private Button startGameButton;
+    [SerializeField] private Button leaveLobbyButton;
+    [SerializeField] private Button leaveLobbyAsHostButton;
 
     private void Awake() {
         Instance = this;
@@ -26,13 +28,18 @@ public class LobbyUI : MonoBehaviour
             LobbyManager.Instance.StartGame();
         });
         
-        // leaveLobbyButton.onClick.AddListener(() => {
-        //     LobbyManager.Instance.LeaveLobby();
-        // });
-
-        // changeGameModeButton.onClick.AddListener(() => {
-        //     LobbyManager.Instance.ChangeGameMode();
-        // });
+        leaveLobbyButton.onClick.AddListener(() => {
+            LobbyManager.Instance.LeaveLobby();
+            Hide();
+        });
+        
+        leaveLobbyAsHostButton.onClick.AddListener(() =>
+        {
+            LobbyManager.Instance.MigrateLobbyHostAndLeave();
+            // LobbyManager.Instance.MigrateLobbyHost();
+            // LobbyManager.Instance.LeaveLobby();
+            Hide();
+        });
         
         Hide();
     }
@@ -58,9 +65,20 @@ public class LobbyUI : MonoBehaviour
             Transform playerSingleTransform = Instantiate(playerLobbyTemplate, container);
             playerSingleTransform.gameObject.SetActive(true);
             LobbyPlayerUI lobbyPlayerSingleUI = playerSingleTransform.GetComponent<LobbyPlayerUI>();
-            
-            if(!LobbyManager.Instance.IsLobbyHost())
+
+            if (!LobbyManager.Instance.IsLobbyHost())
+            {
                 startGameButton.gameObject.SetActive(false);
+                leaveLobbyAsHostButton.gameObject.SetActive(false);
+                leaveLobbyButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                startGameButton.gameObject.SetActive(true);
+                leaveLobbyAsHostButton.gameObject.SetActive(true);
+                leaveLobbyButton.gameObject.SetActive(false);
+            }
+                
 
             lobbyPlayerSingleUI.UpdatePlayer(player);
         }
