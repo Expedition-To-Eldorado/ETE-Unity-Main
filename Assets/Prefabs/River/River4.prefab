@@ -116,6 +116,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 205586099204606356, guid: cfcb61cb5b5d41c4cb657cf972b643c9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11400,6 +11404,10 @@ PrefabInstance:
     - target: {fileID: 33760998516816160, guid: cfcb61cb5b5d41c4cb657cf972b643c9, type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 205586099204606356, guid: cfcb61cb5b5d41c4cb657cf972b643c9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -22780,6 +22788,10 @@ PrefabInstance:
     - target: {fileID: 33760998516816160, guid: cfcb61cb5b5d41c4cb657cf972b643c9, type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 205586099204606356, guid: cfcb61cb5b5d41c4cb657cf972b643c9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
