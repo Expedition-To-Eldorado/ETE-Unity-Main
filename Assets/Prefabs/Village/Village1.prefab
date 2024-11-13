@@ -5913,6 +5913,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 2.26
       objectReference: {fileID: 0}
+    - target: {fileID: 1953822120978522081, guid: 79835cffb24621c49965b5db191c214e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6200491160025657898, guid: 79835cffb24621c49965b5db191c214e, type: 3}
       propertyPath: m_Name
       value: PalmTree (1)
@@ -6002,6 +6006,10 @@ PrefabInstance:
     - target: {fileID: 559534463512809016, guid: 79835cffb24621c49965b5db191c214e, type: 3}
       propertyPath: m_LocalPosition.z
       value: 2.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 1953822120978522081, guid: 79835cffb24621c49965b5db191c214e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6200491160025657898, guid: 79835cffb24621c49965b5db191c214e, type: 3}
       propertyPath: m_Name
