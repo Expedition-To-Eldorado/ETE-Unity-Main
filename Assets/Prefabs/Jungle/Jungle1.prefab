@@ -5546,6 +5546,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6768123602341741880, guid: 7d42280651f527249a29eab37d944245, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7853189699237912359, guid: 7d42280651f527249a29eab37d944245, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -5806,6 +5810,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4218495736073989622, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7831721176887384138, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -6064,6 +6072,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4318783372519605179}
     m_Modifications:
+    - target: {fileID: 2709638816892301549, guid: 856636d219894914186a78facee3428b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3755145269061992733, guid: 856636d219894914186a78facee3428b, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -6310,6 +6322,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4318783372519605179}
     m_Modifications:
+    - target: {fileID: 2709638816892301549, guid: 856636d219894914186a78facee3428b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3755145269061992733, guid: 856636d219894914186a78facee3428b, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -6556,6 +6572,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4318783372519605179}
     m_Modifications:
+    - target: {fileID: 2709638816892301549, guid: 856636d219894914186a78facee3428b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2709638816892301549, guid: 856636d219894914186a78facee3428b, type: 3}
+      propertyPath: m_FadeMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3755145269061992733, guid: 856636d219894914186a78facee3428b, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -6650,6 +6674,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4218495736073989622, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7831721176887384138, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -6738,6 +6766,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2051527318708972429, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4218495736073989622, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7831721176887384138, guid: 7055110420fcc7847b4cb7dd338ee523, type: 3}
