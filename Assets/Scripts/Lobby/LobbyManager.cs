@@ -386,10 +386,14 @@ public class LobbyManager : MonoBehaviour
     public string ValidateName(string name)
     {
         char[] arrName = name.Where(c => (char.IsLetterOrDigit(c) ||
-                                          char.IsWhiteSpace(c) ||
                                           c == '-' ||
                                           c == '_')).ToArray();
         name = new string(arrName);
+        if (name.Length > 29)
+        {
+            name = name.Substring(0, 20);
+        }
+        
         return name;
     }
 

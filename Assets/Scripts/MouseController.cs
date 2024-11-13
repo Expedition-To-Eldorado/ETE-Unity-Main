@@ -160,7 +160,7 @@ public class MouseController : Singleton<MouseController>
                         SetSelectedCursor?.Invoke(hit);
                     }
                     else if (card.CompareTag("Card_Hand") 
-                        && (GameLoop.PlayerPhase == Phase.BUYING_PHASE || GameLoop.PlayerPhase == Phase.REDRAW_PHASE))
+                        && (GameLoop.PlayerPhase == Phase.BUYING_PHASE || GameLoop.PlayerPhase == Phase.DISCARD_PHASE))
                     {
                         SetMultipleCursor?.Invoke(hit);
                     }
