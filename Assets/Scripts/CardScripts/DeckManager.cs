@@ -14,16 +14,16 @@ using UnityEngine.Serialization;
 public class DeckManager : MonoBehaviour
 {
     [SerializeField] GameObject mainCamera;
-    [SerializeField] public List<GameObject> cardsInDeck;
-    [SerializeField] public List<GameObject> cardsOnHand;
-    [SerializeField] public List<GameObject> usedCards;
-    [SerializeField] float speedOfCard = 5;
-    [SerializeField] double spaceBetweenCard = 5;
+    public List<GameObject> cardsInDeck;
+    public List<GameObject> cardsOnHand;
+    public List<GameObject> usedCards;
+    public float speedOfCard = 5;
+    public double spaceBetweenCard = 5;
     public GameObject Deck;
     public GameObject[] starterCardPack = new GameObject[3];
     int viewNumber = (int)ViewTypes.CardsOnly;
-    int cursor = -1;
-    int selectedCursor = -1;
+    [SerializeField] int cursor = -1;
+    [SerializeField] int selectedCursor = -1;
     [SerializeField] float selectedCursorOffsetValue = 0;
     [SerializeField] List<GameObject> multipleChosenCards;
     [SerializeField] private Button discardCardsBtn;
