@@ -43,6 +43,7 @@ public class PlayerNetwork : NetworkBehaviour
             numberOfPlayers = LobbyManager.Instance.GetLobbyBeforeGame().Players.Count;
             if ((int)OwnerClientId == numberOfPlayers - 1)
             {
+                System.Threading.Thread.Sleep(2000);
                 NotifyServerToSendAllPlayerDataServerRpc();
             }
         }

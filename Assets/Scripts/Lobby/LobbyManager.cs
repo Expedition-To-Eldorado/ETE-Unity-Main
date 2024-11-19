@@ -501,8 +501,8 @@ public class LobbyManager : MonoBehaviour
         {
             foreach (var player in joinedLobby.Players)
             {
-                
-                availableColors.Remove(System.Enum.Parse<PlayerColor>(player.Data[KEY_PLAYER_COLOR].Value));
+                if(player.Id != AuthenticationService.Instance.PlayerId)
+                    availableColors.Remove(System.Enum.Parse<PlayerColor>(player.Data[KEY_PLAYER_COLOR].Value));
             }
         }
         int randomIndex = UnityEngine.Random.Range(0, availableColors.Count); 
