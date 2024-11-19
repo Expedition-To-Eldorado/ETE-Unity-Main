@@ -12,6 +12,7 @@ using Unity.Services.Relay;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static LobbyManager.PlayerColor;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -130,20 +131,19 @@ public class LobbyManager : MonoBehaviour
         {
             Player player = GetPlayer();
             int maxPlayers = MAX_PLAYERS;
-            CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
+            CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions();
+            createLobbyOptions.IsPrivate = true;
+            createLobbyOptions.Player = player;
+            createLobbyOptions.Data = new Dictionary<string, DataObject>
             {
-                IsPrivate = true,
-                Player = player,
-                Data = new Dictionary<string, DataObject>
-                {
-                    { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
-                }
+                { KEY_START_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
             };
             hostLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
             joinedLobby = hostLobby;
             Debug.Log("Created Lobby! " + hostLobby.Name + ", maxPlayers: " + hostLobby.MaxPlayers + ", LobbyCode: " +
                       hostLobby.LobbyCode);
             PrintPlayers(hostLobby);
+            UpdatePlayerCharacter(GetRandomPlayerColor());
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
         }
         catch (LobbyServiceException e)
@@ -182,6 +182,27 @@ public class LobbyManager : MonoBehaviour
         }
         
         Debug.LogError("Player with ID " + playerId + " not found in the lobby.");
+        return null;
+    }
+    
+    public Player GetPlayerById(string playerId)
+    {
+        // we are checking lobbyBefore game instead joinedLobby because
+        // joined lobby is set to null after game start 
+        // so the lobby would not be updated anymore
+        if (joinedLobby == null)
+        {
+            Debug.LogError("Lobby is not initialized.");
+            return null;
+        }
+        
+        foreach (var player in joinedLobby.Players)
+        {
+            if (player.Id == playerId)
+            {
+                return player;
+            }
+        }
         return null;
     }
 
@@ -233,8 +254,7 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
             Debug.Log("Joined Lobby with code " + lobbyCode);
             PrintPlayers(joinedLobby);
-            int numberOfPlayer = joinedLobby.Players.Count - 1;
-            UpdatePlayerCharacter((PlayerColor)numberOfPlayer);
+            UpdatePlayerCharacter(GetRandomPlayerColor());
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
         }
         catch (LobbyServiceException e)
@@ -266,7 +286,7 @@ public class LobbyManager : MonoBehaviour
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
             {
                 KEY_PLAYER_COLOR,
-                new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerColor.Red.ToString())
+                new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Red.ToString())
             },
         });
     }
@@ -331,8 +351,10 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void LeaveLobby()
+    public async Task LeaveLobby()
     {
+        PlayerColor colorOfLeavingPlayer =
+            System.Enum.Parse<PlayerColor>(GetPlayerById(AuthenticationService.Instance.PlayerId).Data[KEY_PLAYER_COLOR].Value);
         try
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
@@ -340,6 +362,18 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+        }
+        finally
+        {
+            // stop lobby updates
+            CancelInvoke(nameof(HandleLobbyPollForUpdates));
+            joinedLobby = null;
+            
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                AuthenticationService.Instance.SignOut();
+                Debug.Log("Player signed out.");
+            }
         }
     }
 
@@ -355,7 +389,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void MigrateLobbyHost()
+    public async void MigrateLobbyHost()
     {
         try
         {
@@ -369,6 +403,33 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.Log(e);
         }
+    }
+    
+    public async Task MigrateLobbyHostAndLeave()
+    {
+        if (IsLobbyHost())
+        {
+            try
+            {
+                if (joinedLobby.Players.Count > 1)
+                {
+                    // Assign new host
+                    string newHostId = joinedLobby.Players.First(player => player.Id != AuthenticationService.Instance.PlayerId).Id;
+                
+                    hostLobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                    {
+                        HostId = newHostId
+                    });
+                    Debug.Log($"Host migrated to player {newHostId}");
+                }
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogError($"Error migrating host: {e}");
+                return; 
+            }
+        }
+        await LeaveLobby();
     }
 
     private async void DeleteLobby()
@@ -386,10 +447,14 @@ public class LobbyManager : MonoBehaviour
     public string ValidateName(string name)
     {
         char[] arrName = name.Where(c => (char.IsLetterOrDigit(c) ||
-                                          char.IsWhiteSpace(c) ||
                                           c == '-' ||
                                           c == '_')).ToArray();
         name = new string(arrName);
+        if (name.Length > 29)
+        {
+            name = name.Substring(0, 20);
+        }
+        
         return name;
     }
 
@@ -420,5 +485,29 @@ public class LobbyManager : MonoBehaviour
                 Debug.Log(e);
             }
         }
+    }
+    
+
+    private PlayerColor GetRandomPlayerColor()
+    {
+        List<PlayerColor> availableColors = new List<PlayerColor>
+        {
+            PlayerColor.Red,
+            PlayerColor.Purple,
+            PlayerColor.White,
+            PlayerColor.Blue
+        };
+        if (joinedLobby != null)
+        {
+            foreach (var player in joinedLobby.Players)
+            {
+                if(player.Id != AuthenticationService.Instance.PlayerId)
+                    availableColors.Remove(System.Enum.Parse<PlayerColor>(player.Data[KEY_PLAYER_COLOR].Value));
+            }
+        }
+        int randomIndex = UnityEngine.Random.Range(0, availableColors.Count); 
+        PlayerColor assignedColor = availableColors[randomIndex];
+        
+        return assignedColor;
     }
 }

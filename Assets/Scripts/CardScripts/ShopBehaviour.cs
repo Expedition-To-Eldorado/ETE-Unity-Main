@@ -6,6 +6,7 @@ using System;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using Unity.Netcode;
 using System.Reflection;
+using UnityEngine.Serialization;
 
 public class ShopBehaviour : NetworkBehaviour
 {
@@ -17,6 +18,7 @@ public class ShopBehaviour : NetworkBehaviour
     //public GameObject Deck;
 
     public static Action<GameObject> AddCardToDeck;
+    [SerializeField] public GameObject InformationBoard;
     public GameObject InformationTxt;
     public DeckManager deckManager;
 
@@ -113,8 +115,9 @@ public class ShopBehaviour : NetworkBehaviour
             index = FindCardInLoose(card);
         }
         updateShopServerRpc(index, isInShop);
-
+        
         InformationTxt.SetActive(false);
+        InformationBoard.SetActive(false);
         deckManager.buyAnyCard = false;
     }
 

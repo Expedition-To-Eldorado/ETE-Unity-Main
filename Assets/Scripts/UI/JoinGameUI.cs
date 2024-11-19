@@ -13,6 +13,7 @@ public class JoinGameUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI GameCodeInput;
     [SerializeField] private TextMeshProUGUI PlayerNameInput;
     [SerializeField] private Button JoinGameButton;
+    [SerializeField] private Button ReturnButton;
 
     private string PlayerName;
     private string GameCode;
@@ -26,6 +27,9 @@ public class JoinGameUI : MonoBehaviour
             await LobbyManager.Instance.JoinLobbyByCode(GameCode);
             Hide();
             LobbyUI.Instance.Show();
+        });
+        ReturnButton.onClick.AddListener(async () => {
+            Hide();
         });
         
         Hide();

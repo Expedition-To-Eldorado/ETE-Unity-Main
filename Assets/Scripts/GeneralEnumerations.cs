@@ -67,7 +67,7 @@ namespace GeneralEnumerations
     {
         MOVEMENT_PHASE,
         BUYING_PHASE,
-        REDRAW_PHASE,
+        DISCARD_PHASE,
         FINAL_ELEMENT,
         GAME_WON
     }

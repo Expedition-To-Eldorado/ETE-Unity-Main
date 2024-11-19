@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.Reflection;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class DeckManager : MonoBehaviour
 {
@@ -24,8 +25,8 @@ public class DeckManager : MonoBehaviour
     [SerializeField] int cursor = -1;
     [SerializeField] int selectedCursor = -1;
     [SerializeField] float selectedCursorOffsetValue = 0;
-    public List<GameObject> multipleChosenCards;
-    [SerializeField] private Button redrawCardsBtn;
+    [SerializeField] List<GameObject> multipleChosenCards;
+    [SerializeField] private Button discardCardsBtn;
     public static bool isHydroplaneUsed = false;
     public static string hydroplaneField = "";
 
@@ -33,6 +34,7 @@ public class DeckManager : MonoBehaviour
     public Button quitInspectionView;
     public static bool isInspectionView;
     //Obecnie tworzony jest widok 3 - widok na karty
+    public GameObject informationBoard;
     public GameObject InformationTxt;
     public Button cancelButton;
     public bool buyAnyCard = false;
@@ -44,9 +46,9 @@ public class DeckManager : MonoBehaviour
 
     public void Awake()
     {
-        redrawCardsBtn.onClick.AddListener(() =>
+        discardCardsBtn.onClick.AddListener(() =>
         {
-            if (GameLoop.PlayerPhase == Phase.REDRAW_PHASE)
+            if (GameLoop.PlayerPhase == Phase.DISCARD_PHASE)
             {
                 clearMultipleChosenCards();
             }
@@ -64,6 +66,7 @@ public class DeckManager : MonoBehaviour
             cardsToBurn = 0;
             cancelButton.gameObject.SetActive(false);
             InformationTxt.SetActive(false);
+            informationBoard.SetActive(false);
         });
     }
     public int getNumberOfChosenCards()
@@ -277,12 +280,14 @@ public class DeckManager : MonoBehaviour
         {
             burnCard();
             cardsToBurn--;
-            InformationTxt.GetComponent<TextMeshProUGUI>().text = "Choose " + cardsToBurn + " cards to burn";
+            InformationTxt.GetComponent<TextMeshProUGUI>().text = "CHOOSE " + cardsToBurn + " CARDS TO BURN";
         }
         
         if(cardsToBurn == 0)
         {
             InformationTxt.SetActive(false);
+            informationBoard.SetActive(false);
+            cancelButton.gameObject.SetActive(false);
         }
 
         if (hit.collider.gameObject.GetComponent<CardBehaviour>().Typ == "Special")
@@ -488,13 +493,15 @@ public class DeckManager : MonoBehaviour
     {
         cardsToBurn = numOfCardsToBurn;
         cancelButton.gameObject.SetActive(true);
-        InformationTxt.GetComponent<TextMeshProUGUI>().text = "Choose " + cardsToBurn + " cards to burn";
+        InformationTxt.GetComponent<TextMeshProUGUI>().text = "CHOOSE " + cardsToBurn + " CARDS TO BURN";
+        informationBoard.SetActive(true);
         InformationTxt.SetActive(true);
     }
 
     public void specialEffectBuy()
     {
-        InformationTxt.GetComponent<TextMeshProUGUI>().text = "Select any card from shop to buy";
+        InformationTxt.GetComponent<TextMeshProUGUI>().text = "SELECT ANY CARD FROM SHOP TO BUY";
+        informationBoard.SetActive(true);
         InformationTxt.SetActive(true);
         buyAnyCard = true;
     }

@@ -16,6 +16,7 @@ public class GameLoop : NetworkBehaviour
     public static bool isMyTurn;
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
+    [SerializeField] private Button discardCardsBtn;
     public static Action<int> drawFullHand;
     [SerializeField] private GameObject YouWonTxt;
     public bool CanStartGame;
@@ -63,6 +64,12 @@ public class GameLoop : NetworkBehaviour
             drawFullHand?.Invoke(0);
             nextPlayerServerRpc(false, new ServerRpcParams());
         }
+        if (PlayerPhase == Phase.DISCARD_PHASE) {
+            discardCardsBtn.gameObject.SetActive(true); 
+        }
+        else {
+            discardCardsBtn.gameObject.SetActive(false);
+        }
         updateText();
     }
 
@@ -70,7 +77,7 @@ public class GameLoop : NetworkBehaviour
     {
         if (!isMyTurn)
         {
-            PhaseTxtComponent.text = "Not your turn";
+            PhaseTxtComponent.text = "NOT YOUR TURN";
         }
         else
         {
@@ -78,13 +85,13 @@ public class GameLoop : NetworkBehaviour
             switch (PlayerPhase)
             {
                 case Phase.MOVEMENT_PHASE:
-                    message = "Movement Phase";
+                    message = "MOVEMENT PHASE";
                     break;
                 case Phase.BUYING_PHASE:
-                    message = "Buying Phase";
+                    message = "BUYING PHASE";
                     break;
-                case Phase.REDRAW_PHASE:
-                    message = "Redraw Phase";
+                case Phase.DISCARD_PHASE:
+                    message = "DISCARD PHASE";
                     break;
                 case Phase.FINAL_ELEMENT:
                     Debug.Log("something went wrong");

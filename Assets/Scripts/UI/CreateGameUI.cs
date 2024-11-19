@@ -14,6 +14,7 @@ public class CreateGameUI : MonoBehaviour
     //[SerializeField] private Dropdown boardDropdown;
     [SerializeField] private TextMeshProUGUI PlayerNameInput;
     [SerializeField] private Button CreateGameButton;
+    [SerializeField] private Button ReturnButton;
 
     private string GameName;
     private string PlayerName;
@@ -27,6 +28,10 @@ public class CreateGameUI : MonoBehaviour
             await LobbyManager.Instance.CreateLobby(GameName);
             Hide();
             LobbyUI.Instance.Show();
+        });
+        
+        ReturnButton.onClick.AddListener(async () => {
+            Hide();
         });
         
         Hide();

@@ -26,6 +26,7 @@ public class PlayerBoardUI : MonoBehaviour
     {
         for(int i = 0; i < numberOfPlayers; i++)
         {
+            playerBoardFieldUIList[i].gameObject.SetActive(true);
             playerBoardFieldUIList[i].GetComponent<PlayerBoardFieldUI>().UpdatePlayer(BoardSingleton.instance.PawnsData[i]);
         }
         ShowActivePlayer();
