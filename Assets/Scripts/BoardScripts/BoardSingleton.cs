@@ -14,7 +14,8 @@ public class BoardSingleton : MonoBehaviour
     public List<PawnData> PawnsData = new List<PawnData>();
     public List<TerrainType> TerrainTypes = new List<TerrainType>();
     public List<List<List<int>>> Pieces = new List<List<List<int>>>();
-    
+    public List<PawnData> PlayerLeaderBoard;
+
     public void Awake()
     {
         if (!gameObject.activeSelf)
@@ -39,7 +40,8 @@ public class BoardSingleton : MonoBehaviour
             PawnData pawnData = new PawnData(defaultName, LobbyManager.PlayerColor.Red);
             PawnsData.Add(pawnData);
         }
-        
+        PlayerLeaderBoard = new List<PawnData>();
+
         SetBoardPieces();
     }
 

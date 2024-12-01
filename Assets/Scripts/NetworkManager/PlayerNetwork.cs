@@ -100,6 +100,7 @@ public class PlayerNetwork : NetworkBehaviour
         {
             GameLoop.PlayerPhase = Phase.GAME_WON;
             Debug.Log("Game ended");
+            SendPlayerLeaderBoardServerRpc(new ServerRpcParams());
         }
 
         if (errCode == ErrorMsg.OK)
@@ -200,6 +201,29 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         return ErrorMsg.OK;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SendPlayerLeaderBoardServerRpc(ServerRpcParams serverRpcParams)
+    {
+        int SenderId = (int)serverRpcParams.Receive.SenderClientId;
+        UpdatePlayerLeaderBoardClientRpc(SenderId);
+    }
+
+    [ClientRpc]
+    public void UpdatePlayerLeaderBoardClientRpc(int playerId)
+    {
+        Debug.Log("A player has won: " + playerId);
+        int numOfPlayers = LobbyManager.Instance.GetLobbyBeforeGame().Players.Count;
+        BoardSingleton.instance.PlayerLeaderBoard.Add(BoardSingleton.instance.PawnsData[playerId]);
+
+        if (BoardSingleton.instance.PlayerLeaderBoard.Count >= numOfPlayers - 1)
+        {
+            //TODO -> Implement showing leaderboard
+            GameLoop.PlayerPhase = Phase.GAME_ENDED;
+            GameLoop.updateText();
+        }
+
     }
 
     [ServerRpc(RequireOwnership = false)]
