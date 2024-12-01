@@ -260,6 +260,11 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            Debug.Log("Signing out...");
+            AuthenticationService.Instance.SignOut();
+            //await Lobbies.Instance.DeleteLobbyAsync(joinedLobby.Id);
+            
+            throw new Exception("some error");
         }
 
     }
