@@ -274,6 +274,10 @@ public class DeckManager : MonoBehaviour
     {
         int index = findIndexOfCard(hit.collider.gameObject);
         selectedCursor = index;
+        if(multipleChosenCards.Count > 0)
+        {
+            multipleChosenCards.Clear();
+        }
 
         //if special effect includes burning cards
         if (cardsToBurn > 0)
@@ -298,6 +302,8 @@ public class DeckManager : MonoBehaviour
 
     private void SetMultipleCursor(RaycastHit hit)
     {
+        selectedCursor = -1;
+
         GameObject card = hit.collider.gameObject;
         bool isInList = false;
         foreach(var  tmp in multipleChosenCards)
