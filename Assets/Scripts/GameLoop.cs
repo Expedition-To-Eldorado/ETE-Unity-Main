@@ -22,6 +22,7 @@ public class GameLoop : NetworkBehaviour
     public bool CanStartGame;
     [SerializeField] private GameObject PhaseTxt;
     private TMP_Text PhaseTxtComponent;
+    public DeckManager deckManager;
 
     public void Start()
     {
@@ -70,6 +71,8 @@ public class GameLoop : NetworkBehaviour
         else {
             discardCardsBtn.gameObject.SetActive(false);
         }
+
+        deckManager.cancelCardExecution();
         updateText();
     }
 

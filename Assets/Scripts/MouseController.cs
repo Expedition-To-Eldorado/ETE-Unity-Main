@@ -17,7 +17,7 @@ public class MouseController : Singleton<MouseController>
     public Action NextPhase;
     public static Action<RaycastHit> buyAnyCardEffect;
     //public Action<GameObject, int> BuyCard;
-    public delegate ErrorMsg buyCard(GameObject card, int coins);
+    public delegate ErrorMsg buyCard(GameObject card, float coins);
     public static buyCard BuyCard;
 
     public DeckManager DeckManager;
