@@ -69,6 +69,7 @@ namespace GeneralEnumerations
         BUYING_PHASE,
         DISCARD_PHASE,
         FINAL_ELEMENT,
-        GAME_WON
+        GAME_WON,
+        GAME_ENDED
     }
 }

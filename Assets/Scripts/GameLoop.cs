@@ -13,7 +13,7 @@ public class GameLoop : NetworkBehaviour
 {
 
     public static GameLoop Instance { get; private set; }
-    public static bool isMyTurn;
+    [SerializeField] public static bool isMyTurn;
     [SerializeField] public static Phase PlayerPhase;
     [SerializeField] private Button nextPhaseButton;
     [SerializeField] private Button discardCardsBtn;
@@ -21,7 +21,8 @@ public class GameLoop : NetworkBehaviour
     [SerializeField] private GameObject YouWonTxt;
     public bool CanStartGame;
     [SerializeField] private GameObject PhaseTxt;
-    private TMP_Text PhaseTxtComponent;
+    public static TMP_Text PhaseTxtComponent;
+    public DeckManager deckManager;
 
     public void Start()
     {
@@ -70,11 +71,14 @@ public class GameLoop : NetworkBehaviour
         else {
             discardCardsBtn.gameObject.SetActive(false);
         }
+
+        deckManager.cancelCardExecution();
         updateText();
     }
 
-    private void updateText()
+    public static void updateText()
     {
+
         if (!isMyTurn)
         {
             PhaseTxtComponent.text = "NOT YOUR TURN";
@@ -93,14 +97,24 @@ public class GameLoop : NetworkBehaviour
                 case Phase.DISCARD_PHASE:
                     message = "DISCARD PHASE";
                     break;
-                case Phase.FINAL_ELEMENT:
+                case Phase.GAME_ENDED:
+                    message = "GAME ENDED";
+                    break;
+                case Phase.GAME_WON:
+                    message = "GAME WON";
+                    break;
+                default:
                     Debug.Log("something went wrong");
+                    message = "error";
                     break;
             }
             PhaseTxtComponent.text =  message;
         }
 
-        
+        if (PlayerPhase == Phase.GAME_ENDED)
+        {
+            PhaseTxtComponent.text = "GAME ENDED";
+        }
     }
 
     private void Update()
@@ -110,7 +124,11 @@ public class GameLoop : NetworkBehaviour
             YouWonTxt.SetActive(true);
         }
 
-        if (isMyTurn && PlayerPhase == Phase.GAME_WON)
+        if(PlayerPhase == Phase.GAME_ENDED)
+        {
+            isMyTurn = false;
+        }
+        else if (isMyTurn && PlayerPhase == Phase.GAME_WON)
         {
             isMyTurn = false;
             nextPlayerServerRpc(false, new ServerRpcParams());
@@ -132,6 +150,11 @@ public class GameLoop : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void nextPlayerServerRpc(bool isFirstRound, ServerRpcParams serverRpcParams)
     {
+        if(PlayerPhase == Phase.GAME_ENDED)
+        {
+            return;
+        }
+
         Debug.Log("hello, my id is: " + serverRpcParams.Receive.SenderClientId);
         int senderId = (int)serverRpcParams.Receive.SenderClientId;
         int nextId = senderId + 1;

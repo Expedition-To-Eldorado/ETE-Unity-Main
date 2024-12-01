@@ -18,8 +18,6 @@ public class CardBehaviour : MonoBehaviour
     [SerializeField] public bool isBurnable;
     [SerializeField] public Texture2D inspectionImage;
 
-    public DeckManager deckManager;
-
     public static Action drawCard;
     public static Action useCard;
     public static Action burnCard;
@@ -50,7 +48,6 @@ public class CardBehaviour : MonoBehaviour
         GameObject card = hit.collider.gameObject;
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
 
-        //TODO - decide if string is enough or should be changed to enum
         if(cardBehaviour.NameOfCard == "DrBotaniki")
         {
             drawCard?.Invoke();

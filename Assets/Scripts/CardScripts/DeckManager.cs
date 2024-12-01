@@ -88,7 +88,7 @@ public class DeckManager : MonoBehaviour
         multipleChosenCards.Clear();
     }
 
-    public int getSumOfCoins()
+    public float getSumOfCoins()
     {
         float sum = 0;
         foreach(var card in multipleChosenCards)
@@ -107,7 +107,7 @@ public class DeckManager : MonoBehaviour
             sum += coins;
         }
 
-        return (int) sum;
+        return sum;
     }
 
     public GameObject getSelectedCard()
@@ -272,8 +272,13 @@ public class DeckManager : MonoBehaviour
     //is only invoked in movement phase, in movement phase the special efect of cards can be executed
     private void SetSelectedCursor(RaycastHit hit)
     {
+        cancelCardExecution();
         int index = findIndexOfCard(hit.collider.gameObject);
         selectedCursor = index;
+        if(multipleChosenCards.Count > 0)
+        {
+            multipleChosenCards.Clear();
+        }
 
         //if special effect includes burning cards
         if (cardsToBurn > 0)
@@ -298,6 +303,8 @@ public class DeckManager : MonoBehaviour
 
     private void SetMultipleCursor(RaycastHit hit)
     {
+        selectedCursor = -1;
+
         GameObject card = hit.collider.gameObject;
         bool isInList = false;
         foreach(var  tmp in multipleChosenCards)
@@ -324,6 +331,14 @@ public class DeckManager : MonoBehaviour
             drawFullHand(1);
         }
         else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            cancelCardExecution();
+        }
+    }
+
+    public void cancelCardExecution()
+    {
+        if (selectedCursor != -1)
         {
             CardBehaviour cardBehaviour = cardsOnHand[selectedCursor].GetComponent<CardBehaviour>();
             if (cardBehaviour.leftPower != cardBehaviour.Power)

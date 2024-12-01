@@ -121,7 +121,7 @@ public class ShopBehaviour : NetworkBehaviour
         deckManager.buyAnyCard = false;
     }
 
-    private ErrorMsg BuyCard(GameObject card, int coins)
+    private ErrorMsg BuyCard(GameObject card, float coins)
     {
         CardBehaviour cardBehaviour = card.GetComponent<CardBehaviour>();
         if (coins == cardBehaviour.price)
