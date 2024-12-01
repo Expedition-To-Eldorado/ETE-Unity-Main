@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -22,11 +23,18 @@ public class JoinGameUI : MonoBehaviour
     {
         Instance = this;
         JoinGameButton.onClick.AddListener(async () => {
-            ValidateNames();
-            await LobbyManager.Instance.Authenticate(PlayerName);
-            await LobbyManager.Instance.JoinLobbyByCode(GameCode);
+            try
+            {
+                ValidateNames();
+                await LobbyManager.Instance.Authenticate(PlayerName);
+                await LobbyManager.Instance.JoinLobbyByCode(GameCode);
+                LobbyUI.Instance.Show();
+            }
+            catch(Exception e)
+            {
+                Debug.LogException(e);
+            }
             Hide();
-            LobbyUI.Instance.Show();
         });
         ReturnButton.onClick.AddListener(async () => {
             Hide();
