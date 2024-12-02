@@ -6,12 +6,13 @@ using System;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using Unity.Netcode;
 using System.Reflection;
+using TMPro;
 using UnityEngine.Serialization;
 
 public class ShopBehaviour : NetworkBehaviour
 {
     [SerializeField] List<GameObject> activeShopPositions;
-    [SerializeField] List<GameObject> looseCardPositions;
+    [SerializeField] GameObject[] looseCardPositions;
     [SerializeField] List<GameObject> cards;
     public GameObject[] cardsInShop;
     public List<GameObject> looseCards;
@@ -32,7 +33,7 @@ public class ShopBehaviour : NetworkBehaviour
             tmp.tag = "Card_Shop";
             cardsInShop[i] = tmp;
         }
-        for (int i = 0; i < looseCardPositions.Count; i++)
+        for (int i = 0; i < 12; i++)
         {
             tmp = Instantiate(cards[i + 6], looseCardPositions[i].transform);
             tmp.tag = "Card_Shop";
@@ -219,6 +220,24 @@ public class ShopBehaviour : NetworkBehaviour
         Debug.Log("im buying a mfing card");
         cardBehaviour.UpdateQuantity();
 
+        int buyCardIndex = -1;
+        if (isInShop)
+        {
+            buyCardIndex = indexOfCard;
+        }
+        else
+        {
+            buyCardIndex = index;
+            
+            Canvas canvasxd = looseCardPositions[indexOfCard].GetComponentInChildren<Canvas>();
+            TextMeshProUGUI textxd = canvasxd.GetComponentInChildren<TextMeshProUGUI>();
+            textxd.text = " ";
+        }
+
+        Canvas canvas = activeShopPositions[buyCardIndex].GetComponentInChildren<Canvas>();
+        TextMeshProUGUI text = canvas.GetComponentInChildren<TextMeshProUGUI>();
+        text.text = card.GetComponent<CardBehaviour>().quantityInShop.ToString();
+        
         if (cardBehaviour.quantityInShop == 0)
         {
             if(isInShop)
@@ -227,7 +246,7 @@ public class ShopBehaviour : NetworkBehaviour
             }
             else
             {
-                looseCards.RemoveAt(indexOfCard);
+                looseCards[indexOfCard] = null;
             }
             Destroy(card);
         }
