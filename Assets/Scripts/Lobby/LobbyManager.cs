@@ -30,7 +30,8 @@ public class LobbyManager : MonoBehaviour
     private float lobbyUpdateTimer;
     private string playerName;
     public bool startedTheGame;
-
+    private List<PlayerColor> availableColors = new List<PlayerColor>();
+    
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
 
@@ -495,24 +496,29 @@ public class LobbyManager : MonoBehaviour
 
     private PlayerColor GetRandomPlayerColor()
     {
-        List<PlayerColor> availableColors = new List<PlayerColor>
-        {
-            PlayerColor.Red,
-            PlayerColor.Purple,
-            PlayerColor.White,
-            PlayerColor.Blue
-        };
+        RestoreAvailableColors();
         if (joinedLobby != null)
         {
             foreach (var player in joinedLobby.Players)
             {
                 if(player.Id != AuthenticationService.Instance.PlayerId)
-                    availableColors.Remove(System.Enum.Parse<PlayerColor>(player.Data[KEY_PLAYER_COLOR].Value));
+                    availableColors.Remove(System.Enum.Parse<PlayerColor>
+                        (player.Data[KEY_PLAYER_COLOR].Value));
             }
         }
         int randomIndex = UnityEngine.Random.Range(0, availableColors.Count); 
         PlayerColor assignedColor = availableColors[randomIndex];
         
+        
         return assignedColor;
+    }
+
+    private void RestoreAvailableColors()
+    {
+        availableColors.Clear();
+        foreach (var color in (PlayerColor[]) Enum.GetValues(typeof(PlayerColor)))
+        {
+            availableColors.Add(color);
+        }
     }
 }

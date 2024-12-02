@@ -20,6 +20,7 @@ public class PlayerNetwork : NetworkBehaviour
     public static Action clearMultipleChosenCards;
     public static Action burnMultipleCards;
     private int numberOfPlayers;
+    private NetworkVariable<LobbyManager.PlayerColor> playerColor = new NetworkVariable<LobbyManager.PlayerColor>();
 
     //PawnMoving
     [SerializeField] Vector3 offset = new Vector3 (1.46f, 0.55f, 1f);
@@ -38,6 +39,7 @@ public class PlayerNetwork : NetworkBehaviour
             Player player = LobbyManager.Instance.GetPlayerByIdAfterGameStart(AuthenticationService.Instance.PlayerId);
             PlayerName = player.Data[LobbyManager.KEY_PLAYER_NAME].Value;
             PlayerColor = System.Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+            SetPlayerColorServerRpc(PlayerColor);
             Debug.Log("PLAYER NAME: " + player.Data[LobbyManager.KEY_PLAYER_NAME].Value + "PLAYER COLOR: "+ (int)PlayerColor);
             SetPlayerInfoServerRpc(PlayerName, PlayerColor, new ServerRpcParams());
             numberOfPlayers = LobbyManager.Instance.GetLobbyBeforeGame().Players.Count;
@@ -47,9 +49,10 @@ public class PlayerNetwork : NetworkBehaviour
                 NotifyServerToSendAllPlayerDataServerRpc();
             }
         }
-        meshRenderer.material = PawnMaterials[(int)PlayerColor];
+        playerColor.OnValueChanged += OnPlayerColorChanged;
+        OnPlayerColorChanged(LobbyManager.PlayerColor.Red, playerColor.Value);
     }
-
+    
     private void OnEnable()
     {
         HexGridMeshGenerator.MovePawn += movePawn;
@@ -60,6 +63,10 @@ public class PlayerNetwork : NetworkBehaviour
         HexGridMeshGenerator.MovePawn -= movePawn;
     }
     
+    private void OnPlayerColorChanged(LobbyManager.PlayerColor oldColor, LobbyManager.PlayerColor newColor)
+    {
+        meshRenderer.material = PawnMaterials[(int)newColor];
+    }
     
     private void movePawn(int x, int z, HexGrid boardPiece, string terrainName, CardBehaviour card, int noOfChosenCards)
     {
@@ -247,22 +254,13 @@ public class PlayerNetwork : NetworkBehaviour
     {
         int SenderId = (int)serverRpcParams.Receive.SenderClientId;
         BoardSingleton.instance.PawnsData[SenderId] = new PawnData(name, color);
-        // Send info about player data to all clients
-        UpdatePlayerInfoClientRpc(name, color, SenderId);
-    }
-    
-    [ClientRpc]
-    private void UpdatePlayerInfoClientRpc(string name, LobbyManager.PlayerColor color, int SenderId)
-    {
-        BoardSingleton.instance.PawnsData[SenderId] = new PawnData(name, color);
-        LobbyManager.PlayerColor pawnColor = BoardSingleton.instance.PawnsData[(int)OwnerClientId].PawnColor;
-        meshRenderer.material = PawnMaterials[(int)pawnColor];
     }
     
     [ClientRpc]
     private void UpdateAllPlayersInfoClientRpc(PawnData[] pawnsData)
     {
-        for (var i = 0; i < numberOfPlayers; i++)
+        int numberofplayers = LobbyManager.Instance.GetLobbyBeforeGame().Players.Count;
+        for (var i = 0; i < numberofplayers; i++)
         {
             BoardSingleton.instance.PawnsData[i] = pawnsData[i];
         }
@@ -273,5 +271,11 @@ public class PlayerNetwork : NetworkBehaviour
     private void NotifyServerToSendAllPlayerDataServerRpc()
     {
         UpdateAllPlayersInfoClientRpc(BoardSingleton.instance.PawnsData.ToArray());
+    }
+    
+    [ServerRpc]
+    private void SetPlayerColorServerRpc(LobbyManager.PlayerColor color)
+    {
+        playerColor.Value = color;
     }
 }
