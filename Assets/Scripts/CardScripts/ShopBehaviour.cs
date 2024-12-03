@@ -76,7 +76,7 @@ public class ShopBehaviour : NetworkBehaviour
         int index = -1;
         for (int i = 0; i < looseCards.Count; i++)
         {
-            if (card.name == looseCards[i].name)
+            if (looseCards[i] != null && card.name == looseCards[i].name)
             {
                 return i;
             }
@@ -213,30 +213,25 @@ public class ShopBehaviour : NetworkBehaviour
             CardBehaviour tmpBehaviour = card.GetComponent<CardBehaviour>();
             tmpBehaviour.isBuyable = true;
             //tmpBehaviour.UpdateQuantity();
-            looseCards.RemoveAt(indexOfCard);
+            looseCards[indexOfCard] = null;
             cardsInShop[index] = card;
         }
 
         Debug.Log("im buying a mfing card");
         cardBehaviour.UpdateQuantity();
 
-        int buyCardIndex = -1;
-        if (isInShop)
-        {
-            buyCardIndex = indexOfCard;
-        }
-        else
-        {
-            buyCardIndex = index;
+        string updatedCardQuantityText = card.GetComponent<CardBehaviour>().quantityInShop.ToString();
+        if (updatedCardQuantityText == "0") {
+            updatedCardQuantityText = " ";
             
-            Canvas canvasxd = looseCardPositions[indexOfCard].GetComponentInChildren<Canvas>();
-            TextMeshProUGUI textxd = canvasxd.GetComponentInChildren<TextMeshProUGUI>();
-            textxd.text = " ";
         }
-
-        Canvas canvas = activeShopPositions[buyCardIndex].GetComponentInChildren<Canvas>();
-        TextMeshProUGUI text = canvas.GetComponentInChildren<TextMeshProUGUI>();
-        text.text = card.GetComponent<CardBehaviour>().quantityInShop.ToString();
+        if (isInShop) {
+            UpdateCardQuantityUI(indexOfCard, updatedCardQuantityText, true);
+        }
+        else {
+            UpdateCardQuantityUI(indexOfCard, " ", false);
+            UpdateCardQuantityUI(index, updatedCardQuantityText, true);
+        }
         
         if (cardBehaviour.quantityInShop == 0)
         {
@@ -250,5 +245,20 @@ public class ShopBehaviour : NetworkBehaviour
             }
             Destroy(card);
         }
+    }
+
+    private void UpdateCardQuantityUI(int index, string newQuantity, bool active)
+    {
+        Canvas canvas = null;
+        if (active == true)
+        {
+            canvas = activeShopPositions[index].GetComponentInChildren<Canvas>();
+        }
+        else
+        {
+            canvas = looseCardPositions[index].GetComponentInChildren<Canvas>();
+        }
+        TextMeshProUGUI text = canvas.GetComponentInChildren<TextMeshProUGUI>();
+        text.text = newQuantity;
     }
 }

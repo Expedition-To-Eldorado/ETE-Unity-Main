@@ -229,8 +229,54 @@ public class PlayerNetwork : NetworkBehaviour
             //TODO -> Implement showing leaderboard
             GameLoop.PlayerPhase = Phase.GAME_ENDED;
             GameLoop.updateText();
+            int idOfLastPlayer = WhoIsTheLastPlayer(numOfPlayers);
+            BoardSingleton.instance.PlayerLeaderBoard.Add(BoardSingleton.instance.PawnsData[idOfLastPlayer]);
+            PlayerBoardUI.Instance.gameObject.SetActive(false);
+            ActivateLeaderBoardUI();
         }
 
+    }
+
+    private int WhoIsTheLastPlayer(int numOfPlayers)
+    {
+        if (numOfPlayers <= 1)
+        {
+            return 0;
+        }
+        List<int> playersIds = new List<int>();
+        for (int i = 0; i < numOfPlayers; i++)
+        {
+            playersIds.Add(i);
+        }
+        for (int i = 0; i < BoardSingleton.instance.PlayerLeaderBoard.Count; i++)
+        {
+            int index = BoardSingleton.instance.PawnsData.FindIndex
+                (a => a.PawnColor == BoardSingleton.instance.PlayerLeaderBoard[i].PawnColor);
+            playersIds.Remove(index);
+        }
+        Debug.Log(playersIds);
+        return playersIds[0];
+    }
+    
+    private void ActivateLeaderBoardUI()
+    {
+        if (LeaderBoardUI.Instance == null)
+        {
+            // Znajdź obiekt w scenie, nawet jeśli jest nieaktywny.
+            LeaderBoardUI leaderBoard = FindObjectOfType<LeaderBoardUI>(true); // true oznacza, że szuka obiektów nieaktywnych.
+            if (leaderBoard != null)
+            {
+                LeaderBoardUI.Instance = leaderBoard; // Ręczne ustawienie instancji.
+            }
+            else
+            {
+                Debug.LogError("LeaderBoardUI object not found in the scene!");
+                return;
+            }
+        }
+
+        LeaderBoardUI.Instance.gameObject.SetActive(true);
+        LeaderBoardUI.Instance.UpdateLeaderBoard();
     }
 
     [ServerRpc(RequireOwnership = false)]
