@@ -15,16 +15,19 @@ public class MouseController : Singleton<MouseController>
     public Action<RaycastHit> SetSelectedCursor;
     public Action<RaycastHit> SetMultipleCursor;
     public Action NextPhase;
+
     public static Action<RaycastHit> buyAnyCardEffect;
+
     //public Action<GameObject, int> BuyCard;
     public delegate ErrorMsg buyCard(GameObject card, float coins);
+
     public static buyCard BuyCard;
 
     public DeckManager DeckManager;
 
     private Transform mouseOverRecent;
     private Transform mouseOver;
-    
+
     private const float SCALE_UP = 1.1f;
     private const float SCALE_DOWN = 1.0f;
     private const float MOVE_UP = 0.5f;
@@ -43,20 +46,22 @@ public class MouseController : Singleton<MouseController>
         {
             CheckMouseClick(2);
         }
+
         if (GameLoop.isMyTurn)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 CheckMouseClick(0);
             }
+
             if (Input.GetMouseButtonDown(1))
             {
                 CheckMouseClick(1);
             }
-            
+
             CheckMouseOver();
             CheckMouseOverCard();
-        } 
+        }
     }
 
     //I decided to make another check for cards because the other method seems
@@ -87,7 +92,7 @@ public class MouseController : Singleton<MouseController>
         int layer_mask_grid = LayerMask.GetMask("Grid");
         int layer_mask = LayerMask.GetMask("Cells");
         int layer_mask_card_hand = LayerMask.GetMask("Cards");
-        if (!EventSystem.current.IsPointerOverGameObject() && 
+        if (!EventSystem.current.IsPointerOverGameObject() &&
             Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask) &&
             Physics.Raycast(ray, out hitGrid, Mathf.Infinity, layer_mask_grid) &&
             checkIfNotOccupiedPosition(getCellPosition(hitGrid)) &&
@@ -95,32 +100,34 @@ public class MouseController : Singleton<MouseController>
         {
             mouseOver = hit.transform;
             // if mouse is over different cell than before
-            if (mouseOverRecent != null && mouseOverRecent != mouseOver) 
+            if (mouseOverRecent != null && mouseOverRecent != mouseOver)
             {
                 // change back recent cell
                 showMouseOver(ref mouseOverRecent, SCALE_DOWN, MOVE_DOWN);
                 // scale up actual mouse over cell
                 showMouseOver(ref mouseOver, SCALE_UP, MOVE_UP);
             }
-            if(mouseOverRecent == null)
+
+            if (mouseOverRecent == null)
             {
                 // scale up actual mouse over cell
                 showMouseOver(ref mouseOver, SCALE_UP, MOVE_UP);
             }
-            
         }
         else
         {
-            if(mouseOverRecent != null)
+            if (mouseOverRecent != null)
             {
                 //hoovered beside the board so scale down recent mouse over
                 showMouseOver(ref mouseOverRecent, SCALE_DOWN, MOVE_DOWN);
             }
+
             mouseOver = null;
         }
+
         mouseOverRecent = mouseOver;
     }
-    
+
     // ReSharper disable Unity.PerformanceAnalysis
     void CheckMouseClick(int mouseButton)
     {
@@ -129,11 +136,12 @@ public class MouseController : Singleton<MouseController>
         int layer_mask_grid = LayerMask.GetMask("Grid");
         int layer_mask_card = LayerMask.GetMask("Cards");
 
-        //if the cursos is not pointing on the ui element
-        if (!EventSystem.current.IsPointerOverGameObject())
+        //if the cursor is not pointing on the ui element
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity) &&
+            (!EventSystem.current.IsPointerOverGameObject() || hit.collider.CompareTag("Card_Shop")))
         {
             //if it is over board 
-            if(Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid)
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer_mask_grid)
                 && !Physics.Raycast(ray, Mathf.Infinity, layer_mask_card))
             {
                 if (mouseButton == 0)
@@ -144,6 +152,7 @@ public class MouseController : Singleton<MouseController>
                 {
                     OnRightMouseClick?.Invoke(hit);
                 }
+
                 //else if (mouseButton == 2)
                 //{
                 //    OnMiddleMouseClick?.Invoke(hit);
@@ -156,18 +165,21 @@ public class MouseController : Singleton<MouseController>
                 GameObject card = hit.collider.gameObject;
                 if (mouseButton == 0 && !DeckManager.isInspectionView)
                 {
-                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE) {
+                    if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
+                    {
                         SetSelectedCursor?.Invoke(hit);
                     }
-                    else if (card.CompareTag("Card_Hand") 
-                        && (GameLoop.PlayerPhase == Phase.BUYING_PHASE || GameLoop.PlayerPhase == Phase.DISCARD_PHASE))
+                    else if (card.CompareTag("Card_Hand")
+                             && (GameLoop.PlayerPhase == Phase.BUYING_PHASE ||
+                                 GameLoop.PlayerPhase == Phase.DISCARD_PHASE))
                     {
                         SetMultipleCursor?.Invoke(hit);
                     }
                     else if (card.CompareTag("Card_Shop") && GameLoop.PlayerPhase == Phase.BUYING_PHASE)
                     {
-                        ErrorMsg msg = (ErrorMsg)(BuyCard?.Invoke(hit.collider.gameObject, DeckManager.getSumOfCoins()));
-                        if(msg == ErrorMsg.OK)
+                        ErrorMsg msg =
+                            (ErrorMsg)(BuyCard?.Invoke(hit.collider.gameObject, DeckManager.getSumOfCoins()));
+                        if (msg == ErrorMsg.OK)
                         {
                             DeckManager.clearMultipleChosenCards();
                             NextPhase?.Invoke();
@@ -179,7 +191,7 @@ public class MouseController : Singleton<MouseController>
                         buyAnyCardEffect?.Invoke(hit);
                     }
                 }
-                else if(mouseButton == 1 && !DeckManager.isInspectionView)
+                else if (mouseButton == 1 && !DeckManager.isInspectionView)
                 {
                     if (card.CompareTag("Card_Hand") && GameLoop.PlayerPhase == Phase.MOVEMENT_PHASE)
                     {
@@ -190,11 +202,12 @@ public class MouseController : Singleton<MouseController>
                 {
                     OnMiddleMouseClick?.Invoke(hit);
                 }
+
                 return;
             }
         }
     }
-    
+
     private void showMouseOver(ref Transform obj, float scale, float move)
     {
         LeanTween.scale(obj.gameObject, Vector3.one * scale, LT_TIME).setEase(LeanTweenType.easeOutBack);
@@ -212,10 +225,12 @@ public class MouseController : Singleton<MouseController>
         PawnPosition position = new PawnPosition(grid.BoardPieceLetter, new Vector2(x, z));
         return position;
     }
+
     public bool checkIfNotOccupiedPosition(PawnPosition position)
     {
         foreach (PawnPosition pawnPosition in BoardSingleton.instance.PawnPositions)
-            if (pawnPosition.EqualsTo(position)) return false;
+            if (pawnPosition.EqualsTo(position))
+                return false;
         return true;
     }
 }

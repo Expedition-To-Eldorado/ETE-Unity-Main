@@ -53,4 +53,19 @@ public class RelayManager : MonoBehaviour
         }
         
     }
+    
+    public void LeaveRelay()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            NetworkManager.Singleton.Shutdown();
+            Debug.Log("Host opuścił Relay.");
+        }
+        else if (NetworkManager.Singleton.IsClient)
+        {
+            NetworkManager.Singleton.Shutdown();
+            Debug.Log("Klient opuścił Relay.");
+        }
+    }
+
 }
