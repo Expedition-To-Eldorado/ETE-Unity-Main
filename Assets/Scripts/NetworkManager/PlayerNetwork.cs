@@ -172,12 +172,18 @@ public class PlayerNetwork : NetworkBehaviour
             return ErrorMsg.DISCARD_CARD;
         }
 
-        if (terrainName == "EndJungle" && cardType == "Jungle")
+        if (terrainName == "EndJungle" && (cardType == "Jungle" || cardType == "All"))
         {
             Debug.Log("You won the game");
             return ErrorMsg.END_GAME;
         }
 
+        if (terrainName == "EndRiver" && (cardType == "River" || cardType == "All"))
+        {
+            Debug.Log("You won the game");
+            return ErrorMsg.END_GAME;
+        }
+        
         //check if any other player is on the selected field
         if (!MouseController.instance.checkIfNotOccupiedPosition(new PawnPosition(boardPiece.BoardPieceLetter, new Vector2(x, z))))
         {
